@@ -54,7 +54,7 @@ get_header();
 
                 <!-- Benefits -->
                 <?php
-                $benefits = get_field('alya_benefits');
+                $benefits = alya_parse_benefits(get_field('alya_benefits'));
                 if ($benefits) :
                 ?>
                     <section class="service-section" id="manfaat">
@@ -73,7 +73,7 @@ get_header();
 
                 <!-- Process -->
                 <?php
-                $process = get_field('alya_process');
+                $process = alya_parse_steps(get_field('alya_process'));
                 if ($process) :
                 ?>
                     <section class="service-section" id="proses">
@@ -100,9 +100,12 @@ get_header();
                     <section class="service-section" id="galeri">
                         <h2>Galeri</h2>
                         <div class="gallery-grid">
-                            <?php foreach ($gallery as $img) : ?>
-                                <a href="<?php echo esc_url($img['url']); ?>" class="gallery-item" data-lightbox>
-                                    <img src="<?php echo esc_url($img['sizes']['medium_large']); ?>" alt="<?php echo esc_attr(get_the_title() . ' galeri'); ?>" loading="lazy" width="400" height="300">
+                            <?php foreach ($gallery as $img_id) :
+                                $img_url = wp_get_attachment_url($img_id);
+                                if (!$img_url) continue;
+                            ?>
+                                <a href="<?php echo esc_url($img_url); ?>" class="gallery-item" data-lightbox>
+                                    <?php echo wp_get_attachment_image($img_id, 'medium_large', false, ['alt' => esc_attr(get_the_title() . ' galeri'), 'loading' => 'lazy', 'width' => 400, 'height' => 300]); ?>
                                 </a>
                             <?php endforeach; ?>
                         </div>
@@ -111,7 +114,7 @@ get_header();
 
                 <!-- FAQs -->
                 <?php
-                $faqs = get_field('alya_faqs');
+                $faqs = alya_parse_faqs(get_field('alya_faqs'));
                 if ($faqs) :
                 ?>
                     <section class="service-section" id="faq">

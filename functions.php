@@ -49,6 +49,7 @@ add_action('after_setup_theme', 'alya_setup');
  * Enqueue Assets
  */
 function alya_scripts() {
+    wp_enqueue_style('alya-google-fonts', 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap', [], null);
     wp_enqueue_style('alya-main', ALYA_URI . '/assets/css/main.css', [], ALYA_VERSION);
     wp_enqueue_style('alya-components', ALYA_URI . '/assets/css/components.css', ['alya-main'], ALYA_VERSION);
     wp_enqueue_style('alya-responsive', ALYA_URI . '/assets/css/responsive.css', ['alya-main'], ALYA_VERSION);
@@ -120,6 +121,7 @@ require_once ALYA_DIR . '/inc/security.php';
 require_once ALYA_DIR . '/inc/social.php';
 require_once ALYA_DIR . '/inc/analytics.php';
 require_once ALYA_DIR . '/inc/seo.php';
+require_once ALYA_DIR . '/inc/preinstall.php';
 
 /**
  * AJAX Handlers

@@ -281,6 +281,85 @@ function alya_sanitize_json($input) {
     return is_array($input) ? $input : [];
 }
 
+// ─── Pipe-Delimited Parser (for ACF Free repeater replacement) ───
+
+/**
+ * Parse a textarea field with pipe-delimited lines into an array of associative arrays.
+ *
+ * Input format:
+ *   Title | Description
+ *   Title | Description
+ *
+ * Returns:
+ *   [['title' => 'Title', 'description' => 'Description'], ...]
+ *
+ * @param string $raw       The raw textarea value.
+ * @param array  $keys      Named keys for each column (e.g., ['title', 'description']).
+ * @param string $separator Column separator (default: '|').
+ * @return array
+ */
+function alya_parse_lines($raw, $keys = [], $separator = '|') {
+    $raw = trim($raw);
+    if (!$raw) return [];
+
+    $lines = array_filter(array_map('trim', explode("\n", $raw)));
+    $result = [];
+
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (!$line) continue;
+        $parts = array_map('trim', explode($separator, $line));
+        $item = [];
+        foreach ($keys as $i => $key) {
+            $item[$key] = $parts[$i] ?? '';
+        }
+        $result[] = $item;
+    }
+    return $result;
+}
+
+/**
+ * Parse pipe-delimited lines for steps/process (3 columns: step, title, description).
+ */
+function alya_parse_steps($raw) {
+    return alya_parse_lines($raw, ['step', 'title', 'description']);
+}
+
+/**
+ * Parse pipe-delimited lines for benefits (2 columns: title, description).
+ */
+function alya_parse_benefits($raw) {
+    return alya_parse_lines($raw, ['title', 'description']);
+}
+
+/**
+ * Parse pipe-delimited lines for FAQs (2 columns: question, answer).
+ */
+function alya_parse_faqs($raw) {
+    return alya_parse_lines($raw, ['question', 'answer']);
+}
+
+/**
+ * Parse pipe-delimited lines for education/experience (3 columns: col1, col2, col3).
+ */
+function alya_parse_table($raw) {
+    return alya_parse_lines($raw, ['col1', 'col2', 'col3']);
+}
+
+/**
+ * Parse pipe-delimited lines for stats (3 columns: number, suffix, label).
+ */
+function alya_parse_stats($raw) {
+    return alya_parse_lines($raw, ['number', 'suffix', 'label']);
+}
+
+/**
+ * Parse pipe-delimited lines for schedule (3 columns: day, hours, location).
+ */
+function alya_parse_schedule($raw) {
+    return alya_parse_lines($raw, ['day', 'hours', 'location']);
+}
+
 // ─── Form Field Helper ───
 
 function alya_form_field($args) {

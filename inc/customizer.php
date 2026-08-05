@@ -82,15 +82,15 @@ function alya_customize_register($wp_customize) {
     ]);
 
     $colors = [
-        'alya_color_primary'   => ['label' => 'Warna Primer (Brand)', 'default' => '#B0836A'],
-        'alya_color_secondary' => ['label' => 'Warna Sekunder', 'default' => '#D4B89C'],
-        'alya_color_accent'    => ['label' => 'Warna Aksen', 'default' => '#E8D5C4'],
-        'alya_color_text'      => ['label' => 'Warna Teks', 'default' => '#1A1A2E'],
-        'alya_color_text_light' => ['label' => 'Warna Teks Ringan', 'default' => '#555555'],
-        'alya_color_bg'        => ['label' => 'Warna Background', 'default' => '#FAF7F2'],
-        'alya_color_bg_alt'    => ['label' => 'Warna Background Alternatif', 'default' => '#F5EDE3'],
+        'alya_color_primary'   => ['label' => 'Warna Primer (Brand)', 'default' => '#b0836a'],
+        'alya_color_secondary' => ['label' => 'Warna Sekunder', 'default' => '#8a5c44'],
+        'alya_color_accent'    => ['label' => 'Warna Aksen', 'default' => '#f6ece6'],
+        'alya_color_text'      => ['label' => 'Warna Teks', 'default' => '#2b2623'],
+        'alya_color_text_light' => ['label' => 'Warna Teks Ringan', 'default' => '#6f6a66'],
+        'alya_color_bg'        => ['label' => 'Warna Background', 'default' => '#ffffff'],
+        'alya_color_bg_alt'    => ['label' => 'Warna Background Alternatif', 'default' => '#faf7f4'],
         'alya_color_white'     => ['label' => 'Warna Putih', 'default' => '#FFFFFF'],
-        'alya_color_line'      => ['label' => 'Warna Garis/Border', 'default' => '#E5E5E5'],
+        'alya_color_line'      => ['label' => 'Warna Garis/Border', 'default' => '#e9e2dc'],
         'alya_color_success'   => ['label' => 'Warna Success', 'default' => '#28A745'],
         'alya_color_error'     => ['label' => 'Warna Error', 'default' => '#DC3545'],
     ];
@@ -107,8 +107,8 @@ function alya_customize_register($wp_customize) {
     ]);
 
     $typo = [
-        'alya_font_heading'   => ['label' => 'Font Heading', 'default' => 'Playfair Display'],
-        'alya_font_body'      => ['label' => 'Font Body', 'default' => 'Inter'],
+        'alya_font_heading'   => ['label' => 'Font Heading', 'default' => 'Poppins'],
+        'alya_font_body'      => ['label' => 'Font Body', 'default' => 'Poppins'],
         'alya_font_size_base' => ['label' => 'Base Font Size (px)', 'default' => '16'],
         'alya_font_size_h1'   => ['label' => 'H1 Size (px)', 'default' => '48'],
         'alya_font_size_h2'   => ['label' => 'H2 Size (px)', 'default' => '36'],
@@ -535,20 +535,20 @@ add_action('customize_register', 'alya_customize_register');
  * Output Customizer CSS
  */
 function alya_customizer_css() {
-    $primary    = get_theme_mod('alya_color_primary', '#B0836A');
-    $secondary  = get_theme_mod('alya_color_secondary', '#D4B89C');
-    $accent     = get_theme_mod('alya_color_accent', '#E8D5C4');
-    $text       = get_theme_mod('alya_color_text', '#1A1A2E');
-    $text_light = get_theme_mod('alya_color_text_light', '#555555');
-    $bg         = get_theme_mod('alya_color_bg', '#FAF7F2');
-    $bg_alt     = get_theme_mod('alya_color_bg_alt', '#F5EDE3');
+    $primary    = get_theme_mod('alya_color_primary', '#b0836a');
+    $secondary  = get_theme_mod('alya_color_secondary', '#8a5c44');
+    $accent     = get_theme_mod('alya_color_accent', '#f6ece6');
+    $text       = get_theme_mod('alya_color_text', '#2b2623');
+    $text_light = get_theme_mod('alya_color_text_light', '#6f6a66');
+    $bg         = get_theme_mod('alya_color_bg', '#ffffff');
+    $bg_alt     = get_theme_mod('alya_color_bg_alt', '#faf7f4');
     $white      = get_theme_mod('alya_color_white', '#FFFFFF');
-    $line       = get_theme_mod('alya_color_line', '#E5E5E5');
+    $line       = get_theme_mod('alya_color_line', '#e9e2dc');
     $success    = get_theme_mod('alya_color_success', '#28A745');
     $error      = get_theme_mod('alya_color_error', '#DC3545');
 
-    $font_heading = get_theme_mod('alya_font_heading', 'Playfair Display');
-    $font_body    = get_theme_mod('alya_font_body', 'Inter');
+    $font_heading = get_theme_mod('alya_font_heading', 'Poppins');
+    $font_body    = get_theme_mod('alya_font_body', 'Poppins');
     $font_base    = get_theme_mod('alya_font_size_base', '16');
     $font_h1      = get_theme_mod('alya_font_size_h1', '48');
     $font_h2      = get_theme_mod('alya_font_size_h2', '36');
@@ -572,8 +572,8 @@ function alya_customizer_css() {
   --line: {$line};
   --success: {$success};
   --error: {$error};
-  --shadow: 0 8px 24px rgba(0,0,0,.08);
-  --shadow-lg: 0 16px 48px rgba(0,0,0,.12);
+  --shadow: 0 18px 40px -22px rgba(43,38,35,.35);
+  --shadow-lg: 0 18px 40px -22px rgba(43,38,35,.35);
   --font-heading: '{$font_heading}', Georgia, serif;
   --font-body: '{$font_body}', -apple-system, sans-serif;
   --font-size: {$font_base}px;

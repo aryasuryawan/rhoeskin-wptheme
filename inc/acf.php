@@ -1,6 +1,12 @@
 <?php
 /**
- * ACF Field Groups
+ * ACF Field Groups — ACF Free compatible (no repeater/gallery)
+ *
+ * Repeater fields replaced with textarea (pipe-delimited):
+ *   Title | Description
+ *   Title | Description
+ *
+ * Gallery fields replaced with relationship (attachments).
  *
  * @package Alya_Esthetic
  */
@@ -11,9 +17,9 @@ if (!function_exists('acf_add_local_field_group')) {
     return;
 }
 
-/**
- * Field Group: Homepage
- */
+/* ================================================================
+ * FIELD GROUP: Homepage
+ * ================================================================ */
 acf_add_local_field_group([
     'key'      => 'group_alya_homepage',
     'title'    => 'Homepage Settings',
@@ -93,19 +99,14 @@ acf_add_local_field_group([
         ],
         [
             'key'   => 'field_alya_home_stats',
-            'label' => 'Statistics',
+            'label' => 'Statistics (one per line: Number | Suffix | Label)',
             'name'  => 'alya_home_stats',
-            'type'  => 'repeater',
-            'layout' => 'table',
-            'button_label' => 'Tambah Statistik',
-            'sub_fields'   => [
-                ['key' => 'field_alya_stat_number', 'label' => 'Number', 'name' => 'number', 'type' => 'text', 'wrapper' => ['width' => 30]],
-                ['key' => 'field_alya_stat_suffix', 'label' => 'Suffix', 'name' => 'suffix', 'type' => 'text', 'wrapper' => ['width' => 30]],
-                ['key' => 'field_alya_stat_label', 'label' => 'Label', 'name' => 'label', 'type' => 'text', 'wrapper' => ['width' => 40]],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 4,
+            'instructions' => 'Format: 10+ | Tahun Pengalaman — one stat per line.',
         ],
         [
-            'key'          => 'field_alya_home_doctors_title',
+            'key'   => 'field_alya_home_doctors_title',
             'label' => 'Doctors Section Title',
             'name'  => 'alya_doctors_title',
             'type'  => 'text',
@@ -153,9 +154,9 @@ acf_add_local_field_group([
     'active'          => true,
 ]);
 
-/**
- * Field Group: Services
- */
+/* ================================================================
+ * FIELD GROUP: Service
+ * ================================================================ */
 acf_add_local_field_group([
     'key'    => 'group_alya_service',
     'title'  => 'Service Details',
@@ -176,51 +177,38 @@ acf_add_local_field_group([
         ],
         [
             'key'   => 'field_alya_svc_benefits',
-            'label' => 'Benefits',
+            'label' => 'Benefits (one per line: Title | Description)',
             'name'  => 'alya_benefits',
-            'type'  => 'repeater',
-            'layout' => 'block',
-            'button_label' => 'Tambah Benefit',
-            'sub_fields'   => [
-                ['key' => 'field_alya_benefit_title', 'label' => 'Title', 'name' => 'title', 'type' => 'text'],
-                ['key' => 'field_alya_benefit_desc', 'label' => 'Description', 'name' => 'description', 'type' => 'textarea', 'rows' => 3],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 6,
+            'instructions' => 'Format: Pembersihan Mendalam | Membantu mengangkat kotoran dan sel kulit mati — one benefit per line.',
         ],
         [
             'key'   => 'field_alya_svc_process',
-            'label' => 'Treatment Process',
+            'label' => 'Treatment Process (one per line: Step# | Title | Description)',
             'name'  => 'alya_process',
-            'type'  => 'repeater',
-            'layout' => 'block',
-            'button_label' => 'Tambah Langkah',
-            'sub_fields'   => [
-                ['key' => 'field_alya_process_step', 'label' => 'Step Number', 'name' => 'step', 'type' => 'number', 'wrapper' => ['width' => 20]],
-                ['key' => 'field_alya_process_title', 'label' => 'Title', 'name' => 'title', 'type' => 'text', 'wrapper' => ['width' => 80]],
-                ['key' => 'field_alya_process_desc', 'label' => 'Description', 'name' => 'description', 'type' => 'textarea', 'rows' => 2],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 6,
+            'instructions' => 'Format: 1 | Konsultasi | Dokter memeriksa kondisi kulit — one step per line.',
         ],
         [
-            'key'   => 'field_alya_svc_gallery',
-            'label' => 'Gallery',
-            'name'  => 'alya_gallery',
-            'type'  => 'gallery',
+            'key'          => 'field_alya_svc_gallery',
+            'label'        => 'Gallery',
+            'name'         => 'alya_gallery',
+            'type'         => 'relationship',
+            'post_type'    => ['attachment'],
+            'filters'      => ['search'],
+            'min'          => 1,
+            'max'          => 12,
             'return_format' => 'array',
-            'preview_size'  => 'thumbnail',
-            'library'       => 'all',
-            'min'           => 1,
-            'max'           => 12,
         ],
         [
             'key'   => 'field_alya_svc_faqs',
-            'label' => 'FAQs',
+            'label' => 'FAQs (one per line: Question | Answer)',
             'name'  => 'alya_faqs',
-            'type'  => 'repeater',
-            'layout' => 'block',
-            'button_label' => 'Tambah FAQ',
-            'sub_fields'   => [
-                ['key' => 'field_alya_faq_q', 'label' => 'Question', 'name' => 'question', 'type' => 'text'],
-                ['key' => 'field_alya_faq_a', 'label' => 'Answer', 'name' => 'answer', 'type' => 'textarea', 'rows' => 3],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 6,
+            'instructions' => 'Format: Apakah treatment ini sakit? | Tidak, treatment ini nyaman — one FAQ per line.',
         ],
         [
             'key'          => 'field_alya_svc_related',
@@ -244,9 +232,9 @@ acf_add_local_field_group([
     'active'          => true,
 ]);
 
-/**
- * Field Group: Doctor
- */
+/* ================================================================
+ * FIELD GROUP: Doctor
+ * ================================================================ */
 acf_add_local_field_group([
     'key'    => 'group_alya_doctor',
     'title'  => 'Doctor Details',
@@ -266,30 +254,29 @@ acf_add_local_field_group([
             'description' => 'Contoh: MD, FAAD, Spesialis Kulit dan Kelamin',
         ],
         [
+            'key'   => 'field_alya_doc_about',
+            'label' => 'About / Bio',
+            'name'  => 'alya_about',
+            'type'  => 'wysiwyg',
+            'tabs'  => 'visual',
+            'toolbar' => 'basic',
+            'instructions' => 'Short biography of the doctor.',
+        ],
+        [
             'key'   => 'field_alya_doc_education',
-            'label' => 'Education',
+            'label' => 'Education (one per line: Degree | School | Year)',
             'name'  => 'alya_education',
-            'type'  => 'repeater',
-            'layout' => 'table',
-            'button_label' => 'Tambah Pendidikan',
-            'sub_fields'   => [
-                ['key' => 'field_alya_edu_degree', 'label' => 'Degree', 'name' => 'degree', 'type' => 'text', 'wrapper' => ['width' => 40]],
-                ['key' => 'field_alya_edu_school', 'label' => 'School', 'name' => 'school', 'type' => 'text', 'wrapper' => ['width' => 40]],
-                ['key' => 'field_alya_edu_year', 'label' => 'Year', 'name' => 'year', 'type' => 'text', 'wrapper' => ['width' => 20]],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 4,
+            'instructions' => 'Format: Sp.KK | Universitas Indonesia | 2015 — one entry per line.',
         ],
         [
             'key'   => 'field_alya_doc_experience',
-            'label' => 'Experience',
+            'label' => 'Experience (one per line: Role | Place | Year)',
             'name'  => 'alya_experience',
-            'type'  => 'repeater',
-            'layout' => 'table',
-            'button_label' => 'Tambah Pengalaman',
-            'sub_fields'   => [
-                ['key' => 'field_alya_exp_role', 'label' => 'Role', 'name' => 'role', 'type' => 'text', 'wrapper' => ['width' => 40]],
-                ['key' => 'field_alya_exp_place', 'label' => 'Place', 'name' => 'place', 'type' => 'text', 'wrapper' => ['width' => 40]],
-                ['key' => 'field_alya_exp_year', 'label' => 'Year', 'name' => 'year', 'type' => 'text', 'wrapper' => ['width' => 20]],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 4,
+            'instructions' => 'Format: Senior Dermatologist | RS Pondok Indah | 2018-2022 — one entry per line.',
         ],
         [
             'key'          => 'field_alya_doc_services',
@@ -302,16 +289,11 @@ acf_add_local_field_group([
         ],
         [
             'key'   => 'field_alya_doc_schedule',
-            'label' => 'Practice Schedule',
+            'label' => 'Practice Schedule (one per line: Day | Hours | Location)',
             'name'  => 'alya_schedule',
-            'type'  => 'repeater',
-            'layout' => 'table',
-            'button_label' => 'Tambah Jadwal',
-            'sub_fields'   => [
-                ['key' => 'field_alya_sched_day', 'label' => 'Day', 'name' => 'day', 'type' => 'text', 'wrapper' => ['width' => 30]],
-                ['key' => 'field_alya_sched_hours', 'label' => 'Hours', 'name' => 'hours', 'type' => 'text', 'wrapper' => ['width' => 30]],
-                ['key' => 'field_alya_sched_location', 'label' => 'Location', 'name' => 'location', 'type' => 'text', 'wrapper' => ['width' => 40]],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 4,
+            'instructions' => 'Format: Senin | 09:00-12:00 | Cabang Utama — one entry per line.',
         ],
         [
             'key'          => 'field_alya_doc_avatar',
@@ -333,9 +315,9 @@ acf_add_local_field_group([
     'active'          => true,
 ]);
 
-/**
- * Field Group: Testimonial
- */
+/* ================================================================
+ * FIELD GROUP: Testimonial
+ * ================================================================ */
 acf_add_local_field_group([
     'key'    => 'group_alya_testimonial',
     'title'  => 'Testimonial Details',
@@ -390,18 +372,38 @@ acf_add_local_field_group([
     'active'          => true,
 ]);
 
-/**
- * Field Group: Jobs
- */
+/* ================================================================
+ * FIELD GROUP: Jobs
+ * ================================================================ */
 acf_add_local_field_group([
     'key'    => 'group_alya_jobs',
     'title'  => 'Job Details',
     'fields' => [
         [
+            'key'   => 'field_alya_job_category',
+            'label' => 'Category (medis / non-medis / marketing)',
+            'name'  => 'alya_job_category',
+            'type'  => 'text',
+        ],
+        [
+            'key'   => 'field_alya_job_type',
+            'label' => 'Job Type',
+            'name'  => 'alya_job_type',
+            'type'  => 'text',
+            'default_value' => 'Full-time',
+        ],
+        [
             'key'   => 'field_alya_job_location',
             'label' => 'Location',
             'name'  => 'alya_location',
             'type'  => 'text',
+        ],
+        [
+            'key'   => 'field_alya_job_experience',
+            'label' => 'Experience Required',
+            'name'  => 'alya_experience',
+            'type'  => 'text',
+            'description' => 'Contoh: 1-3 Tahun',
         ],
         [
             'key'   => 'field_alya_job_salary',
@@ -437,9 +439,8 @@ acf_add_local_field_group([
             'key'     => 'field_alya_job_deadline',
             'label'   => 'Application Deadline',
             'name'    => 'alya_deadline',
-            'type'    => 'date_picker',
-            'display_format' => 'd/m/Y',
-            'return_format'  => 'Y-m-d',
+            'type'    => 'text',
+            'description' => 'Format: 30 Sep 2026',
         ],
         [
             'key'          => 'field_alya_job_apply_link',
@@ -460,9 +461,9 @@ acf_add_local_field_group([
     'active'          => true,
 ]);
 
-/**
- * Field Group: Treatment
- */
+/* ================================================================
+ * FIELD GROUP: Treatment
+ * ================================================================ */
 acf_add_local_field_group([
     'key'    => 'group_alya_treatment',
     'title'  => 'Treatment Details',
@@ -488,51 +489,53 @@ acf_add_local_field_group([
             'description' => 'Contoh: 60 menit',
         ],
         [
+            'key'   => 'field_alya_tr_skin_type',
+            'label' => 'Skin Type',
+            'name'  => 'alya_skin_type',
+            'type'  => 'text',
+            'default_value' => 'Semua jenis kulit',
+        ],
+        [
+            'key'   => 'field_alya_tr_downtime',
+            'label' => 'Downtime',
+            'name'  => 'alya_downtime',
+            'type'  => 'text',
+            'default_value' => 'Tanpa downtime',
+        ],
+        [
             'key'   => 'field_alya_tr_benefits',
-            'label' => 'Benefits',
+            'label' => 'Benefits (one per line: Title | Description)',
             'name'  => 'alya_benefits',
-            'type'  => 'repeater',
-            'layout' => 'block',
-            'button_label' => 'Tambah Benefit',
-            'sub_fields'   => [
-                ['key' => 'field_alya_trb_title', 'label' => 'Title', 'name' => 'title', 'type' => 'text'],
-                ['key' => 'field_alya_trb_desc', 'label' => 'Description', 'name' => 'description', 'type' => 'textarea', 'rows' => 3],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 6,
+            'instructions' => 'Format: Cerah Seketika | Kulit tampak lebih cerah dan halus — one benefit per line.',
         ],
         [
             'key'   => 'field_alya_tr_process',
-            'label' => 'Treatment Process',
+            'label' => 'Treatment Process (one per line: Step# | Title | Description)',
             'name'  => 'alya_process',
-            'type'  => 'repeater',
-            'layout' => 'block',
-            'button_label' => 'Tambah Langkah',
-            'sub_fields'   => [
-                ['key' => 'field_alya_trp_step', 'label' => 'Step Number', 'name' => 'step', 'type' => 'number', 'wrapper' => ['width' => 20]],
-                ['key' => 'field_alya_trp_title', 'label' => 'Title', 'name' => 'title', 'type' => 'text', 'wrapper' => ['width' => 80]],
-                ['key' => 'field_alya_trp_desc', 'label' => 'Description', 'name' => 'description', 'type' => 'textarea', 'rows' => 2],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 6,
+            'instructions' => 'Format: 1 | Konsultasi | Dokter memeriksa kondisi kulit — one step per line.',
         ],
         [
-            'key'   => 'field_alya_tr_gallery',
-            'label' => 'Gallery',
-            'name'  => 'alya_gallery',
-            'type'  => 'gallery',
+            'key'          => 'field_alya_tr_gallery',
+            'label'        => 'Gallery',
+            'name'         => 'alya_gallery',
+            'type'         => 'relationship',
+            'post_type'    => ['attachment'],
+            'filters'      => ['search'],
+            'min'          => 1,
+            'max'          => 12,
             'return_format' => 'array',
-            'preview_size'  => 'thumbnail',
-            'min'           => 1,
-            'max'           => 12,
         ],
         [
             'key'   => 'field_alya_tr_faqs',
-            'label' => 'FAQs',
+            'label' => 'FAQs (one per line: Question | Answer)',
             'name'  => 'alya_faqs',
-            'type'  => 'repeater',
-            'layout' => 'block',
-            'button_label' => 'Tambah FAQ',
-            'sub_fields'   => [
-                ['key' => 'field_alya_trfq_q', 'label' => 'Question', 'name' => 'question', 'type' => 'text'],
-                ['key' => 'field_alya_trfq_a', 'label' => 'Answer', 'name' => 'answer', 'type' => 'textarea', 'rows' => 3],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 6,
+            'instructions' => 'Format: Apakah treatment ini sakit? | Tidak — one FAQ per line.',
         ],
         [
             'key'          => 'field_alya_tr_related',
@@ -556,9 +559,9 @@ acf_add_local_field_group([
     'active'          => true,
 ]);
 
-/**
- * Field Group: Pages (Galeri, Teknologi, Tentang)
- */
+/* ================================================================
+ * FIELD GROUP: Pages (Galeri, Teknologi, Tentang)
+ * ================================================================ */
 acf_add_local_field_group([
     'key'    => 'group_alya_pages',
     'title'  => 'Page Settings',
@@ -584,27 +587,21 @@ acf_add_local_field_group([
             'rows'  => 3,
         ],
         [
-            'key'   => 'field_alya_gallery_images',
-            'label' => 'Gallery Images',
-            'name'  => 'alya_gallery_images',
-            'type'  => 'gallery',
+            'key'          => 'field_alya_gallery_images',
+            'label'        => 'Gallery Images',
+            'name'         => 'alya_gallery_images',
+            'type'         => 'relationship',
+            'post_type'    => ['attachment'],
+            'filters'      => ['search'],
             'return_format' => 'array',
-            'preview_size'  => 'thumbnail',
-            'library'       => 'all',
         ],
         [
             'key'   => 'field_alya_tech_items',
-            'label' => 'Technology Items',
+            'label' => 'Technology Items (one per line: Title | Description)',
             'name'  => 'alya_tech_items',
-            'type'  => 'repeater',
-            'layout' => 'block',
-            'button_label' => 'Tambah Technology',
-            'sub_fields'   => [
-                ['key' => 'field_alya_techi_title', 'label' => 'Title', 'name' => 'title', 'type' => 'text'],
-                ['key' => 'field_alya_techi_desc', 'label' => 'Description', 'name' => 'description', 'type' => 'textarea', 'rows' => 3],
-                ['key' => 'field_alya_techi_image', 'label' => 'Image', 'name' => 'image', 'type' => 'image', 'return_format' => 'array'],
-                ['key' => 'field_alya_techi_icon', 'label' => 'Icon', 'name' => 'icon', 'type' => 'text'],
-            ],
+            'type'  => 'textarea',
+            'rows'  => 6,
+            'instructions' => 'Format: Nd:YAG Laser | Perawatan pigmentasi dan vaskular — one item per line.',
         ],
     ],
     'location' => [
@@ -623,3 +620,119 @@ acf_add_local_field_group([
     'label_placement' => 'top',
     'active'          => true,
 ]);
+
+/* ================================================================
+ * Admin Script — Image previews for gallery relationship fields
+ * ================================================================ */
+add_action('admin_enqueue_scripts', function ($hook) {
+    if (!in_array($hook, ['post.php', 'post-new.php', 'edit.php'])) return;
+    if (!function_exists('acf_get_field')) return;
+
+    $script = <<<'JS'
+(function($){
+  if (typeof acf === 'undefined') return;
+
+  var galleryFields = ['field_alya_svc_gallery','field_alya_tr_gallery','field_alya_gallery_images'];
+
+  function findAcfField($el) {
+    var $field = $el.closest('.acf-field');
+    if (!$field.length) $field = $el.find('.acf-field').first();
+    return $field;
+  }
+
+  function addPreview($field) {
+    var key = $field.attr('data-key') || $field.data('key');
+    if (!key || galleryFields.indexOf(key) === -1) return;
+
+    var $wrap = $field.find('.acf-input');
+    if (!$wrap.length) return;
+
+    var previewId = 'alya-preview-' + key;
+    if (!$wrap.find('#' + previewId).length) {
+      $wrap.append('<div id="' + previewId + '" class="alya-gallery-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding:12px;background:#f6f6f6;border:1px dashed #ccc;border-radius:8px;min-height:60px"><span style="color:#999;font-size:13px;width:100%">Preview gambar akan muncul di sini...</span></div>');
+    }
+    refreshPreview($field, $wrap.find('#' + previewId));
+  }
+
+  function refreshPreview($field, $preview) {
+    var $input = $field.find('.acf-input');
+    var $selected = $input.find('.values .cloned, .values .ui-sortable-handle, .acf_relationship .values li');
+    var $list = $input.find('input[type="hidden"]');
+    var ids = [];
+
+    $list.each(function() {
+      var v = $(this).val();
+      if (v && v !== '' && ids.indexOf(v) === -1) ids.push(v);
+    });
+
+    // fallback: check selected li values
+    if (!ids.length) {
+      $input.find('.acf_relationship .selected li, .acf_relationship .values li').each(function() {
+        var v = $(this).data('id');
+        if (v) ids.push(String(v));
+      });
+    }
+
+    if (!ids.length) {
+      $preview.html('<span style="color:#999;font-size:13px;width:100%">Belum ada gambar dipilih.</span>');
+      return;
+    }
+
+    $preview.html('');
+    ids.forEach(function(id) {
+      wp.ajax.post('alya_get_attachment_preview', { id: id }).done(function(res) {
+        if (res.success && res.data.url) {
+          $preview.append(
+            '<div style="position:relative;width:120px;height:90px;border-radius:8px;overflow:hidden;border:1px solid #ddd;background:#fff">' +
+            '<img src="' + res.data.url + '" style="width:100%;height:100%;object-fit:cover" />' +
+            '</div>'
+          );
+        }
+      });
+    });
+  }
+
+  // Initialize on existing fields
+  $(document).ready(function() {
+    setTimeout(function() {
+      $('.acf-field').each(function() { addPreview($(this)); });
+    }, 500);
+  });
+
+  // Re-initialize when ACF fields load (tab switch, repeat, etc.)
+  acf.add_action('ready_field', function($el) { addPreview($el); });
+  acf.add_action('append_field', function($el) { addPreview($el); });
+
+  // Update on relationship selection change
+  $(document).on('click', '.acf_relationship .values li, .acf_relationship .list li', function() {
+    var $field = $(this).closest('.acf-field');
+    setTimeout(function() { addPreview($field); }, 300);
+  });
+
+  // Also listen for remove
+  $(document).on('click', '.acf_relationship .values .acf-icon', function() {
+    var $field = $(this).closest('.acf-field');
+    setTimeout(function() { addPreview($field); }, 300);
+  });
+
+})(jQuery);
+JS;
+
+    wp_register_script('alya-acf-gallery-preview', '', ['jquery'], '1.0', true);
+    wp_enqueue_script('alya-acf-gallery-preview');
+    wp_add_inline_script('alya-acf-gallery-preview', $script);
+});
+
+/* ================================================================
+ * AJAX handler for attachment preview thumbnail
+ * ================================================================ */
+add_action('wp_ajax_alya_get_attachment_preview', function () {
+    $id = intval($_POST['id'] ?? 0);
+    $url = wp_get_attachment_image_url($id, 'thumbnail');
+
+    if ($url) {
+        wp_send_json_success(['url' => $url, 'id' => $id]);
+    } else {
+        wp_send_json_error(['message' => 'No image']);
+    }
+});

@@ -10,7 +10,7 @@
         --h3:20px;
     }
     .container{padding:0 16px}
-    .alya-section{padding:48px 0}
+    .alya-section{padding:60px 0}
     .hero{min-height:80vh}
     .hero__actions{flex-direction:column}
     .hero__actions .btn{width:100%}
@@ -103,6 +103,29 @@
     .wa-float--bounce .wa-float__btn,.wa-float--pulse .wa-float__btn{animation:none}
 }
 
+/* ─── Karir / Kontak Responsive ─── */
+@media (max-width: 960px) {
+  .contact .grid { grid-template-columns: 1fr; }
+  .quick .grid { grid-template-columns: 1fr; }
+  .value-grid { grid-template-columns: 1fr 1fr; }
+  .jobs__layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  .job-card { flex-direction: column; align-items: flex-start; }
+  .job-card__cta { align-self: flex-end; }
+  .filterbar .container { justify-content: center; text-align: center; }
+  .searchbox input { width: 100%; }
+  .art-layout { grid-template-columns: 1fr; max-width: 800px; }
+  .share-rail { position: static; flex-direction: row; justify-content: center; margin-bottom: 10px; }
+  .related__grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .value-grid { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; }
+  .related__grid { grid-template-columns: 1fr; }
+  .apply-box { flex-direction: column; text-align: center; }
+  .apply-box .btn { width: 100%; justify-content: center; }
+}
+
 /* ─── Print ─── */
 @media print{
     .site-header,.site-footer,.wa-float,.social-share,.cta-section,.page-hero{display:none!important}
@@ -137,7 +160,7 @@
 
 /* ─── Max 560px (Mobile) ─── */
 @media(max-width:560px){
-    .hero--v2{min-height:auto;padding-bottom:20px}
+    .hero--v2{min-height:auto;padding:100px 0 20px}
     .hero--v2 .hero__stats{flex-direction:column;gap:16px}
     .hero--v2 .hero__stats .stat{padding-right:0}
     .svc-grid{grid-template-columns:1fr}
@@ -152,4 +175,32 @@
     .faq-item__a{max-height:none}
     .faq-item__a p{padding-bottom:16px}
     .faq-item.open .faq-item__a{max-height:none}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NEW TEMPLATES RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media(max-width:1080px){
+    .t-layout{grid-template-columns:1fr}
+    .t-layout aside{position:static}
+    .book-card{position:static}
+    .service-grid{grid-template-columns:repeat(2,1fr)}
+    .art-grid{grid-template-columns:repeat(2,1fr)}
+    .helpful-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:960px){
+    .error-hero{padding-top:140px}
+    .service-grid{grid-template-columns:repeat(2,1fr)}
+    .promo__inner{text-align:center;justify-content:center}
+    .helpful-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+    .error-hero{padding-top:140px}
+    .error-actions{flex-direction:column;align-items:stretch}
+    .service-grid{grid-template-columns:1fr}
+    .art-grid{grid-template-columns:1fr}
+    .benefit-grid{grid-template-columns:1fr}
+    .related__grid{grid-template-columns:1fr}
+    .helpful-grid{grid-template-columns:1fr}
+    .t-layout{grid-template-columns:1fr}
 }

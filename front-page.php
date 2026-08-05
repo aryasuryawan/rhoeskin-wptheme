@@ -29,7 +29,7 @@ $homepage_style = get_theme_mod('alya_homepage_style', 'default');
 <?php endif; ?>
 
 <!-- ════════════════════════════════════════════ SERVICES V2 ════════════════════════════════════════════ -->
-<?php if (get_theme_mod('alya_v2_show_services', true)) : ?>
+<?php if (get_theme_mod('alya_v2_show_services_v2', true)) : ?>
     <?php get_template_part('template-parts/services-grid', 'v2'); ?>
 <?php endif; ?>
 
@@ -39,12 +39,12 @@ $homepage_style = get_theme_mod('alya_homepage_style', 'default');
 <?php endif; ?>
 
 <!-- ════════════════════════════════════════════ STATS BAND ════════════════════════════════════════════ -->
-<?php if (get_theme_mod('alya_v2_show_stats', true)) : ?>
+<?php if (get_theme_mod('alya_v2_show_stats_band', true)) : ?>
     <?php get_template_part('template-parts/stats-band'); ?>
 <?php endif; ?>
 
 <!-- ════════════════════════════════════════════ DOCTORS V2 ════════════════════════════════════════════ -->
-<?php if (get_theme_mod('alya_v2_show_doctors', true)) : ?>
+<?php if (get_theme_mod('alya_v2_show_doctors_grid', true)) : ?>
     <?php get_template_part('template-parts/doctors-grid', 'v2'); ?>
 <?php endif; ?>
 

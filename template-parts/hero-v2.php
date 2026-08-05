@@ -13,6 +13,7 @@ $cta_url   = get_theme_mod('alya_v2_hero_cta_url', alya_wa_link());
 $cta2_text = get_theme_mod('alya_v2_hero_cta2_text', 'Jelajahi Layanan');
 $cta2_url  = get_theme_mod('alya_v2_hero_cta2_url', '#layanan');
 $bg_image  = get_theme_mod('alya_hero_bg', '');
+if (is_array($bg_image)) $bg_image = $bg_image['url'] ?? '';
 $stats     = get_theme_mod('alya_v2_hero_stats', [
     ['number' => '10rb+', 'label' => 'Pasien Terlayani'],
     ['number' => '10+', 'label' => 'Tahun Beroperasi'],
