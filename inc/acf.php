@@ -176,20 +176,72 @@ acf_add_local_field_group([
             'preview_size'  => 'thumbnail',
         ],
         [
-            'key'   => 'field_alya_svc_benefits',
-            'label' => 'Benefits (one per line: Title | Description)',
-            'name'  => 'alya_benefits',
-            'type'  => 'textarea',
-            'rows'  => 6,
-            'instructions' => 'Format: Pembersihan Mendalam | Membantu mengangkat kotoran dan sel kulit mati — one benefit per line.',
+            'key'          => 'field_alya_svc_benefits',
+            'label'        => 'Benefits (one per line: Title | Description)',
+            'name'         => 'alya_benefits',
+            'type'         => 'repeater',
+            'instructions' => 'Tambah satu manfaat per baris.',
+            'button_label' => '+ Tambah Manfaat',
+            'layout'       => 'table',
+            'min'          => 0,
+            'max'          => 10,
+            'sub_fields'   => [
+                [
+                    'key'          => 'field_alya_svc_benefit_title',
+                    'label'        => 'Judul Manfaat',
+                    'name'         => 'title',
+                    'type'         => 'text',
+                    'placeholder'  => 'Contoh: Cerah Seketika',
+                    'column_width' => '30',
+                ],
+                [
+                    'key'          => 'field_alya_svc_benefit_desc',
+                    'label'        => 'Deskripsi',
+                    'name'         => 'description',
+                    'type'         => 'textarea',
+                    'rows'         => 2,
+                    'placeholder'  => 'Contoh: Kulit tampak lebih cerah dan halus setelah satu sesi.',
+                    'column_width' => '70',
+                ],
+            ],
         ],
         [
-            'key'   => 'field_alya_svc_process',
-            'label' => 'Treatment Process (one per line: Step# | Title | Description)',
-            'name'  => 'alya_process',
-            'type'  => 'textarea',
-            'rows'  => 6,
-            'instructions' => 'Format: 1 | Konsultasi | Dokter memeriksa kondisi kulit — one step per line.',
+            'key'          => 'field_alya_svc_process',
+            'label'        => 'Treatment Process (one per line: Step# | Title | Description)',
+            'name'         => 'alya_process',
+            'type'         => 'repeater',
+            'instructions' => 'Tambah langkah proses per baris.',
+            'button_label' => '+ Tambah Langkah',
+            'layout'       => 'table',
+            'min'          => 0,
+            'max'          => 20,
+            'sub_fields'   => [
+                [
+                    'key'          => 'field_alya_svc_process_step',
+                    'label'        => 'Langkah #',
+                    'name'         => 'step',
+                    'type'         => 'number',
+                    'placeholder'  => 'Contoh: 1',
+                    'column_width' => '10',
+                ],
+                [
+                    'key'          => 'field_alya_svc_process_title',
+                    'label'        => 'Judul Langkah',
+                    'name'         => 'title',
+                    'type'         => 'text',
+                    'placeholder'  => 'Contoh: Konsultasi',
+                    'column_width' => '30',
+                ],
+                [
+                    'key'          => 'field_alya_svc_process_desc',
+                    'label'        => 'Deskripsi',
+                    'name'         => 'description',
+                    'type'         => 'textarea',
+                    'rows'         => 2,
+                    'placeholder'  => 'Contoh: Dokter memeriksa kondisi kulit...',
+                    'column_width' => '60',
+                ],
+            ],
         ],
         [
             'key'          => 'field_alya_svc_gallery',
@@ -240,10 +292,17 @@ acf_add_local_field_group([
     'title'  => 'Doctor Details',
     'fields' => [
         [
-            'key'   => 'field_alya_doc_position',
-            'label' => 'Position / Specialty',
-            'name'  => 'alya_position',
-            'type'  => 'text',
+            'key'           => 'field_alya_doc_position',
+            'label'         => 'Position / Specialty',
+            'name'          => 'alya_position',
+            'type'          => 'taxonomy',
+            'taxonomy'      => 'doctor_category',
+            'field_type'    => 'checkbox',
+            'allow_null'    => 1,
+            'add_term'      => 1,
+            'save_terms'    => 1,
+            'load_terms'    => 1,
+            'return_format' => 'object',
         ],
         [
             'key'   => 'field_alya_doc_credentials',
@@ -263,22 +322,6 @@ acf_add_local_field_group([
             'instructions' => 'Short biography of the doctor.',
         ],
         [
-            'key'   => 'field_alya_doc_education',
-            'label' => 'Education (one per line: Degree | School | Year)',
-            'name'  => 'alya_education',
-            'type'  => 'textarea',
-            'rows'  => 4,
-            'instructions' => 'Format: Sp.KK | Universitas Indonesia | 2015 — one entry per line.',
-        ],
-        [
-            'key'   => 'field_alya_doc_experience',
-            'label' => 'Experience (one per line: Role | Place | Year)',
-            'name'  => 'alya_experience',
-            'type'  => 'textarea',
-            'rows'  => 4,
-            'instructions' => 'Format: Senior Dermatologist | RS Pondok Indah | 2018-2022 — one entry per line.',
-        ],
-        [
             'key'          => 'field_alya_doc_services',
             'label'        => 'Services Offered',
             'name'         => 'alya_services',
@@ -287,14 +330,7 @@ acf_add_local_field_group([
             'filters'      => ['search'],
             'return_format' => 'object',
         ],
-        [
-            'key'   => 'field_alya_doc_schedule',
-            'label' => 'Practice Schedule (one per line: Day | Hours | Location)',
-            'name'  => 'alya_schedule',
-            'type'  => 'textarea',
-            'rows'  => 4,
-            'instructions' => 'Format: Senin | 09:00-12:00 | Cabang Utama — one entry per line.',
-        ],
+
         [
             'key'          => 'field_alya_doc_avatar',
             'label'        => 'Avatar (Square)',
@@ -364,193 +400,6 @@ acf_add_local_field_group([
     'location' => [
         [
             ['param' => 'post_type', 'operator' => '==', 'value' => 'testimonial'],
-        ],
-    ],
-    'position'        => 'normal',
-    'style'           => 'default',
-    'label_placement' => 'top',
-    'active'          => true,
-]);
-
-/* ================================================================
- * FIELD GROUP: Jobs
- * ================================================================ */
-acf_add_local_field_group([
-    'key'    => 'group_alya_jobs',
-    'title'  => 'Job Details',
-    'fields' => [
-        [
-            'key'   => 'field_alya_job_category',
-            'label' => 'Category (medis / non-medis / marketing)',
-            'name'  => 'alya_job_category',
-            'type'  => 'text',
-        ],
-        [
-            'key'   => 'field_alya_job_type',
-            'label' => 'Job Type',
-            'name'  => 'alya_job_type',
-            'type'  => 'text',
-            'default_value' => 'Full-time',
-        ],
-        [
-            'key'   => 'field_alya_job_location',
-            'label' => 'Location',
-            'name'  => 'alya_location',
-            'type'  => 'text',
-        ],
-        [
-            'key'   => 'field_alya_job_experience',
-            'label' => 'Experience Required',
-            'name'  => 'alya_experience',
-            'type'  => 'text',
-            'description' => 'Contoh: 1-3 Tahun',
-        ],
-        [
-            'key'   => 'field_alya_job_salary',
-            'label' => 'Salary Range',
-            'name'  => 'alya_salary',
-            'type'  => 'text',
-        ],
-        [
-            'key'   => 'field_alya_job_requirements',
-            'label' => 'Requirements',
-            'name'  => 'alya_requirements',
-            'type'  => 'wysiwyg',
-            'tabs'  => 'visual',
-            'toolbar' => 'basic',
-        ],
-        [
-            'key'   => 'field_alya_job_responsibilities',
-            'label' => 'Responsibilities',
-            'name'  => 'alya_responsibilities',
-            'type'  => 'wysiwyg',
-            'tabs'  => 'visual',
-            'toolbar' => 'basic',
-        ],
-        [
-            'key'   => 'field_alya_job_benefits',
-            'label' => 'Benefits',
-            'name'  => 'alya_job_benefits',
-            'type'  => 'wysiwyg',
-            'tabs'  => 'visual',
-            'toolbar' => 'basic',
-        ],
-        [
-            'key'     => 'field_alya_job_deadline',
-            'label'   => 'Application Deadline',
-            'name'    => 'alya_deadline',
-            'type'    => 'text',
-            'description' => 'Format: 30 Sep 2026',
-        ],
-        [
-            'key'          => 'field_alya_job_apply_link',
-            'label'        => 'External Apply Link',
-            'name'         => 'alya_apply_link',
-            'type'         => 'url',
-            'description'  => 'If set, CTA goes to external URL instead of internal form.',
-        ],
-    ],
-    'location' => [
-        [
-            ['param' => 'post_type', 'operator' => '==', 'value' => 'jobs'],
-        ],
-    ],
-    'position'        => 'normal',
-    'style'           => 'default',
-    'label_placement' => 'top',
-    'active'          => true,
-]);
-
-/* ================================================================
- * FIELD GROUP: Treatment
- * ================================================================ */
-acf_add_local_field_group([
-    'key'    => 'group_alya_treatment',
-    'title'  => 'Treatment Details',
-    'fields' => [
-        [
-            'key'   => 'field_alya_tr_subtitle',
-            'label' => 'Subtitle',
-            'name'  => 'alya_subtitle',
-            'type'  => 'text',
-        ],
-        [
-            'key'   => 'field_alya_tr_price',
-            'label' => 'Starting Price',
-            'name'  => 'alya_price',
-            'type'  => 'text',
-            'description' => 'Contoh: Rp 500.000',
-        ],
-        [
-            'key'   => 'field_alya_tr_duration',
-            'label' => 'Duration',
-            'name'  => 'alya_duration',
-            'type'  => 'text',
-            'description' => 'Contoh: 60 menit',
-        ],
-        [
-            'key'   => 'field_alya_tr_skin_type',
-            'label' => 'Skin Type',
-            'name'  => 'alya_skin_type',
-            'type'  => 'text',
-            'default_value' => 'Semua jenis kulit',
-        ],
-        [
-            'key'   => 'field_alya_tr_downtime',
-            'label' => 'Downtime',
-            'name'  => 'alya_downtime',
-            'type'  => 'text',
-            'default_value' => 'Tanpa downtime',
-        ],
-        [
-            'key'   => 'field_alya_tr_benefits',
-            'label' => 'Benefits (one per line: Title | Description)',
-            'name'  => 'alya_benefits',
-            'type'  => 'textarea',
-            'rows'  => 6,
-            'instructions' => 'Format: Cerah Seketika | Kulit tampak lebih cerah dan halus — one benefit per line.',
-        ],
-        [
-            'key'   => 'field_alya_tr_process',
-            'label' => 'Treatment Process (one per line: Step# | Title | Description)',
-            'name'  => 'alya_process',
-            'type'  => 'textarea',
-            'rows'  => 6,
-            'instructions' => 'Format: 1 | Konsultasi | Dokter memeriksa kondisi kulit — one step per line.',
-        ],
-        [
-            'key'          => 'field_alya_tr_gallery',
-            'label'        => 'Gallery',
-            'name'         => 'alya_gallery',
-            'type'         => 'relationship',
-            'post_type'    => ['attachment'],
-            'filters'      => ['search'],
-            'min'          => 1,
-            'max'          => 12,
-            'return_format' => 'array',
-        ],
-        [
-            'key'   => 'field_alya_tr_faqs',
-            'label' => 'FAQs (one per line: Question | Answer)',
-            'name'  => 'alya_faqs',
-            'type'  => 'textarea',
-            'rows'  => 6,
-            'instructions' => 'Format: Apakah treatment ini sakit? | Tidak — one FAQ per line.',
-        ],
-        [
-            'key'          => 'field_alya_tr_related',
-            'label'        => 'Related Treatments',
-            'name'         => 'alya_related',
-            'type'         => 'relationship',
-            'post_type'    => ['treatment'],
-            'filters'      => ['search'],
-            'max'          => 3,
-            'return_format' => 'object',
-        ],
-    ],
-    'location' => [
-        [
-            ['param' => 'post_type', 'operator' => '==', 'value' => 'treatment'],
         ],
     ],
     'position'        => 'normal',
@@ -736,3 +585,572 @@ add_action('wp_ajax_alya_get_attachment_preview', function () {
         wp_send_json_error(['message' => 'No image']);
     }
 });
+
+/* ================================================================
+ * FIELD GROUP: Jobs
+ * ================================================================ */
+acf_add_local_field_group([
+    'key'    => 'group_alya_jobs',
+    'title'  => 'Job Details',
+    'fields' => [
+        [
+            'key'     => 'field_alya_job_category',
+            'label'   => 'Kategori / Departemen',
+            'name'    => 'alya_job_category',
+            'type'    => 'select',
+            'choices' => [
+                'medis'       => 'Medis',
+                'non-medis'   => 'Non-Medis',
+                'operasional' => 'Operasional',
+                'marketing'   => 'Marketing',
+                'teknologi'   => 'Teknologi',
+                'keuangan'    => 'Keuangan',
+                'hr'          => 'HR & Rekrutmen',
+            ],
+            'default_value' => 'medis',
+            'allow_null'    => 0,
+            'return_format' => 'value',
+            'ui'            => 0,
+        ],
+        [
+            'key'     => 'field_alya_job_type',
+            'label'   => 'Tipe Pekerjaan',
+            'name'    => 'alya_job_type',
+            'type'    => 'select',
+            'choices' => [
+                'Full-time' => 'Full-time',
+                'Part-time' => 'Part-time',
+                'Kontrak'   => 'Kontrak',
+                'Freelance' => 'Freelance',
+                'Magang'    => 'Magang / Internship',
+            ],
+            'default_value' => 'Full-time',
+            'allow_null'    => 0,
+            'return_format' => 'value',
+            'ui'            => 0,
+        ],
+        [
+            'key'     => 'field_alya_job_location',
+            'label'   => 'Lokasi Kerja',
+            'name'    => 'alya_location',
+            'type'    => 'select',
+            'choices' => [
+                'Jakarta Selatan'   => 'Jakarta Selatan',
+                'Jakarta Pusat'     => 'Jakarta Pusat',
+                'Jakarta Barat'     => 'Jakarta Barat',
+                'Jakarta Timur'     => 'Jakarta Timur',
+                'Jakarta Utara'     => 'Jakarta Utara',
+                'Tangerang'         => 'Tangerang',
+                'Tangerang Selatan' => 'Tangerang Selatan',
+                'Bekasi'            => 'Bekasi',
+                'Depok'             => 'Depok',
+                'Bogor'             => 'Bogor',
+                'Remote'            => 'Remote / WFH',
+            ],
+            'default_value' => 'Jakarta Selatan',
+            'allow_null'    => 0,
+            'return_format' => 'value',
+            'ui'            => 0,
+        ],
+        [
+            'key'     => 'field_alya_job_experience',
+            'label'   => 'Pengalaman yang Dibutuhkan',
+            'name'    => 'alya_experience',
+            'type'    => 'select',
+            'choices' => [
+                'Fresh Graduate' => 'Fresh Graduate (0 Tahun)',
+                '0-1 Tahun'      => '0–1 Tahun',
+                '1-3 Tahun'      => '1–3 Tahun',
+                '3-5 Tahun'      => '3–5 Tahun',
+                '5-10 Tahun'     => '5–10 Tahun',
+                '10+ Tahun'      => '10+ Tahun',
+            ],
+            'default_value' => '1-3 Tahun',
+            'allow_null'    => 0,
+            'return_format' => 'value',
+            'ui'            => 0,
+        ],
+        [
+            'key'         => 'field_alya_job_salary',
+            'label'       => 'Rentang Gaji',
+            'name'        => 'alya_salary',
+            'type'        => 'text',
+            'placeholder' => 'Contoh: Rp 5.000.000 – Rp 8.000.000 / Kompetitif',
+        ],
+        [
+            'key'     => 'field_alya_job_requirements',
+            'label'   => 'Kualifikasi & Persyaratan',
+            'name'    => 'alya_requirements',
+            'type'    => 'wysiwyg',
+            'tabs'    => 'visual',
+            'toolbar' => 'basic',
+        ],
+        [
+            'key'     => 'field_alya_job_responsibilities',
+            'label'   => 'Tanggung Jawab Pekerjaan',
+            'name'    => 'alya_responsibilities',
+            'type'    => 'wysiwyg',
+            'tabs'    => 'visual',
+            'toolbar' => 'basic',
+        ],
+        [
+            'key'     => 'field_alya_job_benefits',
+            'label'   => 'Benefit & Fasilitas',
+            'name'    => 'alya_job_benefits',
+            'type'    => 'wysiwyg',
+            'tabs'    => 'visual',
+            'toolbar' => 'basic',
+        ],
+        [
+            'key'            => 'field_alya_job_deadline',
+            'label'          => 'Batas Akhir Lamaran',
+            'name'           => 'alya_deadline',
+            'type'           => 'date_picker',
+            'display_format' => 'd F Y',
+            'return_format'  => 'd F Y',
+            'first_day'      => 1,
+        ],
+        [
+            'key'         => 'field_alya_job_apply_link',
+            'label'       => 'Link Lamaran Eksternal',
+            'name'        => 'alya_apply_link',
+            'type'        => 'url',
+            'description' => 'Jika diisi, tombol Lamar Sekarang akan mengarah ke URL ini.',
+        ],
+    ],
+    'location' => [
+        [
+            ['param' => 'post_type', 'operator' => '==', 'value' => 'jobs'],
+        ],
+    ],
+    'position'        => 'normal',
+    'style'           => 'default',
+    'label_placement' => 'top',
+    'active'          => true,
+]);
+
+/* ================================================================
+ * FIELD GROUP: Treatment
+ * ================================================================ */
+acf_add_local_field_group([
+    'key'    => 'group_alya_treatment',
+    'title'  => 'Treatment Details',
+    'fields' => [
+        [
+            'key'   => 'field_alya_tr_subtitle',
+            'label' => 'Subtitle',
+            'name'  => 'alya_subtitle',
+            'type'  => 'text',
+        ],
+        [
+            'key'         => 'field_alya_tr_price',
+            'label'       => 'Harga Mulai',
+            'name'        => 'alya_price',
+            'type'        => 'text',
+            'placeholder' => 'Contoh: Rp 500.000',
+        ],
+        [
+            'key'         => 'field_alya_tr_duration',
+            'label'       => 'Durasi Treatment',
+            'name'        => 'alya_duration',
+            'type'        => 'text',
+            'placeholder' => 'Contoh: 60 menit',
+        ],
+        [
+            'key'           => 'field_alya_tr_skin_type',
+            'label'         => 'Jenis Kulit yang Cocok',
+            'name'          => 'alya_skin_type',
+            'type'          => 'select',
+            'choices'       => [
+                'Semua jenis kulit' => 'Semua jenis kulit',
+                'Kulit berminyak'   => 'Kulit berminyak',
+                'Kulit kering'      => 'Kulit kering',
+                'Kulit sensitif'    => 'Kulit sensitif',
+                'Kulit kombinasi'   => 'Kulit kombinasi',
+                'Kulit berjerawat'  => 'Kulit berjerawat',
+                'Kulit normal'      => 'Kulit normal',
+            ],
+            'default_value' => 'Semua jenis kulit',
+            'allow_null'    => 0,
+            'return_format' => 'value',
+            'ui'            => 0,
+        ],
+        [
+            'key'           => 'field_alya_tr_downtime',
+            'label'         => 'Downtime',
+            'name'          => 'alya_downtime',
+            'type'          => 'select',
+            'choices'       => [
+                'Tanpa downtime' => 'Tanpa downtime',
+                '1-2 hari'       => '1–2 hari',
+                '3-5 hari'       => '3–5 hari',
+                '1 minggu'       => '1 minggu',
+                '2 minggu'       => '2 minggu',
+            ],
+            'default_value' => 'Tanpa downtime',
+            'allow_null'    => 0,
+            'return_format' => 'value',
+            'ui'            => 0,
+        ],
+
+        /* --- GALLERY --- */
+        [
+            'key'           => 'field_alya_tr_gallery',
+            'label'         => '🖼️ Galeri Foto',
+            'name'          => 'alya_gallery',
+            'type'          => 'relationship',
+            'post_type'     => ['attachment'],
+            'filters'       => ['search'],
+            'min'           => 1,
+            'max'           => 12,
+            'return_format' => 'array',
+        ],
+
+        /* --- RELATED TREATMENTS --- */
+        [
+            'key'           => 'field_alya_tr_related',
+            'label'         => '🔗 Treatment Terkait',
+            'name'          => 'alya_related',
+            'type'          => 'relationship',
+            'post_type'     => ['treatment'],
+            'filters'       => ['search'],
+            'max'           => 3,
+            'return_format' => 'object',
+        ],
+    ],
+    'location' => [
+        [
+            ['param' => 'post_type', 'operator' => '==', 'value' => 'treatment'],
+        ],
+    ],
+    'position'        => 'normal',
+    'style'           => 'default',
+    'label_placement' => 'top',
+    'active'          => true,
+]);
+
+/* ================================================================
+ * DOCTOR REPEATER META BOXES
+ * — Education, Experience, Practice Schedule, Stats, Certifications
+ * ================================================================ */
+
+/**
+ * Shared helper: render a repeater table for doctor CPT.
+ *
+ * @param string $meta_key  Post meta key where JSON is stored.
+ * @param array  $columns   [ 'key' => 'Label', ... ]
+ * @param array  $defaults  Default rows when meta is empty.
+ * @param string $nonce_action
+ * @param string $nonce_field
+ * @param int    $post_id
+ */
+function alya_render_doctor_repeater($meta_key, $columns, $defaults, $nonce_action, $nonce_field, $post_id) {
+    $raw   = get_post_meta($post_id, $meta_key, true);
+    $items = [];
+    if ($raw) {
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            $items = $decoded;
+        } elseif (is_string($raw)) {
+            $col_keys = array_keys($columns);
+            foreach (array_filter(array_map('trim', explode("\n", $raw))) as $line) {
+                $parts = array_map('trim', explode('|', $line));
+                $entry = [];
+                foreach ($col_keys as $i => $key) {
+                    $entry[$key] = $parts[$i] ?? '';
+                }
+                if (array_filter(array_values($entry))) $items[] = $entry;
+            }
+        }
+    }
+    if (empty($items)) $items = $defaults;
+
+    wp_nonce_field($nonce_action, $nonce_field);
+    $table_id = 'alya_' . $meta_key . '_table';
+    ?>
+    <style>
+        .alya-rep-table{width:100%;border-collapse:collapse;margin-top:6px}
+        .alya-rep-table th,.alya-rep-table td{padding:7px 9px;border:1px solid #ddd;vertical-align:middle}
+        .alya-rep-table th{background:#f5f5f5;font-weight:600;font-size:12px;text-align:left}
+        .alya-rep-table input{width:100%;box-sizing:border-box}
+        .alya-rep-table td.alya-del-col{width:40px;text-align:center}
+        .alya-rep-del{background:#dc3232;color:#fff;border:none;padding:4px 9px;border-radius:3px;cursor:pointer;font-size:14px;line-height:1}
+        .alya-rep-del:hover{background:#a32323}
+        .alya-rep-add-btn{margin-top:10px}
+        .alya-rep-hint{color:#666;font-size:12px;margin-top:6px;font-style:italic}
+    </style>
+    <table class="alya-rep-table" id="<?php echo esc_attr($table_id); ?>">
+        <thead>
+            <tr>
+                <?php foreach ($columns as $col_label): ?>
+                    <th><?php echo esc_html($col_label); ?></th>
+                <?php endforeach; ?>
+                <th class="alya-del-col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($items as $idx => $row): ?>
+            <tr>
+                <?php foreach ($columns as $col_key => $col_label): ?>
+                <td><input type="text"
+                    name="<?php echo esc_attr($meta_key . '[' . $idx . '][' . $col_key . ']'); ?>"
+                    value="<?php echo esc_attr($row[$col_key] ?? ''); ?>"
+                    placeholder="<?php echo esc_attr($col_label); ?>"></td>
+                <?php endforeach; ?>
+                <td class="alya-del-col">
+                    <button type="button" class="alya-rep-del" title="Hapus baris">&times;</button>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <p class="alya-rep-add-btn">
+        <button type="button" class="button"
+            data-table="<?php echo esc_attr($table_id); ?>"
+            data-meta="<?php echo esc_attr($meta_key); ?>"
+            data-cols="<?php echo esc_attr(json_encode(array_keys($columns))); ?>"
+            onclick="alyaRepAddRow(this)">+ Tambah Baris</button>
+    </p>
+    <script>
+    (function(){
+        document.getElementById(<?php echo json_encode($table_id); ?>)
+            .addEventListener('click', function(e){
+                if (e.target.classList.contains('alya-rep-del')) {
+                    e.target.closest('tr').remove();
+                }
+            });
+    })();
+    </script>
+    <?php
+}
+
+/** Print shared JS once per page load */
+function alya_rep_scripts_once() {
+    static $done = false;
+    if ($done) return;
+    $done = true;
+    ?>
+    <script>
+    function alyaRepAddRow(btn) {
+        var tableId = btn.getAttribute('data-table');
+        var meta    = btn.getAttribute('data-meta');
+        var cols    = JSON.parse(btn.getAttribute('data-cols'));
+        var tbody   = document.querySelector('#' + tableId + ' tbody');
+        var idx     = tbody.querySelectorAll('tr').length;
+        var tr      = document.createElement('tr');
+        cols.forEach(function(col){
+            var td  = document.createElement('td');
+            var inp = document.createElement('input');
+            inp.type = 'text'; inp.name = meta + '[' + idx + '][' + col + ']'; inp.placeholder = col;
+            td.appendChild(inp); tr.appendChild(td);
+        });
+        var tdDel  = document.createElement('td'); tdDel.className = 'alya-del-col';
+        var btnDel = document.createElement('button'); btnDel.type = 'button';
+        btnDel.className = 'alya-rep-del'; btnDel.title = 'Hapus'; btnDel.textContent = '\u00d7';
+        tdDel.appendChild(btnDel); tr.appendChild(tdDel);
+        tbody.appendChild(tr);
+    }
+    </script>
+    <?php
+}
+
+/**
+ * Shared save handler for doctor repeater meta boxes.
+ */
+function alya_save_doctor_repeater($post_id, $meta_key, $nonce_field, $nonce_action, $columns) {
+    if (!isset($_POST[$nonce_field]) || !wp_verify_nonce($_POST[$nonce_field], $nonce_action)) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    $raw  = $_POST[$meta_key] ?? [];
+    $data = [];
+    if (is_array($raw)) {
+        foreach ($raw as $row) {
+            if (!is_array($row)) continue;
+            $entry = [];
+            foreach (array_keys($columns) as $col_key) {
+                $entry[$col_key] = sanitize_text_field($row[$col_key] ?? '');
+            }
+            if (array_filter(array_values($entry))) {
+                $data[] = $entry;
+            }
+        }
+    }
+    update_post_meta($post_id, $meta_key, wp_json_encode($data));
+}
+
+/* ── Register meta boxes ─────────────────────────────────────── */
+add_action('add_meta_boxes', function () {
+    $screen = get_current_screen();
+    if (!$screen || $screen->post_type !== 'doctor') return;
+
+    $boxes = [
+        ['alya_doc_education_mb',      '🎓 Education',                  'alya_render_education_mb',      'normal', 'default'],
+        ['alya_doc_experience_mb',     '💼 Experience',                  'alya_render_experience_mb',     'normal', 'default'],
+        ['alya_doc_schedule_mb',       '🗓️ Practice Schedule',           'alya_render_schedule_mb',       'normal', 'default'],
+        ['alya_doc_stats_mb',          '📊 Stats',                       'alya_render_stats_mb',          'side',   'default'],
+        ['alya_doc_certifications_mb', '🏅 Certifications &amp; Training', 'alya_render_certifications_mb', 'normal', 'default'],
+    ];
+    foreach ($boxes as $b) {
+        add_meta_box($b[0], $b[1], $b[2], 'doctor', $b[3], $b[4]);
+    }
+}, 20);
+
+/* ── Render callbacks ────────────────────────────────────────── */
+
+function alya_render_education_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_education',
+        ['degree' => 'Gelar / Degree', 'school' => 'Universitas / School', 'year' => 'Tahun'],
+        [['degree' => 'Sp.KK', 'school' => 'Universitas Indonesia', 'year' => '2015']],
+        'alya_save_education', 'alya_education_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: Sp.KK | Universitas Indonesia | 2015</p>';
+}
+
+function alya_render_experience_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_experience',
+        ['role' => 'Jabatan / Role', 'place' => 'Tempat / Hospital', 'year' => 'Tahun'],
+        [['role' => 'Senior Dermatologist', 'place' => 'RS Pondok Indah', 'year' => '2018–2022']],
+        'alya_save_experience', 'alya_experience_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: Senior Dermatologist | RS Pondok Indah | 2018–2022</p>';
+}
+
+function alya_render_schedule_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_schedule',
+        ['day' => 'Hari', 'hours' => 'Jam Praktik', 'location' => 'Lokasi / Cabang'],
+        [['day' => 'Senin', 'hours' => '09:00–12:00', 'location' => 'Cabang Utama']],
+        'alya_save_schedule', 'alya_schedule_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: Senin | 09:00–12:00 | Cabang Utama</p>';
+}
+
+function alya_render_stats_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_stats',
+        ['number' => 'Angka / Number', 'label' => 'Label'],
+        [
+            ['number' => '10+',  'label' => 'Tahun Pengalaman'],
+            ['number' => '500+', 'label' => 'Pasien Ditangani'],
+            ['number' => '4.9',  'label' => 'Rating Pasien'],
+        ],
+        'alya_save_stats', 'alya_stats_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: 10+ | Tahun Pengalaman</p>';
+}
+
+function alya_render_certifications_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_certifications',
+        ['title' => 'Judul Sertifikasi', 'institution' => 'Institusi, Tahun'],
+        [
+            ['title' => 'Certified Botox Injector', 'institution' => 'Allergan Academy, 2019'],
+            ['title' => 'Thread Lift Certification', 'institution' => 'PDO Max Training, 2022'],
+        ],
+        'alya_save_certifications', 'alya_certifications_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: Certified Botox Injector | Allergan Academy, 2019</p>';
+}
+
+/* ── Save all repeaters on doctor post save ──────────────────── */
+add_action('save_post_doctor', function ($post_id) {
+    alya_save_doctor_repeater($post_id, 'alya_education',
+        'alya_education_nonce',      'alya_save_education',
+        ['degree' => '', 'school' => '', 'year' => '']);
+
+    alya_save_doctor_repeater($post_id, 'alya_experience',
+        'alya_experience_nonce',     'alya_save_experience',
+        ['role' => '', 'place' => '', 'year' => '']);
+
+    alya_save_doctor_repeater($post_id, 'alya_schedule',
+        'alya_schedule_nonce',       'alya_save_schedule',
+        ['day' => '', 'hours' => '', 'location' => '']);
+
+    alya_save_doctor_repeater($post_id, 'alya_stats',
+        'alya_stats_nonce',          'alya_save_stats',
+        ['number' => '', 'label' => '']);
+
+    alya_save_doctor_repeater($post_id, 'alya_certifications',
+        'alya_certifications_nonce', 'alya_save_certifications',
+        ['title' => '', 'institution' => '']);
+});
+
+/* ================================================================
+ * TREATMENT REPEATER META BOXES
+ * — Benefits, Process, FAQ (ACF Free compatible)
+ * ================================================================ */
+
+/* ── Register meta boxes ─────────────────────────────────────── */
+add_action('add_meta_boxes', function () {
+    $screen = get_current_screen();
+    if (!$screen || $screen->post_type !== 'treatment') return;
+
+    $boxes = [
+        ['alya_tr_benefits_mb',      '✅ Manfaat / Benefits',               'alya_render_treatment_benefits_mb', 'normal'],
+        ['alya_tr_process_mb',       '📋 Tahapan Treatment / Process',      'alya_render_treatment_process_mb',  'normal'],
+        ['alya_tr_faqs_mb',          '❓ FAQ — Pertanyaan Umum',            'alya_render_treatment_faqs_mb',     'normal'],
+    ];
+    foreach ($boxes as $b) {
+        add_meta_box($b[0], $b[1], $b[2], 'treatment', $b[3], 'default');
+    }
+}, 20);
+
+/* ── Render callbacks ────────────────────────────────────────── */
+
+function alya_render_treatment_benefits_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_benefits',
+        ['title' => 'Judul Manfaat', 'description' => 'Deskripsi'],
+        [['title' => 'Cerah Seketika', 'description' => 'Kulit tampak lebih cerah dan halus setelah satu sesi.']],
+        'alya_save_tr_benefits', 'alya_tr_benefits_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: Cerah Seketika | Kulit tampak lebih cerah dan halus</p>';
+}
+
+function alya_render_treatment_process_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_process',
+        ['title' => 'Judul Langkah', 'description' => 'Penjelasan'],
+        [['title' => 'Konsultasi', 'description' => 'Dokter memeriksa kondisi kulit dan menentukan treatment yang sesuai.']],
+        'alya_save_tr_process', 'alya_tr_process_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: Konsultasi | Dokter memeriksa kondisi kulit</p>';
+}
+
+function alya_render_treatment_faqs_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_faqs',
+        ['question' => '❓ Pertanyaan', 'answer' => '💬 Jawaban'],
+        [['question' => 'Apakah treatment ini sakit?', 'answer' => 'Tidak, treatment ini tidak menyebabkan rasa sakit.']],
+        'alya_save_tr_faqs', 'alya_tr_faqs_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: Apakah treatment ini sakit? | Tidak, treatment ini nyaman</p>';
+}
+
+/* ── Save all repeaters on treatment post save ───────────────── */
+add_action('save_post_treatment', function ($post_id) {
+    alya_save_doctor_repeater($post_id, 'alya_benefits',
+        'alya_tr_benefits_nonce', 'alya_save_tr_benefits',
+        ['title' => '', 'description' => '']);
+
+    alya_save_doctor_repeater($post_id, 'alya_process',
+        'alya_tr_process_nonce', 'alya_save_tr_process',
+        ['title' => '', 'description' => '']);
+
+    alya_save_doctor_repeater($post_id, 'alya_faqs',
+        'alya_tr_faqs_nonce', 'alya_save_tr_faqs',
+        ['question' => '', 'answer' => '']);
+});
+
+

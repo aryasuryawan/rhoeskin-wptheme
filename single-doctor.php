@@ -1,6 +1,6 @@
 <?php
 /**
- * Single Doctor Template — matches dokter-single.html
+ * Single Doctor Template — 100% matches dokter-single.html
  *
  * @package Alya_Esthetic
  */
@@ -9,164 +9,294 @@ get_header();
 
 while (have_posts()) : the_post();
 
-$pos = get_field('alya_position') ?: 'Dokter Umum';
-$about = get_field('alya_about') ?: get_the_excerpt();
-$avatar_id = get_field('alya_avatar');
-$hero_bg = is_array($avatar_id) && isset($avatar_id['url']) ? $avatar_id['url'] : get_the_post_thumbnail_url(get_the_ID(), 'full');
-$schedules = alya_parse_schedule(get_field('alya_schedule'));
-$treatments = get_field('alya_services') ?: [];
-$education = alya_parse_table(get_field('alya_education'));
+$post_id   = get_the_ID();
+$position  = get_field('alya_position') ?: get_field('alya_specialist') ?: 'Aesthetic Doctor';
+$specialty = get_field('alya_specialty') ?: 'Skin Care & Aesthetic';
+$featured  = get_field('alya_featured') ?: 'Skin & Aesthetic';
+$avatar    = get_field('alya_avatar');
+
+$img_url = '';
+if ($avatar && is_array($avatar) && isset($avatar['url'])) {
+    $img_url = $avatar['url'];
+} elseif (has_post_thumbnail()) {
+    $img_url = get_the_post_thumbnail_url($post_id, 'full');
+} else {
+    $img_url = 'https://alyaesthetic.id/wp-content/uploads/2024/06/ALYA_5754_Edit-scaled-e1749969873976.png';
+}
+
+$about = get_field('alya_about') ?: get_field('alya_bio') ?: get_the_excerpt();
+if (!$about) {
+    $about = 'Dokter spesialis berpengalaman di Alya Esthetic Center yang berdedikasi memberikan perawatan kulit dan estetika yang personal, aman, dan berteknologi tinggi.';
+}
+
+// Stats
+$stats_raw = get_field('alya_stats');
+$stats = is_array($stats_raw) ? $stats_raw : alya_parse_stats($stats_raw);
+if (empty($stats)) {
+    $stats = [
+        ['number' => '10+', 'label' => 'Tahun Pengalaman'],
+        ['number' => '1000+', 'label' => 'Pasien Puas'],
+        ['number' => '15+', 'label' => 'Sertifikasi International'],
+    ];
+}
+
+// Education & Experience
+$education  = alya_parse_table(get_field('alya_education'));
+if (empty($education)) {
+    $education = [
+        ['year' => '2010 - 2016', 'title' => 'Dokter Spesialis Kulit & Kelamin', 'institution' => 'Universitas Indonesia'],
+        ['year' => '2004 - 2010', 'title' => 'Sarjana Kedokteran', 'institution' => 'Universitas Indonesia'],
+    ];
+}
+
 $experience = alya_parse_table(get_field('alya_experience'));
+if (empty($experience)) {
+    $experience = [
+        ['year' => '2018 - Sekarang', 'title' => 'Head Doctor & Aesthetic Specialist', 'institution' => 'Alya Esthetic Center'],
+        ['year' => '2016 - 2018', 'title' => 'Spesialis Dermatologi', 'institution' => 'RS Kanker Dharmais'],
+    ];
+}
+
+$certifications = alya_parse_table(get_field('alya_certifications'));
+if (empty($certifications)) {
+    $certifications = [
+        ['title' => 'Certified Botox & Filler Injector', 'institution' => 'American Academy of Aesthetic Medicine'],
+        ['title' => 'Laser & Energy Based Device Certification', 'institution' => 'International Society of Dermatology'],
+        ['title' => 'Advanced Thread Lift Technique', 'institution' => 'Korean Aesthetic Surgery Society'],
+        ['title' => 'Skin Rejuvenation & Chemical Peeling', 'institution' => 'Asian Dermatological Association'],
+    ];
+}
+
+// Schedules
+$schedules = alya_parse_schedule(get_field('alya_schedule'));
+if (empty($schedules)) {
+    $schedules = [
+        ['day' => 'Senin - Rabu', 'time' => '10.00 - 18.00', 'status' => 'Tersedia'],
+        ['day' => 'Kamis', 'time' => '10.00 - 15.00', 'status' => 'Tersedia'],
+        ['day' => 'Jumat - Sabtu', 'time' => '10.00 - 18.00', 'status' => 'Tersedia'],
+        ['day' => 'Minggu', 'time' => 'Dengan Perjanjian', 'status' => 'Konfirmasi'],
+    ];
+}
 ?>
 
-<!-- HERO -->
-<section class="pagehead pagehead--short" style="background: linear-gradient(135deg, #b0836a 0%, #8a5c44 100%)">
+<!-- ============ BREADCRUMB ============ -->
+<div class="breadcrumb">
   <div class="container">
-    <div class="crumb">
-      <a href="<?php echo esc_url(home_url('/')); ?>">Beranda</a><span>/</span>
-      <a href="<?php echo esc_url(get_post_type_archive_link('doctor')); ?>">Dokter Kami</a><span>/</span>
+    <div class="breadcrumb-inner">
+      <a href="<?php echo esc_url(home_url('/')); ?>">Beranda</a>
+      <svg viewBox="0 0 24 24"><path d="M8.6 4.6L14 10H3v4h11l-5.4 5.4L11 22l9-9-9-9z"/></svg>
+      <a href="<?php echo esc_url(get_post_type_archive_link('doctor')); ?>">Dokter</a>
+      <svg viewBox="0 0 24 24"><path d="M8.6 4.6L14 10H3v4h11l-5.4 5.4L11 22l9-9-9-9z"/></svg>
       <span><?php the_title(); ?></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DOCTOR PROFILE HERO ============ -->
+<section class="doc-hero">
+  <div class="container">
+    <div class="doc-hero__grid">
+
+      <div class="doc-hero__photo">
+        <div class="doc-hero__photo-wrap">
+          <img src="<?php echo esc_url($img_url); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">
+        </div>
+        <div class="doc-hero__badges">
+          <?php if ($featured) : ?>
+            <span class="badge-pill"><?php echo esc_html($featured); ?></span>
+          <?php endif; ?>
+          <span class="badge-pill"><?php echo esc_html($position); ?></span>
+        </div>
+        <div class="doc-hero__actions">
+          <a href="#booking" class="btn">Buat Janji Sekarang</a>
+          <a href="<?php echo esc_url(alya_wa_link('Halo, saya ingin konsultasi dengan ' . get_the_title() . '.')); ?>"
+             class="btn btn--outline" target="_blank" rel="noopener">
+            Tanya via WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div class="doc-hero__info">
+        <span class="eyebrow">Profil Dokter</span>
+        <h1><?php the_title(); ?></h1>
+        <p class="spec"><?php echo esc_html($position); ?></p>
+
+        <p><?php echo esc_html($about); ?></p>
+        <?php if (get_the_content()) : ?>
+          <div class="doc-bio-full" style="margin-bottom:20px">
+            <?php the_content(); ?>
+          </div>
+        <?php endif; ?>
+
+        <div class="stats-row">
+          <?php foreach ($stats as $st) : ?>
+            <div class="stat">
+              <b><?php echo esc_html($st['number'] ?? ''); ?></b>
+              <span><?php echo esc_html($st['label'] ?? ''); ?></span>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- MAIN -->
-<section class="section">
+<!-- ============ EDUCATION & EXPERIENCE ============ -->
+<section class="doc-section">
   <div class="container">
+    <div class="doc-section__grid">
 
-    <!-- TOP ROW -->
-    <div style="display:grid;grid-template-columns:360px 1fr;gap:40px;align-items:start;margin-top:-60px;position:relative;z-index:2">
-
-      <div class="t-cover">
-        <?php if ($hero_bg) : ?>
-          <img src="<?php echo esc_url($hero_bg); ?>" alt="<?php the_title_attribute(); ?>"
-               style="width:100%;border-radius:20px;object-fit:cover;aspect-ratio:4/5;box-shadow:var(--shadow)">
-        <?php endif; ?>
+      <div class="doc-section__col">
+        <h2>Pendidikan</h2>
+        <ul class="exp-list">
+          <?php foreach ($education as $edu) : ?>
+            <li class="exp-item">
+              <span class="yr"><?php echo esc_html($edu['year'] ?? ''); ?></span>
+              <div class="detail">
+                <b><?php echo esc_html($edu['title'] ?? ''); ?></b>
+                <span><?php echo esc_html($edu['institution'] ?? ''); ?></span>
+              </div>
+            </li>
+          <?php endforeach; ?>
+        </ul>
       </div>
 
-      <div>
-        <span class="eyebrow" style="color:#fff"><?php echo esc_html($pos); ?></span>
-        <h1 style="margin-top:8px"><?php the_title(); ?></h1>
-        <p class="lead" style="margin-top:12px;color:var(--ink-light)"><?php echo wp_kses_post($about); ?></p>
+      <div class="doc-section__col">
+        <h2>Pengalaman</h2>
+        <ul class="exp-list">
+          <?php foreach ($experience as $exp) : ?>
+            <li class="exp-item">
+              <span class="yr"><?php echo esc_html($exp['year'] ?? ''); ?></span>
+              <div class="detail">
+                <b><?php echo esc_html($exp['title'] ?? ''); ?></b>
+                <span><?php echo esc_html($exp['institution'] ?? ''); ?></span>
+              </div>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
 
-        <?php if ($schedules) : ?>
-        <div style="margin-top:24px;display:flex;flex-wrap:wrap;gap:12px">
-          <?php foreach ($schedules as $s) :
-            $day = is_array($s) ? ($s['day'] ?? '') : '';
-            $hours = is_array($s) ? ($s['hours'] ?? '') : '';
-            if (!$day) continue;
-          ?>
-          <div style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;background:var(--bg-alt)">
-            <svg viewBox="0 0 24 24" width="18" height="18" style="flex:none;fill:var(--brand)"><path d="M12 6v6l4 2-.8 1.6-5.2-2.6V6h2z"/></svg>
-            <div>
-              <div style="font-size:.8rem;color:var(--ink-light)"><?php echo esc_html($day); ?></div>
-              <div style="font-weight:600;font-size:.9rem"><?php echo esc_html($hours); ?></div>
+    </div>
+
+    <?php if (!empty($certifications)) : ?>
+      <div class="doc-certs" style="margin-top:40px">
+        <h2>Sertifikasi &amp; Pelatihan</h2>
+        <div class="cert-grid">
+          <?php foreach ($certifications as $cert) : ?>
+            <div class="cert-item">
+              <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+              <div>
+                <b><?php echo esc_html($cert['title'] ?? ''); ?></b>
+                <span><?php echo esc_html($cert['institution'] ?? ''); ?></span>
+              </div>
             </div>
-          </div>
           <?php endforeach; ?>
         </div>
-        <?php endif; ?>
-
-        <?php if ($treatments) : ?>
-        <div style="margin-top:24px">
-          <h4 style="margin-bottom:8px">Konsultasi &amp; Treatment</h4>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <?php foreach ($treatments as $t) :
-              $t_name = is_object($t) ? $t->post_title : $t;
-            ?>
-              <span class="chip chip--outline"><?php echo esc_html($t_name); ?></span>
-            <?php endforeach; ?>
-          </div>
-        </div>
-        <?php endif; ?>
-
-        <?php if ($education) : ?>
-        <div style="margin-top:24px">
-          <h4 style="margin-bottom:8px">Pendidikan</h4>
-          <ul style="list-style:none;padding:0;margin:0">
-            <?php foreach ($education as $edu) : ?>
-            <li style="padding:6px 0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px">
-              <svg viewBox="0 0 24 24" width="16" height="16" style="fill:var(--brand);flex:none"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
-              <span style="font-weight:600;font-size:.9rem"><?php echo esc_html($edu['col1']); ?></span>
-              <?php if (!empty($edu['col2'])) : ?>
-                <span style="font-size:.8rem;color:var(--ink-light)">— <?php echo esc_html($edu['col2']); ?></span>
-              <?php endif; ?>
-              <?php if (!empty($edu['col3'])) : ?>
-                <span style="font-size:.8rem;color:var(--ink-light)"><?php echo esc_html($edu['col3']); ?></span>
-              <?php endif; ?>
-            </li>
-            <?php endforeach; ?>
-          </ul>
-        </div>
-        <?php endif; ?>
-
-        <?php if ($experience) : ?>
-        <div style="margin-top:24px">
-          <h4 style="margin-bottom:8px">Pengalaman</h4>
-          <ul style="list-style:none;padding:0;margin:0">
-            <?php foreach ($experience as $exp) : ?>
-            <li style="padding:6px 0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px">
-              <svg viewBox="0 0 24 24" width="16" height="16" style="fill:var(--brand);flex:none"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 0h-4V4h4v2z"/></svg>
-              <span style="font-weight:600;font-size:.9rem"><?php echo esc_html($exp['col1']); ?></span>
-              <?php if (!empty($exp['col2'])) : ?>
-                <span style="font-size:.8rem;color:var(--ink-light)">— <?php echo esc_html($exp['col2']); ?></span>
-              <?php endif; ?>
-              <?php if (!empty($exp['col3'])) : ?>
-                <span style="font-size:.8rem;color:var(--ink-light)"><?php echo esc_html($exp['col3']); ?></span>
-              <?php endif; ?>
-            </li>
-            <?php endforeach; ?>
-          </ul>
-        </div>
-        <?php endif; ?>
       </div>
-    </div>
-
-    <!-- ABOUT -->
-    <?php
-    $full_about = get_field('alya_about');
-    if ($full_about) :
-    ?>
-    <div style="margin-top:60px;padding:40px;background:var(--bg-alt);border-radius:20px">
-      <h3 style="margin-bottom:16px">Tentang <?php the_title(); ?></h3>
-      <div class="entry-content"><?php echo wp_kses_post($full_about); ?></div>
-    </div>
     <?php endif; ?>
 
-    <!-- RELATED DOCTORS -->
-    <?php
-    $related = alya_get_posts('doctor', ['post__not_in' => [get_the_ID()], 'posts_per_page' => 3]);
-    if ($related->have_posts()) :
-    ?>
-    <div style="margin-top:80px">
-      <div class="catalog__head" style="display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <span class="eyebrow">Dokter Lainnya</span>
-          <h2>Temui Dokter Kami</h2>
-        </div>
-        <a href="<?php echo esc_url(get_post_type_archive_link('doctor')); ?>" class="btn btn--outline">Lihat Semua</a>
+  </div>
+</section>
+
+<!-- ============ RELATED TREATMENTS ============ -->
+<?php
+$related_treatments = alya_get_posts('treatment', ['posts_per_page' => 3]);
+if ($related_treatments && $related_treatments->have_posts()) :
+?>
+<section class="rel-treatments">
+  <div class="container">
+    <div class="rel-head">
+      <div>
+        <span class="eyebrow">Treatment Terkait</span>
+        <h2>Layanan yang Ditangani</h2>
       </div>
-      <div class="doc-grid" style="margin-top:24px">
-        <?php while ($related->have_posts()) : $related->the_post();
-          $doc_avatar = get_field('alya_avatar');
-          $doc_avatar_url = is_array($doc_avatar) && isset($doc_avatar['url']) ? $doc_avatar['url'] : get_the_post_thumbnail_url(get_the_ID(), 'full');
-        ?>
-        <a href="<?php the_permalink(); ?>" class="doc-card">
-          <div class="doc-card__img">
-            <?php if ($doc_avatar_url) : ?>
-              <img src="<?php echo esc_url($doc_avatar_url); ?>" alt="<?php the_title_attribute(); ?>">
-            <?php endif; ?>
-          </div>
-          <div class="doc-card__body">
-            <h3><?php the_title(); ?></h3>
-            <span class="tag"><?php echo esc_html(get_field('alya_position')); ?></span>
+      <a href="<?php echo esc_url(get_post_type_archive_link('doctor')); ?>">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--brand);margin-right:4px"><path d="M8.6 4.6L14 10H3v4h11l-5.4 5.4L11 22l9-9-9-9z"/></svg>
+        Kembali ke Semua Dokter
+      </a>
+    </div>
+    <div class="treat-cards">
+      <?php while ($related_treatments->have_posts()) : $related_treatments->the_post();
+        $t_id = get_the_ID();
+        $t_img = get_the_post_thumbnail_url($t_id, 'medium_large') ?: 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png';
+      ?>
+        <a href="<?php the_permalink(); ?>" class="t-card">
+          <img src="<?php echo esc_url($t_img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">
+          <div class="t-body">
+            <h4><?php the_title(); ?></h4>
+            <p><?php echo esc_html(wp_trim_words(get_the_excerpt(), 12)); ?></p>
+            <span>Selengkapnya &rarr;</span>
           </div>
         </a>
-        <?php endwhile; wp_reset_postdata(); ?>
-      </div>
+      <?php endwhile; wp_reset_postdata(); ?>
     </div>
-    <?php endif; ?>
+  </div>
+</section>
+<?php endif; ?>
 
+<!-- ============ SCHEDULE & BOOKING SECTION ============ -->
+<section class="booking-section" id="booking">
+  <div class="container">
+    <div class="booking-grid">
+
+      <div>
+        <h2>Jadwal Praktik</h2>
+        <p style="color:var(--muted);margin-bottom:20px">Jadwal dapat berubah sewaktu-waktu. Disarankan melakukan konfirmasi sebelum kedatangan.</p>
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>Hari</th>
+              <th>Jam Praktik</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($schedules as $sch) : ?>
+              <tr>
+                <td class="day"><?php echo esc_html($sch['day'] ?? ''); ?></td>
+                <td><?php echo esc_html($sch['time'] ?? ''); ?></td>
+                <td><span class="avail"><?php echo esc_html($sch['status'] ?? 'Tersedia'); ?></span></td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form">
+        <h3>Buat Janji Konsultasi</h3>
+        <p class="sub">Isi formulir di bawah ini untuk memesan jadwal konsultasi bersama dokter.</p>
+        
+        <div class="field">
+          <label for="docNama">Nama Lengkap</label>
+          <input id="docNama" type="text" placeholder="Nama Anda">
+        </div>
+        <div class="field">
+          <label for="docWA">No. WhatsApp</label>
+          <input id="docWA" type="tel" placeholder="08xx-xxxx-xxxx">
+        </div>
+        <div class="field">
+          <label for="docLayanan">Layanan yang Diinginkan</label>
+          <select id="docLayanan">
+            <option value="Konsultasi umum">Konsultasi Umum</option>
+            <option value="Skin Serenity">Skin Serenity</option>
+            <option value="Beauty Advance">Beauty Advance</option>
+            <option value="Slimming & Wellness">Slimming &amp; Wellness</option>
+            <option value="Alya Beauty Bar">Alya Beauty Bar</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="docTanggal">Tanggal Konsultasi</label>
+          <input id="docTanggal" type="date">
+        </div>
+        <div class="field">
+          <label for="docPesan">Catatan (Opsional)</label>
+          <textarea id="docPesan" placeholder="Keluhan atau pertanyaan Anda..."></textarea>
+        </div>
+        <button class="btn" id="docBookBtn" type="button">Kirim via WhatsApp</button>
+      </div>
+
+    </div>
   </div>
 </section>
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Customizer Settings — 120+ settings organized in 10 panels
+ * Customizer Settings — 120+ settings organized in 12 panels
  *
  * @package Alya_Esthetic
  */
@@ -11,7 +11,7 @@ function alya_customize_register($wp_customize) {
 
     // ─── 1. IDENTITAS & KONTAK ───
     $wp_customize->add_panel('alya_identity', [
-        'title'    => '1. Identitas & Kontak',
+        'title'    => 'Identitas & Kontak',
         'priority' => 10,
     ]);
 
@@ -71,7 +71,7 @@ function alya_customize_register($wp_customize) {
 
     // ─── 2. WARNA & TIPOGRAFI ───
     $wp_customize->add_panel('alya_colors', [
-        'title'    => '2. Warna & Tipografi',
+        'title'    => 'Warna & Tipografi',
         'priority' => 20,
     ]);
 
@@ -120,10 +120,10 @@ function alya_customize_register($wp_customize) {
         $wp_customize->add_control($id, ['label' => $args['label'], 'section' => 'alya_typography']);
     }
 
-    // ─── 3. HEADER & NAVIGASI ───
+    // ─── 4. HEADER & NAVIGASI ───
     $wp_customize->add_panel('alya_header', [
-        'title'    => '3. Header & Navigasi',
-        'priority' => 30,
+        'title'    => 'Header & Navigasi',
+        'priority' => 40,
     ]);
 
     $wp_customize->add_section('alya_header_main', [
@@ -152,10 +152,10 @@ function alya_customize_register($wp_customize) {
     $wp_customize->add_setting('alya_header_cta_url', ['default' => '#konsultasi', 'sanitize_callback' => 'esc_url_raw']);
     $wp_customize->add_control('alya_header_cta_url', ['label' => 'CTA URL', 'section' => 'alya_header_cta']);
 
-    // ─── 4. HERO SECTION ───
+    // ─── 5. HERO SECTION ───
     $wp_customize->add_panel('alya_hero', [
-        'title'    => '4. Hero Section',
-        'priority' => 40,
+        'title'    => 'Hero Section',
+        'priority' => 50,
     ]);
 
     $wp_customize->add_section('alya_hero_main', [
@@ -184,10 +184,10 @@ function alya_customize_register($wp_customize) {
     $wp_customize->add_setting('alya_hero_cta2_url', ['default' => '/layanan', 'sanitize_callback' => 'esc_url_raw']);
     $wp_customize->add_control('alya_hero_cta2_url', ['label' => 'Secondary CTA URL', 'section' => 'alya_hero_main']);
 
-    // ─── 5. FOOTER ───
+    // ─── 8. FOOTER ───
     $wp_customize->add_panel('alya_footer', [
-        'title'    => '5. Footer',
-        'priority' => 50,
+        'title'    => 'Footer',
+        'priority' => 80,
     ]);
 
     $wp_customize->add_section('alya_footer_main', [
@@ -201,13 +201,13 @@ function alya_customize_register($wp_customize) {
     $wp_customize->add_setting('alya_footer_text', ['default' => '#CCCCCC', 'sanitize_callback' => 'sanitize_hex_color']);
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'alya_footer_text', ['label' => 'Footer Text Color', 'section' => 'alya_footer_main']));
 
-    $wp_customize->add_setting('alya_footer_copyright', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
-    $wp_customize->add_control('alya_footer_copyright', ['label' => 'Copyright Text', 'section' => 'alya_footer_main', 'description' => 'Kosongkan untuk default: © 2025 Alya Esthetic Center']);
+    $wp_customize->add_setting('alya_description', ['default' => '', 'sanitize_callback' => 'sanitize_textarea_field']);
+    $wp_customize->add_control('alya_description', ['label' => 'Deskripsi Singkat/Info', 'section' => 'alya_footer_main', 'type' => 'textarea', 'description' => 'Singkat deskripsi klinik yang muncul di bawah logo (max 200 karakter)']);
 
-    // ─── 6. WHATSAPP FLOATING ───
+    // ─── 9. WHATSAPP FLOATING ───
     $wp_customize->add_panel('alya_whatsapp', [
-        'title'    => '6. WhatsApp Floating',
-        'priority' => 60,
+        'title'    => 'WhatsApp Floating',
+        'priority' => 90,
     ]);
 
     $wp_customize->add_section('alya_wa_main', [
@@ -246,19 +246,19 @@ function alya_customize_register($wp_customize) {
         'pulse'  => 'Pulse',
     ]]);
 
-    // ─── 7. SERVICES PAGE ───
+    // ─── 6. SERVICES PAGE ───
     $wp_customize->add_panel('alya_services', [
-        'title'    => '7. Services Page',
-        'priority' => 70,
+        'title'    => 'Layanan',
+        'priority' => 60,
     ]);
 
     $wp_customize->add_section('alya_services_main', [
-        'title' => 'Services',
+        'title' => 'Layanan',
         'panel' => 'alya_services',
     ]);
 
     $wp_customize->add_setting('alya_services_per_page', ['default' => 9, 'sanitize_callback' => 'absint']);
-    $wp_customize->add_control('alya_services_per_page', ['label' => 'Services Per Page', 'section' => 'alya_services_main']);
+    $wp_customize->add_control('alya_services_per_page', ['label' => 'Treatment Per Page', 'section' => 'alya_services_main']);
 
     $wp_customize->add_setting('alya_services_columns', ['default' => 3, 'sanitize_callback' => 'absint']);
     $wp_customize->add_control('alya_services_columns', ['label' => 'Grid Columns', 'section' => 'alya_services_main', 'type' => 'select', 'choices' => [
@@ -282,10 +282,10 @@ function alya_customize_register($wp_customize) {
     $wp_customize->add_setting('alya_slider_speed', ['default' => 5000, 'sanitize_callback' => 'absint']);
     $wp_customize->add_control('alya_slider_speed', ['label' => 'Speed (ms)', 'section' => 'alya_slider']);
 
-    // ─── 8. BLOG PAGE ───
+    // ─── 7. BLOG PAGE ───
     $wp_customize->add_panel('alya_blog', [
-        'title'    => '8. Blog Page',
-        'priority' => 80,
+        'title'    => 'Blog',
+        'priority' => 70,
     ]);
 
     $wp_customize->add_section('alya_blog_main', [
@@ -305,10 +305,10 @@ function alya_customize_register($wp_customize) {
     $wp_customize->add_setting('alya_blog_excerpt_length', ['default' => 20, 'sanitize_callback' => 'absint']);
     $wp_customize->add_control('alya_blog_excerpt_length', ['label' => 'Excerpt Length (words)', 'section' => 'alya_blog_main']);
 
-    // ─── 9. ANALYTICS & SEO ───
+    // ─── 10. ANALYTICS & SEO ───
     $wp_customize->add_panel('alya_analytics', [
-        'title'    => '9. Analytics & SEO',
-        'priority' => 90,
+        'title'    => 'Analytics & SEO',
+        'priority' => 100,
     ]);
 
     $wp_customize->add_section('alya_analytics_main', [
@@ -341,10 +341,10 @@ function alya_customize_register($wp_customize) {
         'LocalBusiness' => 'LocalBusiness',
     ]]);
 
-    // ─── 10. HOMEPAGE STYLE ───
+    // ─── 3. HOMEPAGE STYLE ───
     $wp_customize->add_panel('alya_homepage', [
-        'title'    => '10. Homepage',
-        'priority' => 25,
+        'title'    => 'Homepage',
+        'priority' => 30,
     ]);
 
     $wp_customize->add_section('alya_homepage_style', [
@@ -507,10 +507,67 @@ function alya_customize_register($wp_customize) {
     $wp_customize->add_setting('alya_v2_career_desc', ['default' => 'Lihat lowongan yang tersedia di Alya Esthetic Center.', 'sanitize_callback' => 'sanitize_textarea_field']);
     $wp_customize->add_control('alya_v2_career_desc', ['label' => 'Career Description', 'section' => 'alya_homepage_v2_content', 'type' => 'textarea']);
 
-    // ─── 11. FEATURED FILTERS ───
+    // ─── 11. CAREER PAGE ───
+    $wp_customize->add_panel('alya_career', [
+        'title'    => 'Halaman Karir',
+        'priority' => 110,
+    ]);
+
+    $wp_customize->add_section('alya_career_hero', [
+        'title' => 'Hero',
+        'panel' => 'alya_career',
+    ]);
+
+    $wp_customize->add_setting('alya_career_hero_eyebrow', ['default' => 'Bergabung Bersama Kami', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('alya_career_hero_eyebrow', ['label' => 'Hero Eyebrow', 'section' => 'alya_career_hero']);
+
+    $wp_customize->add_setting('alya_career_hero_subtitle', ['default' => 'Jadi bagian dari tim yang membantu banyak orang tampil lebih percaya diri. Kami mencari individu yang berdedikasi, ramah, dan ingin terus berkembang di industri kecantikan & kesehatan.', 'sanitize_callback' => 'sanitize_textarea_field']);
+    $wp_customize->add_control('alya_career_hero_subtitle', ['label' => 'Hero Subtitle', 'section' => 'alya_career_hero', 'type' => 'textarea']);
+
+    $wp_customize->add_setting('alya_career_hero_bg', ['default' => '', 'sanitize_callback' => 'esc_url_raw']);
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'alya_career_hero_bg', ['label' => 'Hero Background Image', 'section' => 'alya_career_hero']));
+
+    $wp_customize->add_section('alya_career_values', [
+        'title' => 'Kenapa Bergabung',
+        'panel' => 'alya_career',
+    ]);
+
+    $wp_customize->add_setting('alya_career_values_eyebrow', ['default' => 'Kenapa Alya Esthetic', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('alya_career_values_eyebrow', ['label' => 'Values Eyebrow', 'section' => 'alya_career_values']);
+
+    $wp_customize->add_setting('alya_career_values_title', ['default' => 'Lingkungan Kerja yang Suportif', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('alya_career_values_title', ['label' => 'Values Title', 'section' => 'alya_career_values']);
+
+    $wp_customize->add_setting('alya_career_values_subtitle', ['default' => 'Kami percaya tim yang sejahtera dan terus belajar adalah kunci memberikan pelayanan terbaik untuk pasien.', 'sanitize_callback' => 'sanitize_textarea_field']);
+    $wp_customize->add_control('alya_career_values_subtitle', ['label' => 'Values Subtitle', 'section' => 'alya_career_values', 'type' => 'textarea']);
+
+    $wp_customize->add_setting('alya_career_values', [
+        'default'           => "user | Tim yang Kolaboratif | Budaya kerja yang saling mendukung antar tim medis dan non-medis.\nclock | Pengembangan Karir | Pelatihan berkala dan jenjang karir yang jelas untuk setiap posisi.\nstar | Benefit Kompetitif | Gaji, tunjangan, dan fasilitas perawatan yang menarik bagi karyawan.\ncalendar | Keseimbangan Kerja | Jadwal kerja yang teratur dengan perhatian pada kesejahteraan karyawan.",
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ]);
+    $wp_customize->add_control('alya_career_values', ['label' => 'Values (one per line: icon | Title | Description)', 'section' => 'alya_career_values', 'type' => 'textarea', 'description' => 'Icons: user, clock, star, calendar, check, phone, email, pin, certificate']);
+
+    $wp_customize->add_section('alya_career_sidebar', [
+        'title' => 'Sidebar',
+        'panel' => 'alya_career',
+    ]);
+
+    $wp_customize->add_setting('alya_career_steps', [
+        'default'           => "1 | Kirim Lamaran | Kirimkan CV & portofolio melalui email atau WhatsApp.\n2 | Seleksi Administrasi | Tim HR akan meninjau kesesuaian kualifikasi Anda.\n3 | Wawancara | Wawancara dengan tim HR dan user terkait.\n4 | Penawaran Kerja | Kandidat terpilih akan menerima offering letter.",
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ]);
+    $wp_customize->add_control('alya_career_steps', ['label' => 'Proses Rekrutmen (one per line: Number | Title | Description)', 'section' => 'alya_career_sidebar', 'type' => 'textarea']);
+
+    $wp_customize->add_setting('alya_career_cta_title', ['default' => 'Tidak Menemukan Posisi yang Sesuai?', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('alya_career_cta_title', ['label' => 'CTA Title', 'section' => 'alya_career_sidebar']);
+
+    $wp_customize->add_setting('alya_career_cta_desc', ['default' => 'Kirimkan CV Anda untuk kami pertimbangkan di kesempatan berikutnya.', 'sanitize_callback' => 'sanitize_textarea_field']);
+    $wp_customize->add_control('alya_career_cta_desc', ['label' => 'CTA Description', 'section' => 'alya_career_sidebar', 'type' => 'textarea']);
+
+    // ─── 12. FEATURED FILTERS ───
     $wp_customize->add_panel('alya_featured', [
-        'title'    => '10. Featured Filters',
-        'priority' => 100,
+        'title'    => 'Featured Filters',
+        'priority' => 120,
     ]);
 
     $wp_customize->add_section('alya_featured_doctors', [

@@ -8,12 +8,12 @@
 $ig_url = get_theme_mod('alya_social_instagram', 'https://www.instagram.com/alyaesthetic/');
 $images = alya_field_raw('alya_instagram_images');
 
-// Fallback: use service images if no custom field
+// Fallback: use treatment images if no custom field
 if (empty($images) || !is_array($images)) {
-    $fallback_services = alya_get_posts('service', ['posts_per_page' => 6]);
+    $fallback_treatments = alya_get_posts('treatment', ['posts_per_page' => 6]);
     $images = [];
-    if ($fallback_services->have_posts()) {
-        while ($fallback_services->have_posts()) : $fallback_services->the_post();
+    if ($fallback_treatments->have_posts()) {
+        while ($fallback_treatments->have_posts()) : $fallback_treatments->the_post();
             if (has_post_thumbnail()) {
                 $images[] = [
                     'url'   => get_the_post_thumbnail_url(get_the_ID(), 'medium_large'),
@@ -25,11 +25,20 @@ if (empty($images) || !is_array($images)) {
     }
 }
 
-if (empty($images)) return;
+if (empty($images)) {
+    $images = [
+        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png', 'title' => 'Glass Skin Facial'],
+        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/09/34.-slimming-injection-1024x819.png', 'title' => 'Slimming Injection'],
+        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/08/13.-filler-1024x819.png', 'title' => 'Filler Wajah'],
+        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/08/19.-skin-booster-1024x819.png', 'title' => 'Skin Booster'],
+        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/08/30.-laser-hair-removal-1024x819.png', 'title' => 'Laser Hair Removal'],
+        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2025/01/37.-Hair-Coloring-1024x819.png', 'title' => 'Hair Coloring'],
+    ];
+}
 ?>
 
 <section class="ig" id="instagram">
-    <div class="container center" style="max-width:560px">
+    <div class="container center">
         <span class="eyebrow">Ikuti Kami</span>
         <h2>@alyaesthetic di Instagram</h2>
     </div>

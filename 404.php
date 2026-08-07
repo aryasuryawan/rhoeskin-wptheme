@@ -39,33 +39,34 @@ get_header();
   <div class="container">
     <div class="service-grid" id="serviceGrid">
       <?php
+      $img_uri = get_template_directory_uri() . '/assets/images/services';
       $services = [
         [
           'title'   => 'Skin Serenity',
           'desc'    => 'Rangkaian facial &amp; perawatan kulit untuk wajah bercahaya dan skin barrier yang sehat.',
-          'img'     => 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
-          'url'     => '/layanan/skin-serenity/',
+          'img'     => $img_uri . '/skin-serenity.png',
+          'url'     => add_query_arg('service', 'skin-serenity', get_post_type_archive_link('treatment')),
           'keywords' => 'skin serenity glass skin facial perawatan kulit',
         ],
         [
           'title'   => 'Beauty Advance',
           'desc'    => 'Treatment lanjutan seperti filler, skin booster, hingga perawatan pasca hair coloring.',
-          'img'     => 'https://alyaesthetic.id/wp-content/uploads/2024/08/13.-filler-1024x819.png',
-          'url'     => '/layanan/beauty-advance/',
+          'img'     => $img_uri . '/beauty-advance.png',
+          'url'     => add_query_arg('service', 'beauty-advance', get_post_type_archive_link('treatment')),
           'keywords' => 'beauty advance filler skin booster hair coloring',
         ],
         [
           'title'   => 'Slimming &amp; Wellness',
           'desc'    => 'Solusi membentuk tubuh ideal, mulai dari slimming injection hingga program wellness.',
-          'img'     => 'https://alyaesthetic.id/wp-content/uploads/2024/09/34.-slimming-injection-1024x819.png',
-          'url'     => '/layanan/slimming-wellness/',
+          'img'     => $img_uri . '/slimming.png',
+          'url'     => add_query_arg('service', 'slimming-wellness', get_post_type_archive_link('treatment')),
           'keywords' => 'slimming wellness slimming injection diet',
         ],
         [
           'title'   => 'Alya Beauty Bar',
           'desc'    => 'Layanan kecantikan harian termasuk laser hair removal untuk kulit halus bebas bulu.',
-          'img'     => 'https://alyaesthetic.id/wp-content/uploads/2024/08/30.-laser-hair-removal-1024x819.png',
-          'url'     => '/layanan/alya-beauty-bar/',
+          'img'     => $img_uri . '/beauty-bar.png',
+          'url'     => add_query_arg('service', 'alya-beauty-bar', get_post_type_archive_link('treatment')),
           'keywords' => 'alya beauty bar laser hair removal',
         ],
       ];

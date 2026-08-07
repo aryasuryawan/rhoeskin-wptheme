@@ -105,7 +105,7 @@ $homepage_style = get_theme_mod('alya_homepage_style', 'default');
 <?php
 $services_title    = get_theme_mod('alya_services_title', alya_field_raw('alya_services_title') ?: 'Layanan Kami');
 $services_subtitle = get_theme_mod('alya_services_subtitle', alya_field_raw('alya_services_subtitle') ?: 'Solusi kecantikan terlengkap untuk kebutuhan Anda');
-$services          = alya_get_posts('service', ['posts_per_page' => 6]);
+$services          = alya_get_posts('treatment', ['posts_per_page' => 6]);
 if ($services->have_posts()) :
 ?>
 <?php alya_section('layanan', 'bg-light'); ?>
@@ -123,7 +123,7 @@ if ($services->have_posts()) :
         <?php endwhile; wp_reset_postdata(); ?>
     </div>
     <div class="section__cta">
-        <a href="<?php echo esc_url(get_post_type_archive_link('service')); ?>" class="btn btn--primary">
+        <a href="<?php echo esc_url(get_post_type_archive_link('treatment')); ?>" class="btn btn--primary">
             Lihat Semua Layanan
             <?php echo alya_icon('arrow-right'); ?>
         </a>

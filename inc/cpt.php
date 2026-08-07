@@ -9,29 +9,6 @@ defined('ABSPATH') || exit;
 
 function alya_register_cpts() {
     $cpts = [
-        'service' => [
-            'label'               => 'Layanan',
-            'labels'              => [
-                'name'               => 'Layanan',
-                'singular_name'      => 'Layanan',
-                'add_new'            => 'Tambah Layanan',
-                'add_new_item'       => 'Tambah Layanan Baru',
-                'edit_item'          => 'Edit Layanan',
-                'new_item'           => 'Layanan Baru',
-                'view_item'          => 'Lihat Layanan',
-                'search_items'       => 'Cari Layanan',
-                'not_found'          => 'Tidak ada layanan ditemukan',
-                'not_found_in_trash' => 'Tidak ada layanan di trash',
-                'menu_name'          => 'Layanan',
-            ],
-            'public'              => true,
-            'has_archive'         => true,
-            'rewrite'             => ['slug' => 'layanan'],
-            'menu_icon'           => 'dashicons-heart',
-            'supports'            => ['title', 'editor', 'thumbnail', 'excerpt', 'revisions'],
-            'show_in_rest'        => true,
-            'capability_type'     => 'post',
-        ],
         'doctor' => [
             'label'               => 'Dokter',
             'labels'              => [
@@ -96,7 +73,7 @@ function alya_register_cpts() {
             'public'              => true,
             'has_archive'         => true,
             'rewrite'             => ['slug' => 'karir'],
-            'menu_icon'           => 'dashicons-briefcase',
+            'menu_icon'           => 'dashicons-admin-users',
             'supports'            => ['title', 'editor', 'thumbnail', 'revisions'],
             'show_in_rest'        => true,
             'capability_type'     => 'post',
@@ -114,13 +91,36 @@ function alya_register_cpts() {
                 'search_items'       => 'Cari Treatment',
                 'not_found'          => 'Tidak ada treatment ditemukan',
                 'not_found_in_trash' => 'Tidak ada treatment di trash',
-                'menu_name'          => 'Treatment',
+                'menu_name'         => 'Treatment',
             ],
             'public'              => true,
             'has_archive'         => true,
-            'rewrite'             => ['slug' => 'treatment'],
+            'rewrite'             => ['slug' => 'layanan'],
             'menu_icon'           => 'dashicons-analytics',
             'supports'            => ['title', 'editor', 'thumbnail', 'revisions'],
+            'show_in_rest'        => true,
+            'capability_type'     => 'post',
+        ],
+        'faq' => [
+            'label'               => 'FAQ',
+            'labels'              => [
+                'name'               => 'FAQ',
+                'singular_name'      => 'FAQ',
+                'add_new'            => 'Tambah FAQ',
+                'add_new_item'       => 'Tambah FAQ Baru',
+                'edit_item'          => 'Edit FAQ',
+                'new_item'           => 'FAQ Baru',
+                'view_item'          => 'Lihat FAQ',
+                'search_items'       => 'Cari FAQ',
+                'not_found'          => 'Tidak ada FAQ ditemukan',
+                'not_found_in_trash' => 'Tidak ada FAQ di trash',
+                'menu_name'         => 'FAQ',
+            ],
+            'public'              => true,
+            'has_archive'         => false,
+            'rewrite'             => ['slug' => 'faq'],
+            'menu_icon'           => 'dashicons-editor-help',
+            'supports'            => ['title', 'editor', 'revisions'],
             'show_in_rest'        => true,
             'capability_type'     => 'post',
         ],
@@ -129,26 +129,6 @@ function alya_register_cpts() {
     foreach ($cpts as $type => $args) {
         register_post_type($type, $args);
     }
-
-    // Taxonomy for services
-    register_taxonomy('service_category', ['service'], [
-        'label'             => 'Kategori Layanan',
-        'labels'            => [
-            'name'          => 'Kategori Layanan',
-            'singular_name' => 'Kategori',
-            'search_items'  => 'Cari Kategori',
-            'all_items'     => 'Semua Kategori',
-            'edit_item'     => 'Edit Kategori',
-            'update_item'   => 'Update Kategori',
-            'add_new_item'  => 'Tambah Kategori Baru',
-            'new_item_name' => 'Nama Kategori Baru',
-            'menu_name'     => 'Kategori',
-        ],
-        'hierarchical'      => true,
-        'public'            => true,
-        'show_in_rest'      => true,
-        'rewrite'           => ['slug' => 'kategori-layanan'],
-    ]);
 
     // Taxonomy for treatments
     register_taxonomy('treatment_category', ['treatment'], [
@@ -170,6 +150,26 @@ function alya_register_cpts() {
         'rewrite'           => ['slug' => 'kategori-treatment'],
     ]);
 
+    // Taxonomy: service (for treatment posts — links treatments to service categories)
+    register_taxonomy('service', ['treatment'], [
+        'label'             => 'Service',
+        'labels'            => [
+            'name'          => 'Service',
+            'singular_name' => 'Service',
+            'search_items'  => 'Cari Service',
+            'all_items'     => 'Semua Service',
+            'edit_item'     => 'Edit Service',
+            'update_item'   => 'Update Service',
+            'add_new_item'  => 'Tambah Service Baru',
+            'new_item_name' => 'Nama Service Baru',
+            'menu_name'     => 'Service',
+        ],
+        'hierarchical'      => true,
+        'public'            => true,
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'service'],
+    ]);
+
     // Taxonomy for jobs
     register_taxonomy('job_type', ['jobs'], [
         'label'             => 'Tipe Pekerjaan',
@@ -189,14 +189,77 @@ function alya_register_cpts() {
         'show_in_rest'      => true,
         'rewrite'           => ['slug' => 'tipe-pekerjaan'],
     ]);
+
+    // Taxonomy for career categories (departments)
+    register_taxonomy('career_category', ['jobs'], [
+        'label'             => 'Kategori Karir',
+        'labels'            => [
+            'name'          => 'Kategori Karir',
+            'singular_name' => 'Kategori',
+            'search_items'  => 'Cari Kategori',
+            'all_items'     => 'Semua Kategori',
+            'edit_item'     => 'Edit Kategori',
+            'update_item'   => 'Update Kategori',
+            'add_new_item'  => 'Tambah Kategori Baru',
+            'new_item_name' => 'Nama Kategori Baru',
+            'menu_name'     => 'Kategori',
+        ],
+        'hierarchical'      => true,
+        'public'            => true,
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'kategori-karir'],
+    ]);
+
+    // Taxonomy for doctor categories (specialty)
+    register_taxonomy('doctor_category', ['doctor'], [
+        'label'             => 'Kategori Dokter',
+        'labels'            => [
+            'name'          => 'Kategori Dokter',
+            'singular_name' => 'Kategori',
+            'search_items'  => 'Cari Kategori',
+            'all_items'     => 'Semua Kategori',
+            'edit_item'     => 'Edit Kategori',
+            'update_item'   => 'Update Kategori',
+            'add_new_item'  => 'Tambah Kategori Baru',
+            'new_item_name' => 'Nama Kategori Baru',
+            'menu_name'     => 'Kategori Dokter',
+        ],
+        'hierarchical'      => true,
+        'public'            => true,
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'kategori-dokter'],
+        'show_admin_column' => true,
+    ]);
+
+    // Taxonomy for FAQ categories (tabs)
+    register_taxonomy('faq_category', ['faq'], [
+        'label'             => 'Kategori FAQ',
+        'labels'            => [
+            'name'          => 'Kategori FAQ',
+            'singular_name' => 'Kategori',
+            'search_items'  => 'Cari Kategori',
+            'all_items'     => 'Semua Kategori',
+            'edit_item'     => 'Edit Kategori',
+            'update_item'   => 'Update Kategori',
+            'add_new_item'  => 'Tambah Kategori Baru',
+            'new_item_name' => 'Nama Kategori Baru',
+            'menu_name'     => 'Kategori',
+        ],
+        'hierarchical'      => true,
+        'public'            => true,
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'faq-category'],
+    ]);
 }
 add_action('init', 'alya_register_cpts');
 
 /**
  * Flush rewrite rules on theme activation
  */
-function alya_flush_rewrite() {
-    alya_register_cpts();
-    flush_rewrite_rules();
+if (!function_exists('alya_flush_rewrite')) {
+    function alya_flush_rewrite() {
+        alya_register_cpts();
+        flush_rewrite_rules();
+    }
 }
 add_action('after_switch_theme', 'alya_flush_rewrite');

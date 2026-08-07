@@ -1,6 +1,6 @@
 <?php
 /**
- * Single Post Template — matches artikel-single.html
+ * Single Post Template — 100% matches artikel-single.html
  *
  * @package Alya_Esthetic
  */
@@ -9,202 +9,199 @@ get_header();
 
 while (have_posts()) : the_post();
 
-$hero_img = get_the_post_thumbnail_url(get_the_ID(), 'full');
-$date = get_the_date('d M Y');
-$author = get_the_author();
-$cat = '';
-$cats = get_the_category();
-if (!empty($cats)) {
-    $cat = $cats[0]->name;
+$post_id       = get_the_ID();
+$hero_img      = get_the_post_thumbnail_url($post_id, 'full');
+$date          = get_the_date('j F Y');
+$author_id     = get_the_author_meta('ID');
+$author_name   = get_the_author();
+$author_bio    = get_the_author_meta('description');
+$author_avatar = get_avatar_url($author_id, ['size' => 96]);
+if (!$author_avatar || strpos($author_avatar, 'gravatar') !== false) {
+    $author_avatar = 'https://alyaesthetic.id/wp-content/uploads/2024/06/ALYA_5754_Edit-scaled-e1749969873976.png';
 }
+$reading_time = max(1, ceil(str_word_count(strip_tags(get_the_content())) / 200));
+
+$cats     = get_the_category();
+$cat_name = !empty($cats) ? $cats[0]->name : 'Skin Serenity';
+$cat_link = !empty($cats) ? get_category_link($cats[0]->term_id) : home_url('/blog/');
 ?>
 
-<!-- HERO -->
-<div class="art-head" <?php if ($hero_img) : ?>style="background-image:url('<?php echo esc_url($hero_img); ?>')"<?php endif; ?>>
+<!-- ============ ARTICLE HEADER ============ -->
+<div class="art-head">
   <div class="container">
     <div class="crumb">
       <a href="<?php echo esc_url(home_url('/')); ?>">Beranda</a><span>/</span>
-      <a href="<?php echo esc_url(get_permalink(get_option('page_for_posts'))); ?>">Artikel</a><span>/</span>
-      <span><?php the_title(); ?></span>
+      <a href="<?php echo esc_url(home_url('/blog/')); ?>">Artikel</a><span>/</span>
+      <a href="<?php echo esc_url($cat_link); ?>" style="color:var(--brand)"><?php echo esc_html($cat_name); ?></a>
     </div>
-    <?php if ($cat) : ?>
-      <span class="eyebrow"><?php echo esc_html($cat); ?></span>
+    <?php if ($cat_name) : ?>
+      <span class="tag-pill"><?php echo esc_html($cat_name); ?></span>
     <?php endif; ?>
     <h1><?php the_title(); ?></h1>
-    <div class="meta">
-      <span><?php echo esc_html($date); ?></span> · <span>Oleh <?php echo esc_html($author); ?></span>
+    <div class="art-meta">
+      <div class="author">
+        <img src="<?php echo esc_url($author_avatar); ?>" alt="<?php echo esc_attr($author_name); ?>">
+        <div>
+          <b><?php echo esc_html($author_name); ?></b>
+          <span>Aesthetic Doctor</span>
+        </div>
+      </div>
+      <div class="meta-item">
+        <svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h3v18H2V4h3V2zm13 8H4v10h16V10z"/></svg>
+        <?php echo esc_html($date); ?>
+      </div>
+      <div class="meta-item">
+        <svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zm0-2a7 7 0 110-14 7 7 0 010 14zm.5-10.5v5l4.3 2.5-.7 1.2-5-3V10z"/></svg>
+        <?php echo esc_html($reading_time); ?> menit baca
+      </div>
     </div>
   </div>
 </div>
 
-<!-- SHARE RAIL -->
-<aside class="share-rail" id="shareRail">
-  <div class="share-rail__inner">
-    <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'_blank')" title="Bagikan ke Facebook">
-      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3V2z" fill="currentColor"/></svg>
-    </button>
-    <button onclick="window.open('https://twitter.com/intent/tweet?url='+encodeURIComponent(location.href),'_blank')" title="Bagikan ke X">
-      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/></svg>
-    </button>
-    <button onclick="navigator.share({title:document.title,url:location.href}).catch(()=>{})" title="Bagikan">
-      <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="1.5"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="1.5"/></svg>
-    </button>
+<!-- ============ COVER ============ -->
+<?php if ($hero_img) : ?>
+<div class="art-cover">
+  <div class="container" style="padding:34px 0 0">
+    <img src="<?php echo esc_url($hero_img); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
   </div>
-</aside>
+</div>
+<?php endif; ?>
 
-<!-- CONTENT -->
-<div class="art-layout">
-  <div class="container">
+<!-- ============ ARTICLE BODY ============ -->
+<section>
+  <div class="art-layout">
 
-    <!-- ART CONTENT -->
+    <!-- Share Rail -->
+    <div class="share-rail">
+      <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener" aria-label="Bagikan ke Facebook">
+        <svg viewBox="0 0 24 24"><path d="M13.5 22v-8h2.7l.4-3.1h-3.1V9c0-.9.2-1.5 1.6-1.5H17V4.7c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2v2.1H8v3.1h2.5V22h3z"/></svg>
+      </a>
+      <a href="https://wa.me/?text=<?php echo urlencode(get_the_title() . ' ' . get_permalink()); ?>" target="_blank" rel="noopener" aria-label="Bagikan ke WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.2-1.8-.9-2-.9-.3-.1-.5-.1-.7.2-.2.2-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.3-.6-2.2-1.1-3-2.3-.2-.4.2-.4.6-1.1.1-.2 0-.3 0-.4s-.7-1.7-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-1.1 1.1-1.3 2.5-.3 4 .1.1 2.3 3.6 5.7 5.1a9 9 0 001.9.7c.8.3 1.5.2 2.1.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.5-.3zM12 21a9 9 0 01-7.7-4.4l-1.8.6 1-1.8A9 9 0 1112 21zm0-19.8C5.9 1.2 1 6 1 12c0 1.9.6 3.8 1.6 5.5L1 21l3.6-1a11 11 0 002.2 1.6A10.9 10.9 0 0012 23c6.1 0 11-4.9 11-11C23 6 18 1.2 12 1.2z"/></svg>
+      </a>
+      <a href="#" aria-label="Salin Tautan" id="copyLink">
+        <svg viewBox="0 0 24 24"><path d="M3.9 12a4.1 4.1 0 014.1-4.1h4V6H8a6 6 0 000 12h4v-1.9H8A4.1 4.1 0 013.9 12zM12 13h5a4.1 4.1 0 000-8.2h-4V6.9h4a2.1 2.1 0 010 4.2h-5V13z"/></svg>
+      </a>
+    </div>
+
+    <!-- Content -->
     <article class="art-content">
       <div class="entry-content">
         <?php the_content(); ?>
       </div>
 
-      <div class="tags-row" id="tagsRow">
+      <?php
+      $tags = get_the_tags();
+      if ($tags) :
+      ?>
+        <div class="tags-row">
+          <?php foreach ($tags as $tag) : ?>
+            <a href="<?php echo esc_url(get_tag_link($tag->term_id)); ?>"><?php echo esc_html($tag->name); ?></a>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+
+      <div class="author-box">
+        <img src="<?php echo esc_url($author_avatar); ?>" alt="<?php echo esc_attr($author_name); ?>">
+        <div>
+          <h4><?php echo esc_html($author_name); ?></h4>
+          <span>Aesthetic Doctor · Alya Esthetic Center</span>
+          <p><?php echo esc_html($author_bio ?: 'Berpengalaman menangani berbagai kasus perawatan kulit dan estetika, dengan fokus pada pendekatan personal dan berbasis kebutuhan tiap pasien.'); ?></p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-box">
+        <h4>Artikel Populer</h4>
         <?php
-        $tags = get_the_tags();
-        if ($tags) :
-          foreach ($tags as $tag) :
+        $popular = new WP_Query([
+            'post_type'           => 'post',
+            'posts_per_page'      => 3,
+            'meta_key'            => 'post_views_count',
+            'orderby'             => 'meta_value_num',
+            'order'               => 'DESC',
+            'post__not_in'        => [$post_id],
+            'ignore_sticky_posts' => true,
+        ]);
+
+        if (!$popular->have_posts()) {
+            $popular = new WP_Query([
+                'post_type'      => 'post',
+                'posts_per_page' => 3,
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+                'post__not_in'   => [$post_id],
+            ]);
+        }
+
+        if ($popular->have_posts()) :
+            while ($popular->have_posts()) : $popular->the_post();
+                $pop_img = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
+                if (!$pop_img) {
+                    $pop_img = 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png';
+                }
         ?>
-        <a href="<?php echo esc_url(get_tag_link($tag->term_id)); ?>" class="chip"><?php echo esc_html($tag->name); ?></a>
+            <div class="popular-item">
+              <a href="<?php the_permalink(); ?>">
+                <img src="<?php echo esc_url($pop_img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">
+              </a>
+              <div>
+                <h5><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h5>
+                <span class="date"><?php echo esc_html(get_the_date('j M Y')); ?></span>
+              </div>
+            </div>
         <?php
-          endforeach;
+            endwhile;
+            wp_reset_postdata();
         endif;
         ?>
       </div>
 
-      <!-- SHARE BOTTOM -->
-      <div style="margin-top:40px;padding-top:24px;border-top:1px solid var(--line)">
-        <div style="display:flex;align-items:center;gap:12px">
-          <span style="font-size:.86rem;font-weight:600;color:var(--ink-light)">Bagikan:</span>
-          <div style="display:flex;gap:8px">
-            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'_blank')" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;background:var(--bg);cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--line)';this.style.color=''">
-              <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3V2z" fill="currentColor"/></svg>
-            </button>
-            <button onclick="window.open('https://twitter.com/intent/tweet?url='+encodeURIComponent(location.href),'_blank')" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;background:var(--bg);cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--line)';this.style.color=''">
-              <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/></svg>
-            </button>
-            <button onclick="navigator.share({title:document.title,url:location.href}).catch(()=>{})" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;background:var(--bg);cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--brand)';this.style.color='var(--brand)'" onmouseout="this.style.borderColor='var(--line)';this.style.color=''">
-              <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- POST NAV -->
-      <div style="margin-top:40px;padding-top:24px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:24px">
-        <?php
-        $prev = get_previous_post();
-        $next = get_next_post();
-        ?>
-        <?php if ($prev) : ?>
-        <a href="<?php echo esc_url(get_permalink($prev->ID)); ?>" style="text-align:left;text-decoration:none;color:var(--ink);padding:16px;border-radius:12px;border:1px solid var(--line);transition:border-color .2s" onmouseover="this.style.borderColor='var(--brand)'" onmouseout="this.style.borderColor='var(--line)'">
-          <span style="font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-light);display:block;margin-bottom:6px">← Sebelumnya</span>
-          <span style="font-weight:600;font-size:.94rem;line-height:1.4"><?php echo esc_html($prev->post_title); ?></span>
-        </a>
-        <?php else : ?>
-        <div></div>
-        <?php endif; ?>
-
-        <?php if ($next) : ?>
-        <a href="<?php echo esc_url(get_permalink($next->ID)); ?>" style="text-align:right;text-decoration:none;color:var(--ink);padding:16px;border-radius:12px;border:1px solid var(--line);transition:border-color .2s" onmouseover="this.style.borderColor='var(--brand)'" onmouseout="this.style.borderColor='var(--line)'">
-          <span style="font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-light);display:block;margin-bottom:6px">Selanjutnya →</span>
-          <span style="font-weight:600;font-size:.94rem;line-height:1.4"><?php echo esc_html($next->post_title); ?></span>
-        </a>
-        <?php endif; ?>
-      </div>
-    </article>
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="side-box">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <div style="width:44px;height:44px;border-radius:50%;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;flex:none">
-            <svg viewBox="0 0 24 24" width="22" height="22" style="fill:var(--brand)"><path d="M12 2a7 7 0 00-7 7c0 2 .8 3.6 1.7 5.1C8 15.9 9 18.4 9 21h6c0-2.6 1-5.1 2.3-6.9C18.2 12.6 19 11 19 9a7 7 0 00-7-7z"/></svg>
-          </div>
-          <div>
-            <h4 style="margin:0;font-size:1rem">Gratis Konsultasi Online</h4>
-            <span style="font-size:.8rem;color:var(--ink-light)">Chat langsung dengan tim kami</span>
-          </div>
-        </div>
-        <a href="https://api.whatsapp.com/send?phone=6281290000000&text=Halo%20Alya%20Esthetic%2C%20saya%20ingin%20konsultasi" class="btn btn--brand" style="width:100%;justify-content:center">
-          Chat Sekarang
-        </a>
-      </div>
-
-      <div class="side-box">
-        <h4>Layanan Kami</h4>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-          <?php
-          $svc_args = [
-            'post_type'      => 'treatment',
-            'posts_per_page' => 5,
-            'orderby'        => 'rand',
-          ];
-          $svc_q = new WP_Query($svc_args);
-          while ($svc_q->have_posts()) : $svc_q->the_post();
-          ?>
-          <a href="<?php the_permalink(); ?>" style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;transition:background .2s;text-decoration:none;color:var(--ink)" onmouseover="this.style.background='var(--bg-alt)'" onmouseout="this.style.background='transparent'">
-            <span style="font-size:.9rem;font-weight:500"><?php the_title(); ?></span>
-          </a>
-          <?php endwhile; wp_reset_postdata(); ?>
-        </div>
+      <div class="side-box cta-box">
+        <h4>Konsultasi Gratis</h4>
+        <p>Punya pertanyaan seputar perawatan kulit? Chat langsung dengan tim dokter kami di WhatsApp.</p>
+        <a class="btn" href="<?php echo esc_url(alya_wa_link('Halo, saya ingin konsultasi gratis seputar artikel kulit.')); ?>" target="_blank" rel="noopener">Hubungi Kami</a>
       </div>
     </aside>
 
   </div>
-</div>
-
-<!-- CTA -->
-<section class="cta-band">
-  <div class="container">
-    <div class="cta-band__inner">
-      <div>
-        <h2>Mau Tampil Cantik Alami?</h2>
-        <p>Konsultasikan kebutuhan treatment kulit &amp; kecantikan Anda bersama dokter spesialis kami. Konsultasi online gratis — chat sekarang.</p>
-      </div>
-      <a href="https://api.whatsapp.com/send?phone=6281290000000&text=Halo%20Alya%20Esthetic%2C%20saya%20ingin%20konsultasi" class="btn btn--white">Chat Sekarang</a>
-    </div>
-  </div>
 </section>
 
-<!-- RELATED ARTICLES -->
+<!-- ============ RELATED POSTS ============ -->
 <?php
-$related_args = [
+$related_query = new WP_Query([
     'post_type'      => 'post',
     'posts_per_page' => 3,
-    'post__not_in'   => [get_the_ID()],
-];
-$related_q = new WP_Query($related_args);
-if ($related_q->have_posts()) :
+    'post__not_in'   => [$post_id],
+    'orderby'        => 'rand',
+]);
+
+if ($related_query->have_posts()) :
 ?>
-<section class="section">
+<section class="related">
   <div class="container">
-    <div class="related__head" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
-      <div>
-        <span class="eyebrow">Baca Juga</span>
-        <h2>Artikel Terkait</h2>
-      </div>
-      <a href="<?php echo esc_url(get_permalink(get_option('page_for_posts'))); ?>" class="btn btn--outline btn--sm">Lihat Semua</a>
+    <div class="related__head">
+      <span class="eyebrow">Rekomendasi</span>
+      <h2>Artikel Terkait</h2>
     </div>
-    <div class="art-grid">
-      <?php while ($related_q->have_posts()) : $related_q->the_post();
-        $art_img = get_the_post_thumbnail_url(get_the_ID(), 'full');
+    <div class="related__grid">
+      <?php while ($related_query->have_posts()) : $related_query->the_post();
+        $rel_img = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
+        if (!$rel_img) {
+            $rel_img = 'https://alyaesthetic.id/wp-content/uploads/2025/11/DSCF5148-scaled-e1762063528772.jpg';
+        }
+        $rel_cats = get_the_category();
+        $rel_cat  = !empty($rel_cats) ? $rel_cats[0]->name : 'Artikel';
       ?>
-      <a href="<?php the_permalink(); ?>" class="post-card">
-        <div class="post-card__img">
-          <?php if ($art_img) : ?>
-            <img src="<?php echo esc_url($art_img); ?>" alt="<?php the_title_attribute(); ?>">
-          <?php endif; ?>
-        </div>
-        <div class="post-card__body">
-          <span class="post-card__tag"><?php echo esc_html(get_the_date('d M Y')); ?></span>
-          <h3><?php the_title(); ?></h3>
-          <p><?php echo esc_html(wp_trim_words(get_the_excerpt(), 12)); ?></p>
-        </div>
-      </a>
+        <a href="<?php the_permalink(); ?>" class="post-card">
+          <img src="<?php echo esc_url($rel_img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">
+          <div class="p-body">
+            <span class="tag"><?php echo esc_html($rel_cat); ?></span>
+            <h3><?php the_title(); ?></h3>
+          </div>
+        </a>
       <?php endwhile; wp_reset_postdata(); ?>
     </div>
   </div>

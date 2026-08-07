@@ -1,0 +1,96 @@
+:root {
+    --brand: #b0836a;
+    --brand-dark: #8a5c44;
+    --brand-soft: #f6ece6;
+    --ink-light: #6f6a66;
+    --ink: #2b2623;
+    --muted: #6f6a66;
+    --line: #e9e2dc;
+    --bg: #ffffff;
+    --bg-soft: #faf7f4;
+    --bg-alt: #faf7f4;
+    --white: #ffffff;
+    --shadow: 0 18px 40px -22px rgba(43,38,35,.35);
+    --shadow-lg: 0 30px 60px -24px rgba(43,38,35,.5);
+
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Poppins', sans-serif;
+    --fs-h1: 52px;
+    --fs-h2: 38px;
+    --fs-h3: 28px;
+    --fs-h4: 22px;
+    --fs-body: 16px;
+    --fs-small: 14px;
+    --fs-eyebrow: 12px;
+    --fs-btn: 15px;
+    --fs-card-h3: 18px;
+    --fs-card-p: 14px;
+    --fs-form-label: 14px;
+    --fs-form-input: 16px;
+    --fs-footer-h5: 15px;
+    --fs-hero-h1: clamp(2.4rem,6.4vw,5rem);
+    --fs-hero-p: 1.08rem;
+    --h1: clamp(2rem,5vw,3.4rem);
+    --h2: clamp(1.5rem,3.5vw,2.4rem);
+    --h3: clamp(1.15rem,2.5vw,1.4rem);
+    --h4: 1.12rem;
+    --lh-body: 1.7;
+    --fw-heading: 650;
+
+    --eyebrow-color: #b0836a;
+    --heading-color: #2b2623;
+    --lead-color: #6f6a66;
+
+    --btn-bg: #b0836a;
+    --btn-text: #ffffff;
+    --btn-border: #b0836a;
+    --btn-hover-bg: #8a5c44;
+    --btn-hover-text: #ffffff;
+
+    --card-bg: #ffffff;
+    --card-border: #e9e2dc;
+    --card-heading: #2b2623;
+    --card-text: #6f6a66;
+    --card-link: #b0836a;
+    --card-icon-bg: #f6ece6;
+    --card-icon-fill: #b0836a;
+    --card-hover-border: #b0836a;
+
+    --doctor-bg: #faf7f4;
+    --doctor-card-bg: #ffffff;
+    --doctor-name: #2b2623;
+    --doctor-specialist: #b0836a;
+
+    --testi-bg: #2b2623;
+    --testi-heading: #ffffff;
+    --testi-text: rgba(255,255,255,.86);
+    --testi-stars: #e8c96a;
+    --testi-card-bg: rgba(255,255,255,.05);
+    --testi-card-border: rgba(255,255,255,.12);
+
+    --cta-bg-overlay: rgba(60,38,26,.72);
+    --cta-heading: #ffffff;
+    --cta-text: rgba(255,255,255,.9);
+
+    --form-bg: #faf7f4;
+    --form-border: #e9e2dc;
+    --form-input-border: #e9e2dc;
+    --form-input-focus: #b0836a;
+    --form-label: #2b2623;
+
+    --footer-bg: #2b2623;
+    --footer-text: #cfc8c2;
+    --footer-heading: #ffffff;
+    --footer-link-hover: #ffffff;
+    --footer-border: rgba(255,255,255,.12);
+    --header-bg: #ffffff;
+    --header-text: var(--ink);
+    --share-color: var(--ink);
+    --wa-color: #25D366;
+
+    --hero-text: #ffffff;
+    --hero-heading: #ffffff;
+    --hero-heading-em: #efd9c8;
+    --hero-paragraph: rgba(255,255,255,.86);
+    --hero-overlay: linear-gradient(100deg,rgba(30,24,20,.78) 0%,rgba(30,24,20,.45) 55%,rgba(30,24,20,.15) 100%);
+}

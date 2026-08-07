@@ -48,122 +48,55 @@ function alya_seed_pages() {
         if (stripos($p->post_title, 'Tentang') !== false) { $tentang_id = $p->ID; break; }
     }
     if ($tentang_id) {
-        $about_img = seed_attach_url(seed_get_attach('about-v1'));
-        $content = '
-<!-- ============ ABOUT ============ -->
-<section class="alya-section">
-    <div class="container">
-        <div class="about-grid">
-            <div class="about-grid__image">
-                <img src="' . $about_img . '" alt="Interior Alya Esthetic" loading="lazy" width="600" height="400">
-                <div class="badge"><b>One Stop</b><span>Semua solusi kecantikan di satu tempat</span></div>
-            </div>
-            <div class="about-grid__content">
-                <span class="eyebrow">Cerita Kami</span>
-                <h2>Hospitality, Kesehatan, dan Solusi Satu Pintu</h2>
-                <p>Alya Esthetic Center hadir sebagai klinik kecantikan yang mengedepankan hospitality, kesehatan, dan solusi satu pintu untuk semua orang. Kami percaya bahwa kecantikan sejati dimulai dari rasa nyaman dan aman selama menjalani perawatan.</p>
-                <p>Berlokasi di Jakarta Selatan, kami membangun kepercayaan Sahabat Alya melalui tim dokter profesional, teknologi terkini, dan pendekatan yang personal untuk setiap kebutuhan kulit dan tubuh — mulai dari perawatan wajah, tubuh, hingga program pelangsingan dan wellness.</p>
-                <p>Kenyamanan dan kepuasan pasien merupakan prioritas utama kami, begitu pula dengan menjaga kerahasiaan setiap Sahabat Alya yang berkonsultasi dan menjalani perawatan bersama kami.</p>
-                <ul class="about-points">
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.2l-3.2-3.2L4.5 14.3 9 18.8 18.5 9.3l-1.3-1.3z"/></svg> Tim dokter berpengalaman</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.2l-3.2-3.2L4.5 14.3 9 18.8 18.5 9.3l-1.3-1.3z"/></svg> Perawatan efektif &amp; personal</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.2l-3.2-3.2L4.5 14.3 9 18.8 18.5 9.3l-1.3-1.3z"/></svg> Kerahasiaan terjamin</li>
-                    <li><svg viewBox="0 0 24 24"><path d="M9 16.2l-3.2-3.2L4.5 14.3 9 18.8 18.5 9.3l-1.3-1.3z"/></svg> Ramah keluarga</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
+        // Set template
+        update_post_meta($tentang_id, '_wp_page_template', 'page-about.php');
+        
+        // Clear post_content (remove HTML static content)
+        wp_update_post(['ID' => $tentang_id, 'post_content' => '']);
+        
+        // Set ACF fields for editable page
+        $hero_img_id = seed_get_attach('hero-v1');
+        $about_img_id = seed_get_attach('about-v1');
+        $cta_bg_id = seed_get_attach('seed-filler'); // fallback
+        
+        update_field('alya_hero_bg', $hero_img_id ?: null, $tentang_id);
+        update_field('alya_hero_title', 'Mengenal Lebih Dekat Alya Esthetic Center', $tentang_id);
+        update_field('alya_hero_subtitle', 'Tentang Kami', $tentang_id);
+        update_field('alya_about_image', $about_img_id ?: null, $tentang_id);
+        update_field('alya_about_badge_title', 'One Stop', $tentang_id);
+        update_field('alya_about_badge_desc', 'Semua solusi kecantikan di satu tempat', $tentang_id);
+        update_field('alya_about_title', 'Hospitality, Kesehatan, dan Solusi Satu Pintu', $tentang_id);
+        update_field('alya_about_text', '<p>Alya Esthetic Center hadir sebagai klinik kecantikan yang mengedepankan hospitality, kesehatan, dan solusi satu pintu untuk semua orang. Kami percaya bahwa kecantikan sejati dimulai dari rasa nyaman dan aman selama menjalani perawatan.</p><p>Berlokasi di Jakarta Selatan, kami membangun kepercayaan Sahabat Alya melalui tim dokter profesional, teknologi terkini, dan pendekatan yang personal untuk setiap kebutuhan kulit dan tubuh — mulai dari perawatan wajah, tubuh, hingga program pelangsingan dan wellness.</p><p>Kenyamanan dan kepuasan pasien merupakan prioritas utama kami, begitu pula dengan menjaga kerahasiaan setiap Sahabat Alya yang berkonsultasi dan menjalani perawatan bersama kami.</p>', $tentang_id);
+        update_field('alya_about_points', "Tim dokter berpengalaman\nPerawatan efektif & personal\nKerahasiaan terjamin\nRamah keluarga", $tentang_id);
+        
+        // Stats (JSON)
+        update_field('alya_stats', json_encode([
+            ['number' => '10+', 'label' => 'Tahun Pengalaman'],
+            ['number' => '15+', 'label' => 'Dokter & Terapis'],
+            ['number' => '30+', 'label' => 'Jenis Treatment'],
+            ['number' => '1000+', 'label' => 'Sahabat Alya Puas'],
+        ], JSON_UNESCAPED_UNICODE), $tentang_id);
+        
+        // Visi & Misi
+        update_field('alya_vision_title', 'Visi', $tentang_id);
+        update_field('alya_vision_text', 'Menjadi klinik kecantikan terpercaya dan terdepan di Indonesia yang menghadirkan solusi kecantikan satu pintu, aman, dan berbasis hospitality bagi setiap Sahabat Alya.', $tentang_id);
+        update_field('alya_mission_title', 'Misi', $tentang_id);
+        update_field('alya_mission_points', "Memberikan pelayanan yang ramah, personal, dan mengutamakan kenyamanan pasien.\nMenghadirkan tim dokter dan terapis profesional yang terus mengikuti perkembangan teknologi kecantikan.\nMenjaga kerahasiaan dan kepercayaan setiap Sahabat Alya.\nMenyediakan solusi kecantikan yang efektif, aman, dan terjangkau.", $tentang_id);
+        
+        // Values
+        update_field('alya_values', json_encode([
+            ['icon' => 'heart', 'title' => 'Hospitality', 'description' => 'Keramahan dan kenyamanan pasien menjadi dasar dari setiap interaksi di klinik kami.'],
+            ['icon' => 'user', 'title' => 'Keamanan', 'description' => 'Setiap prosedur dijalankan sesuai standar medis oleh dokter dan tenaga profesional bersertifikat.'],
+            ['icon' => 'star', 'title' => 'Kualitas', 'description' => 'Kami hanya menggunakan produk dan teknologi terkini yang teruji untuk hasil yang optimal.'],
+            ['icon' => 'lock', 'title' => 'Kerahasiaan', 'description' => 'Privasi dan kerahasiaan setiap Sahabat Alya selama berkonsultasi dan menjalani perawatan selalu kami jaga.'],
+        ], JSON_UNESCAPED_UNICODE), $tentang_id);
+        
+        // CTA
+        update_field('alya_cta_title', 'Rawat Kulit Terbaik, Satu Pintu di Alya Esthetic', $tentang_id);
+        update_field('alya_cta_desc', 'Konsultasikan kebutuhan kecantikan Anda bersama tim dokter profesional kami di Jakarta Selatan.', $tentang_id);
+        update_field('alya_cta_btn_text', 'Buat Janji Temu', $tentang_id);
+        update_field('alya_cta_btn_url', home_url('/kontak/'), $tentang_id);
 
-<!-- ============ STATS ============ -->
-<section class="alya-section bg-dark" style="background:var(--brand-dark,#1a1a2e)">
-    <div class="container">
-        <div class="stats-row">
-            <div class="stat"><b class="stat__number">10+</b><span class="stat__label">Tahun Pengalaman</span></div>
-            <div class="stat"><b class="stat__number">15+</b><span class="stat__label">Dokter &amp; Terapis</span></div>
-            <div class="stat"><b class="stat__number">30+</b><span class="stat__label">Jenis Treatment</span></div>
-            <div class="stat"><b class="stat__number">1000+</b><span class="stat__label">Sahabat Alya Puas</span></div>
-        </div>
-    </div>
-</section>
-
-<!-- ============ VISI MISI ============ -->
-<section class="alya-section bg-light">
-    <div class="container">
-        <div class="about-grid" style="gap:24px">
-            <div class="card card--compact" style="padding:32px">
-                <div class="card__icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v18H3V7l9-5z" opacity="0"/><path d="M12 2c-4.4 0-8 3.6-8 8 0 5.4 8 12 8 12s8-6.6 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg></div>
-                <h3>Visi</h3>
-                <p>Menjadi klinik kecantikan terpercaya dan terdepan di Indonesia yang menghadirkan solusi kecantikan satu pintu, aman, dan berbasis hospitality bagi setiap Sahabat Alya.</p>
-            </div>
-            <div class="card card--compact" style="padding:32px">
-                <div class="card__icon"><svg viewBox="0 0 24 24"><path d="M9 16.2l-3.2-3.2L4.5 14.3 9 18.8 18.5 9.3l-1.3-1.3z"/></svg></div>
-                <h3>Misi</h3>
-                <ul style="list-style:none;padding:0;margin:0">
-                    <li style="margin-bottom:8px"><svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align:middle;margin-right:6px;fill:var(--brand)"><path d="M9 16.2l-3.2-3.2L4.5 14.3 9 18.8 18.5 9.3l-1.3-1.3z"/></svg> Memberikan pelayanan yang ramah, personal, dan mengutamakan kenyamanan pasien.</li>
-                    <li style="margin-bottom:8px"><svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align:middle;margin-right:6px;fill:var(--brand)"><path d="M9 16.2l-3.2-3.2L4.5 14.3 9 18.8 18.5 9.3l-1.3-1.3z"/></svg> Menghadirkan tim dokter dan terapis profesional yang terus mengikuti perkembangan teknologi kecantikan.</li>
-                    <li style="margin-bottom:8px"><svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align:middle;margin-right:6px;fill:var(--brand)"><path d="M9 16.2l-3.2-3.2L4.5 14.3 9 18.8 18.5 9.3l-1.3-1.3z"/></svg> Menjaga kerahasiaan dan kepercayaan setiap Sahabat Alya.</li>
-                    <li style="margin-bottom:8px"><svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align:middle;margin-right:6px;fill:var(--brand)"><path d="M9 16.2l-3.2-3.2L4.5 14.3 9 18.8 18.5 9.3l-1.3-1.3z"/></svg> Menyediakan solusi kecantikan yang efektif, aman, dan terjangkau.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============ VALUES ============ -->
-<section class="alya-section">
-    <div class="container" style="text-align:center">
-        <span class="eyebrow center">Nilai Kami</span>
-        <h2 style="margin-bottom:8px">Mengapa Memilih Alya Esthetic</h2>
-        <p class="lead center" style="margin-bottom:40px">Komitmen kami dibangun di atas empat nilai utama yang menjadi pedoman setiap layanan.</p>
-        <div class="cards-grid cards-grid--4">
-            <div class="card card--compact">
-                <div class="card__icon"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.2-9C1.2 8.2 3 5 6.4 5c2 0 3.4 1.1 4 2.3h3.2c.6-1.2 2-2.3 4-2.3 3.4 0 5.2 3.2 3.6 7-2.2 4.4-9.2 9-9.2 9z"/></svg></div>
-                <h3>Hospitality</h3>
-                <p class="card__desc">Keramahan dan kenyamanan pasien menjadi dasar dari setiap interaksi di klinik kami.</p>
-            </div>
-            <div class="card card--compact">
-                <div class="card__icon"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7c0 2 .8 3.6 1.7 5.1C8 15.9 9 18.4 9 21h6c0-2.6 1-5.1 2.3-6.9C18.2 12.6 19 11 19 9a7 7 0 00-7-7z"/></svg></div>
-                <h3>Keamanan</h3>
-                <p class="card__desc">Setiap prosedur dijalankan sesuai standar medis oleh dokter dan tenaga profesional bersertifikat.</p>
-            </div>
-            <div class="card card--compact">
-                <div class="card__icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2H22l-6 4.7 2.3 7.1-6.3-4.6-6.3 4.6 2.3-7.1-6-4.7h7.6z"/></svg></div>
-                <h3>Kualitas</h3>
-                <p class="card__desc">Kami hanya menggunakan produk dan teknologi terkini yang teruji untuk hasil yang optimal.</p>
-            </div>
-            <div class="card card--compact">
-                <div class="card__icon"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0v1H5v-1z"/></svg></div>
-                <h3>Kerahasiaan</h3>
-                <p class="card__desc">Privasi dan kerahasiaan setiap Sahabat Alya selama berkonsultasi dan menjalani perawatan selalu kami jaga.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============ DOCTORS ============ -->
-<section class="alya-section bg-light">
-    <div class="container" style="text-align:center">
-        <span class="eyebrow center">Our Expert</span>
-        <h2 style="margin-bottom:8px">Tim Dokter Kami</h2>
-        <p class="lead center">Dipercaya sebagai klinik kecantikan terbaik di Jakarta Selatan dengan tim dokter profesional dan berpengalaman.</p>
-    </div>
-</section>
-
-<!-- ============ CTA ============ -->
-<section class="cta-section">
-    <div class="cta-section__overlay"></div>
-    <div class="container">
-        <div class="cta-section__content">
-            <h2 class="cta-section__title">Rawat Kulit Terbaik, Satu Pintu di Alya Esthetic</h2>
-            <p class="cta-section__desc">Konsultasikan kebutuhan kecantikan Anda bersama tim dokter profesional kami di Jakarta Selatan.</p>
-            <div class="cta-section__actions">
-                <a href="https://wa.me/6281290000000?text=Halo,%20saya%20ingin%20konsultasi" class="btn btn--wa btn--lg" target="_blank" rel="noopener">Buat Janji Temu</a>
-            </div>
-        </div>
-    </div>
-</section>';
-        wp_update_post(['ID' => $tentang_id, 'post_content' => $content]);
         echo "  [UPDATE] Tentang Kami #" . $tentang_id . "\n";
     } else {
         echo "  [SKIP] Tentang Kami page not found\n";
@@ -455,7 +388,7 @@ function alya_seed_pages() {
 <section class="page-hero page-hero--bg">
   <div class="page-hero__bg"></div>
   <div class="container">
-    <span class="eyebrow" style="color:#efd9c8">Kontak Kami</span>
+    <span class="eyebrow">Kontak Kami</span>
     <h1>Kami Siap Membantu Anda</h1>
     <div class="breadcrumb">
       <a href="' . esc_url(home_url('/')) . '">Beranda</a>
@@ -647,7 +580,7 @@ function alya_seed_pages() {
 <!-- ============ PAGE HEADER ============ -->
 <div class="pagehead">
   <div class="container">
-    <span class="eyebrow" style="color:#efd9c8">Bergabung Bersama Kami</span>
+    <span class="eyebrow">Bergabung Bersama Kami</span>
     <h1>Karir di Alya Esthetic Center</h1>
     <p class="lead">Jadi bagian dari tim yang membantu banyak orang tampil lebih percaya diri. Kami mencari individu yang berdedikasi, ramah, dan ingin terus berkembang di industri kecantikan &amp; kesehatan.</p>
     <div class="crumb">
@@ -738,7 +671,7 @@ function alya_seed_pages() {
     </aside>
   </div>
 </section>';
-        wp_update_post(['ID' => $karir_id, 'post_content' => $karir_content]);
+        wp_update_post(['ID' => $karir_id, 'post_content' => $karir_content, 'page_template' => 'page-karir.php']);
         echo "  [UPDATE] Karir #" . $karir_id . "\n";
     } else {
         echo "  [SKIP] Karir page not found\n";
@@ -765,7 +698,7 @@ function alya_seed_pages() {
     }
 
     // Build treatment cards from CPT
-    $skin_svc = get_posts(['post_type' => 'service', 'posts_per_page' => 20, 'post_status' => 'publish', 'orderby' => 'menu_order', 'order' => 'ASC']);
+    $skin_svc = get_posts(['post_type' => 'treatment', 'posts_per_page' => 20, 'post_status' => 'publish', 'orderby' => 'menu_order', 'order' => 'ASC']);
     $layanan_cards = '';
     $fallback_imgs = [
         'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
@@ -995,7 +928,157 @@ function alya_seed_pages() {
     echo "\n";
 
     // ═══════════════════════════════════════════
-    // 8. FLUSH REWRITE
+    // 8. GALERI PAGE
+    // ═══════════════════════════════════════════
+    echo "8. Creating/updating Galeri page...\n";
+    $galeri_id = 0;
+    foreach ($pages as $p) {
+        if (stripos($p->post_title, 'Galeri') !== false || stripos($p->post_title, 'Gallery') !== false) { $galeri_id = $p->ID; break; }
+    }
+    if (!$galeri_id) {
+        $galeri_id = wp_insert_post([
+            'post_type'    => 'page',
+            'post_title'   => 'Galeri',
+            'post_name'    => 'galeri',
+            'post_status'  => 'publish',
+            'post_content' => '',
+            'page_template' => 'page-gallery.php',
+        ]);
+        echo "  [CREATE] Galeri #" . $galeri_id . "\n";
+    } else {
+        wp_update_post(['ID' => $galeri_id, 'page_template' => 'page-gallery.php']);
+    }
+
+    // Helper to find attachment by filename (with or without 'seed-' prefix)
+    function seed_find_attach($filename) {
+        // Try with seed- prefix first
+        $attach = get_posts([
+            'post_type'    => 'attachment',
+            'post_status'  => 'inherit',
+            'meta_query'   => [[
+                'key'     => '_wp_attached_file',
+                'value'   => 'seed/' . $filename,
+                'compare' => 'LIKE',
+            ]],
+            'posts_per_page' => 1,
+        ]);
+        if (!empty($attach)) return $attach[0]->ID;
+        // Try without prefix
+        $attach = get_posts([
+            'post_type'    => 'attachment',
+            'post_status'  => 'inherit',
+            'meta_query'   => [[
+                'key'     => '_wp_attached_file',
+                'value'   => $filename,
+                'compare' => 'LIKE',
+            ]],
+            'posts_per_page' => 1,
+        ]);
+        return !empty($attach) ? $attach[0]->ID : 0;
+    }
+
+    // Gallery items data: Before_Image_ID | After_Image_ID | category | Tag | Title | Description | Duration | Patient_Info
+    // Using existing seed images as before/after pairs
+    $gallery_items_data = [
+        [
+            'before' => seed_find_attach('treat-hydra.png'),
+            'after'  => seed_find_attach('post-facial.png'),
+            'cat'    => 'rejuvenation',
+            'tag'    => 'Facial Treatment',
+            'title'  => 'Hydra Facial Glow Up',
+            'desc'   => 'Transformasi kulit wajah dari kusam menjadi cerah bercahaya setelah 1x perawatan Hydra Facial.',
+            'duration' => '60 menit',
+            'patient'  => 'Wanita, 28 tahun',
+        ],
+        [
+            'before' => seed_find_attach('treat-laser.png'),
+            'after'  => seed_find_attach('ig-3.png'),
+            'cat'    => 'laser',
+            'tag'    => 'Laser Treatment',
+            'title'  => 'Laser Pigment Removal',
+            'desc'   => 'Penghilangan noda pigmentasi dan flek hitam secara tuntas dengan teknologi laser terkini.',
+            'duration' => '45 menit',
+            'patient'  => 'Wanita, 35 tahun',
+        ],
+        [
+            'before' => seed_find_attach('treat-botox.png'),
+            'after'  => seed_find_attach('ig-4.png'),
+            'cat'    => 'filler',
+            'tag'    => 'Filler & Botox',
+            'title'  => 'Botox Anti-Aging',
+            'desc'   => 'Pengurangan garis-garis halus dan kerutan pada wajah dengan injeksi botox yang presisi.',
+            'duration' => '30 menit',
+            'patient'  => 'Wanita, 42 tahun',
+        ],
+        [
+            'before' => seed_find_attach('treat-rf.jpg'),
+            'after'  => seed_find_attach('ig-1.png'),
+            'cat'    => 'slimming',
+            'tag'    => 'Slimming Treatment',
+            'title'  => 'RF Body Slimming',
+            'desc'   => 'Pengurangan lemak tubuh dan pengencangan kulit pada area perut dengan radio frequency.',
+            'duration' => '90 menit',
+            'patient'  => 'Pria, 38 tahun',
+        ],
+        [
+            'before' => seed_find_attach('ig-2.png'),
+            'after'  => seed_find_attach('ig-5.png'),
+            'cat'    => 'acne',
+            'tag'    => 'Acne Treatment',
+            'title'  => 'Acne Clear Program',
+            'desc'   => 'Program perawatan jerawat intensif yang berhasil membersihkan wajah dari jerawat aktif dan bekasnya.',
+            'duration' => '120 menit',
+            'patient'  => 'Wanita, 22 tahun',
+        ],
+        [
+            'before' => seed_find_attach('ig-6.png'),
+            'after'  => seed_find_attach('post-slimming.png'),
+            'cat'    => 'slimming',
+            'tag'    => 'Slimming Treatment',
+            'title'  => 'Body Contouring Result',
+            'desc'   => 'Hasil pembentukan tubuh ideal setelah serangkaian perawatan slimming di Alya Esthetic.',
+            'duration' => '90 menit',
+            'patient'  => 'Wanita, 30 tahun',
+        ],
+    ];
+
+    // Build pipe-delimited text for alya_gallery_items field
+    $gallery_lines = [];
+    foreach ($gallery_items_data as $item) {
+        if (!$item['before'] || !$item['after']) continue;
+        $gallery_lines[] = implode(' | ', [
+            $item['before'],
+            $item['after'],
+            $item['cat'],
+            $item['tag'],
+            $item['title'],
+            $item['desc'],
+            $item['duration'],
+            $item['patient'],
+        ]);
+    }
+    $gallery_items_text = implode("\n", $gallery_lines);
+
+    // Set ACF fields if available
+    if (function_exists('update_field')) {
+        // Hero background
+        $hero_bg_id = seed_find_attach('hero-v1');
+        if ($hero_bg_id) {
+            update_field('alya_hero_bg', $hero_bg_id, $galeri_id);
+        }
+        update_field('alya_hero_title', 'Before & After Gallery', $galeri_id);
+        update_field('alya_hero_subtitle', 'Setiap foto adalah kisah nyata transformasi pasien kami. Geser gambar untuk melihat perbandingan hasil perawatan yang luar biasa.', $galeri_id);
+        update_field('alya_gallery_disclaimer', 'Foto-foto di bawah ini ditampilkan dengan persetujuan penuh dari pasien. Hasil perawatan dapat bervariasi tergantung kondisi kulit, jenis perawatan, dan faktor individu masing-masing. Konsultasikan dengan dokter kami untuk estimasi hasil yang lebih akurat.', $galeri_id);
+        update_field('alya_gallery_items', $gallery_items_text, $galeri_id);
+        echo "  [ACF] Set hero + " . count($gallery_lines) . " gallery items (pipe-delimited)\n";
+    } else {
+        echo "  [SKIP] ACF not available\n";
+    }
+    echo "  [UPDATE] Galeri #" . $galeri_id . "\n";
+    echo "\n";
+
+    // ═══════════════════════════════════════════
+    // 9. FLUSH REWRITE
     // ═══════════════════════════════════════════
     echo "8. Flushing rewrite rules...\n";
     flush_rewrite_rules(true);

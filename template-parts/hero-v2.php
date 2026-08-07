@@ -24,7 +24,8 @@ $stats     = get_theme_mod('alya_v2_hero_stats', [
 if (empty($cta_url)) $cta_url = alya_wa_link();
 ?>
 
-<div class="hero hero--v2 hero--bg" id="beranda" <?php if ($bg_image) : ?>style="background-image:url('<?php echo esc_url($bg_image); ?>')"<?php endif; ?>>
+<div class="hero" id="beranda">
+    <div class="hero__bg"<?php if ($bg_image) : ?> style="background-image:url('<?php echo esc_url($bg_image); ?>')"<?php endif; ?>></div>
     <div class="hero__bg-overlay"></div>
     <div class="container hero__inner">
         <?php if ($eyebrow) : ?>

@@ -10,64 +10,162 @@ get_header();
 
 <?php while (have_posts()) : the_post(); ?>
 
-<!-- Hero -->
 <?php
-$hero_bg        = get_field('alya_hero_bg');
-$hero_title     = get_field('alya_hero_title') ?: get_the_title();
-$hero_subtitle  = get_field('alya_hero_subtitle');
+// Hero Section
+$hero_bg       = get_field('alya_hero_bg');
+$hero_eyebrow  = get_field('alya_hero_eyebrow') ?: 'Medical Innovation';
+$hero_title    = get_field('alya_hero_title') ?: 'Teknologi & Medical Devices Berstandar Internasional';
+$hero_subtitle = get_field('alya_hero_subtitle') ?: 'Alya Esthetic berkomitmen menghadirkan perangkat medis terkini yang telah tersertifikasi BPOM, FDA, dan CE Mark demi hasil perawatan yang aman dan optimal.';
+$hero_stats    = get_field('alya_hero_stats');
+
+// Categories
+$categories = get_field('alya_tech_categories');
+
+// Certification
+$cert_eyebrow = get_field('alya_cert_eyebrow') ?: 'Sertifikasi & Standar';
+$cert_title   = get_field('alya_cert_title') ?: 'Perangkat Berstandar & Bersertifikat Internasional';
+$cert_desc    = get_field('alya_cert_desc') ?: 'Setiap alat yang kami gunakan telah melalui proses sertifikasi ketat dari lembaga regulasi kesehatan terkemuka dunia.';
+$cert_logos   = get_field('alya_cert_logos');
+
+// CTA
+$cta_eyebrow      = get_field('alya_cta_eyebrow') ?: 'Mulai Perjalanan Kecantikan Anda';
+$cta_title        = get_field('alya_cta_title') ?: 'Rasakan Teknologi Medis Terbaik';
+$cta_desc         = get_field('alya_cta_desc') ?: 'Konsultasikan kebutuhan Anda dengan dokter kami dan temukan treatment berbasis teknologi yang paling tepat.';
+$cta_button_label = get_field('alya_cta_button_label') ?: 'Konsultasi Gratis';
+$cta_button_url   = get_field('alya_cta_button_url') ?: alya_wa_link();
 ?>
-<section class="page-hero <?php echo $hero_bg ? 'page-hero--bg' : ''; ?>" <?php if ($hero_bg && is_array($hero_bg)) echo 'style="background-image:url(' . esc_url($hero_bg['url']) . ')"'; ?>>
+
+<!-- PAGE HERO -->
+<section class="page-hero page-hero--tech" <?php if ($hero_bg && is_array($hero_bg)) echo 'style="background-image:url(' . esc_url($hero_bg['url']) . ')"'; ?>>
     <div class="page-hero__overlay"></div>
     <div class="container">
-        <div class="page-hero__content">
-            <h1 class="page-hero__title"><?php echo esc_html($hero_title); ?></h1>
-            <?php if ($hero_subtitle) : ?>
-                <p class="page-hero__subtitle"><?php echo esc_html($hero_subtitle); ?></p>
+        <div class="page-hero__inner">
+            <span class="eyebrow eyebrow--light"><?php echo esc_html($hero_eyebrow); ?></span>
+            <h1><?php echo esc_html($hero_title); ?></h1>
+            <p><?php echo esc_html($hero_subtitle); ?></p>
+            <?php if ($hero_stats && is_array($hero_stats)) : ?>
+                <div class="hero-stats">
+                    <?php foreach ($hero_stats as $stat) : ?>
+                        <div>
+                            <b><?php echo esc_html($stat['value'] ?? ''); ?></b>
+                            <span><?php echo esc_html($stat['label'] ?? ''); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             <?php endif; ?>
         </div>
     </div>
 </section>
 
-<!-- Technology Items -->
-<?php
-$tech_items = get_field('alya_tech_items');
-if ($tech_items) :
-?>
-<section class="tech-page">
+<!-- CATEGORY NAV -->
+<?php if ($categories && is_array($categories)) : ?>
+<div class="cat-nav" id="catNav">
     <div class="container">
-        <div class="tech-list">
-            <?php foreach ($tech_items as $item) : ?>
-                <div class="tech-item">
-                    <?php if ($item['image']) : ?>
-                        <div class="tech-item__image">
-                            <img src="<?php echo esc_url($item['image']['url']); ?>" alt="<?php echo esc_attr($item['title']); ?>" loading="lazy" width="600" height="400">
-                        </div>
-                    <?php endif; ?>
-                    <div class="tech-item__content">
-                        <?php if ($item['icon']) : ?>
-                            <div class="tech-item__icon"><?php echo esc_html($item['icon']); ?></div>
-                        <?php endif; ?>
-                        <h2 class="tech-item__title"><?php echo esc_html($item['title']); ?></h2>
-                        <p class="tech-item__desc"><?php echo esc_html($item['description']); ?></p>
-                    </div>
-                </div>
+        <div class="cat-nav-inner">
+            <?php foreach ($categories as $index => $cat) : ?>
+                <a class="cat-link<?php echo $index === 0 ? ' active' : ''; ?>" href="#<?php echo esc_attr($cat['category_id'] ?? ''); ?>">
+                    <?php echo esc_html($cat['category_label'] ?? ''); ?>
+                </a>
             <?php endforeach; ?>
         </div>
     </div>
-</section>
+</div>
+
+<!-- TECH SECTIONS -->
+<?php foreach ($categories as $index => $cat) : ?>
+    <?php
+    $devices     = $cat['devices'] ?? [];
+    $bg_alt      = !empty($cat['category_bg_alt']) || ($index % 2 === 1);
+    ?>
+    <section class="tech-section<?php echo $bg_alt ? ' bg-light' : ''; ?>" id="<?php echo esc_attr($cat['category_id'] ?? ''); ?>">
+        <div class="container">
+            <div class="tech-head">
+                <div>
+                    <span class="eyebrow"><?php echo esc_html(($cat['category_number'] ?? '') . ' — ' . ($cat['category_eyebrow'] ?? '')); ?></span>
+                    <h2><?php echo esc_html($cat['category_title'] ?? ''); ?></h2>
+                </div>
+                <?php if (!empty($cat['category_badge'])) : ?>
+                    <span class="tech-cat-badge"><?php echo esc_html($cat['category_badge']); ?></span>
+                <?php endif; ?>
+            </div>
+            <?php if ($devices && is_array($devices)) : ?>
+                <div class="device-grid">
+                    <?php foreach ($devices as $device) : ?>
+                        <?php
+                        $image    = $device['image'] ?? null;
+                        $features = $device['features'] ?? [];
+                        ?>
+                        <div class="device-card">
+                            <div class="device-card__img">
+                                <?php if ($image && is_array($image)) : ?>
+                                    <img src="<?php echo esc_url($image['url']); ?>" alt="<?php echo esc_attr($device['device_title'] ?? ''); ?>" loading="lazy" width="280" height="210">
+                                <?php else : ?>
+                                    <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/services/laser.png'); ?>" alt="Medical Device" loading="lazy" width="280" height="210">
+                                <?php endif; ?>
+                            </div>
+                            <div class="device-card__body">
+                                <?php if (!empty($device['brand_tag'])) : ?>
+                                    <p class="brand-tag"><?php echo esc_html($device['brand_tag']); ?></p>
+                                <?php endif; ?>
+                                <h3><?php echo esc_html($device['device_title'] ?? ''); ?></h3>
+                                <?php if (!empty($device['device_desc'])) : ?>
+                                    <p><?php echo esc_html($device['device_desc']); ?></p>
+                                <?php endif; ?>
+                                <?php if ($features && is_array($features)) : ?>
+                                    <ul class="device-card__features">
+                                        <?php foreach ($features as $feature) : ?>
+                                            <li><?php echo esc_html($feature['feature_text'] ?? ''); ?></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                                <?php if (!empty($device['origin_badge'])) : ?>
+                                    <span class="origin-badge">
+                                        <?php echo alya_icon('certificate'); ?>
+                                        <?php echo esc_html($device['origin_badge']); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+<?php endforeach; ?>
 <?php endif; ?>
 
-<!-- Content -->
-<?php if (get_the_content()) : ?>
-<section class="page-default">
-    <div class="container container--narrow">
-        <div class="entry-content">
-            <?php the_content(); ?>
-        </div>
+<!-- CERTIFICATIONS -->
+<section class="cert-section">
+    <div class="container center">
+        <span class="eyebrow eyebrow--light"><?php echo esc_html($cert_eyebrow); ?></span>
+        <h2><?php echo esc_html($cert_title); ?></h2>
+        <p class="lead lead--light"><?php echo esc_html($cert_desc); ?></p>
+        <?php if ($cert_logos && is_array($cert_logos)) : ?>
+            <div class="cert-logos">
+                <?php foreach ($cert_logos as $logo) : ?>
+                    <div class="cert-logo">
+                        <?php if (!empty($logo['icon'])) : ?>
+                            <span class="icon"><?php echo esc_html($logo['icon']); ?></span>
+                        <?php endif; ?>
+                        <div class="name"><?php echo esc_html($logo['cert_name'] ?? ''); ?></div>
+                        <div class="desc"><?php echo esc_html($logo['cert_desc'] ?? ''); ?></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
-<?php endif; ?>
+
+<!-- CTA -->
+<div class="cta-band">
+    <div class="container center">
+        <span class="eyebrow"><?php echo esc_html($cta_eyebrow); ?></span>
+        <h2><?php echo esc_html($cta_title); ?></h2>
+        <p><?php echo esc_html($cta_desc); ?></p>
+        <a href="<?php echo esc_url($cta_button_url); ?>" class="btn"><?php echo esc_html($cta_button_label); ?></a>
+    </div>
+</div>
 
 <?php endwhile; ?>
 
-<?php get_footer();
+<?php get_footer(); ?>

@@ -1,0 +1,381 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PAGE-TECHNOLOGY.CSS — Technology Page Specific Styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Page Hero Tech ─── */
+.page-hero--tech {
+    position: relative;
+    padding: 160px 0 90px;
+    color: #fff;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--ink);
+}
+
+.page-hero--tech .page-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, rgba(30, 24, 20, .82) 0%, rgba(30, 24, 20, .5) 70%, rgba(30, 24, 20, .2) 100%);
+}
+
+.page-hero--tech .container {
+    position: relative;
+    z-index: 2;
+}
+
+.page-hero--tech .page-hero__inner {
+    max-width: 640px;
+}
+
+.page-hero--tech .eyebrow {
+    color: #efd9c8;
+}
+
+.page-hero--tech .eyebrow::before {
+    background: #efd9c8;
+}
+
+.page-hero--tech h1 {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    margin: 10px 0 16px;
+    color: #fff;
+}
+
+.page-hero--tech p {
+    color: rgba(255, 255, 255, .86);
+    max-width: 52ch;
+    font-size: 1.05rem;
+}
+
+/* ─── Hero Stats ─── */
+.hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+}
+
+.hero-stats div {
+    border-left: 2px solid rgba(255, 255, 255, .3);
+    padding-left: 18px;
+}
+
+.hero-stats b {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #efd9c8;
+}
+
+.hero-stats span {
+    font-size: .84rem;
+    color: rgba(255, 255, 255, .75);
+}
+
+/* ─── Category Nav ─── */
+.cat-nav {
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 72px;
+    z-index: 30;
+    padding: 0;
+}
+
+.cat-nav-inner {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.cat-nav-inner::-webkit-scrollbar {
+    display: none;
+}
+
+.cat-link {
+    padding: 18px 26px;
+    font-size: .88rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: .25s;
+    cursor: pointer;
+}
+
+.cat-link:hover,
+.cat-link.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+}
+
+/* ─── Tech Section ─── */
+.tech-section {
+    padding: 70px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.tech-section:last-of-type {
+    border-bottom: none;
+}
+
+.tech-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 44px;
+    flex-wrap: wrap;
+}
+
+.tech-head h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.tech-cat-badge {
+    background: var(--brand-soft);
+    color: var(--brand);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: .8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ─── Device Grid ─── */
+.device-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+}
+
+/* ─── Device Card ─── */
+.device-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    transition: .35s;
+}
+
+.device-card:hover {
+    box-shadow: var(--shadow);
+    border-color: var(--brand);
+}
+
+.device-card__img {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+}
+
+.device-card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: .5s;
+}
+
+.device-card:hover .device-card__img img {
+    transform: scale(1.05);
+}
+
+.device-card__body {
+    padding: 26px;
+}
+
+.device-card__body .brand-tag {
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 8px;
+}
+
+.device-card__body h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.device-card__body p {
+    font-size: .88rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+}
+
+/* ─── Device Features ─── */
+.device-card__features {
+    list-style: none;
+    display: grid;
+    gap: 6px;
+}
+
+.device-card__features li {
+    font-size: .84rem;
+    color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.device-card__features li::before {
+    content: "\2713";
+    color: var(--brand);
+    font-weight: 700;
+    flex: none;
+    margin-top: 2px;
+}
+
+/* ─── Origin Badge ─── */
+.origin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.origin-badge svg {
+    width: 14px;
+    height: 14px;
+    fill: var(--brand);
+}
+
+/* ─── Cert Section ─── */
+.cert-section {
+    background: var(--ink);
+    color: #f1ecea;
+    padding: 80px 0;
+}
+
+.cert-section .eyebrow {
+    color: #e8c9ae;
+}
+
+.cert-section h2 {
+    color: #fff;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    margin-bottom: 12px;
+}
+
+.lead--light {
+    color: rgba(255, 255, 255, .75);
+    margin: 0 auto 50px;
+}
+
+/* ─── Cert Logos ─── */
+.cert-logos {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
+.cert-logo {
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    transition: .3s;
+}
+
+.cert-logo:hover {
+    background: rgba(255, 255, 255, .1);
+    border-color: rgba(255, 255, 255, .25);
+}
+
+.cert-logo .name {
+    font-weight: 700;
+    font-size: .96rem;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.cert-logo .desc {
+    font-size: .78rem;
+    color: rgba(255, 255, 255, .55);
+}
+
+.cert-logo .icon {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* ─── CTA Band ─── */
+.cta-band {
+    background: var(--brand-soft);
+    padding: 70px 0;
+    text-align: center;
+    border-top: 1px solid var(--line);
+}
+
+.cta-band h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    margin-bottom: 12px;
+}
+
+.cta-band p {
+    color: var(--muted);
+    max-width: 50ch;
+    margin: 0 auto 28px;
+}
+
+.cta-band .btn {
+    background: #fff;
+    color: var(--brand-dark);
+    border-color: #fff;
+}
+
+.cta-band .btn:hover {
+    background: var(--brand-soft);
+    border-color: var(--brand-soft);
+    color: var(--brand-dark);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 960px) {
+    .device-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .device-card {
+        grid-template-columns: 180px 1fr;
+    }
+
+    .cert-logos {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    .page-hero--tech {
+        padding: 120px 0 60px;
+    }
+
+    .device-card {
+        grid-template-columns: 1fr;
+        display: block;
+    }
+
+    .device-card__img {
+        aspect-ratio: 16/9;
+    }
+
+    .cert-logos {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-stats {
+        gap: 24px;
+    }
+
+    .hero-stats div {
+        flex: 0 0 calc(50% - 12px);
+    }
+}

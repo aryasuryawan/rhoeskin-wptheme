@@ -15,14 +15,12 @@ $points   = get_theme_mod('alya_v2_about_points', [
 ]);
 ?>
 
-<section class="about about--v2" id="tentang">
+<section class="about" id="tentang">
     <div class="container about__grid">
         <div class="about__media">
-            <?php if ($image) : ?>
-                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy" width="600" height="750">
-            <?php endif; ?>
+            <img src="<?php echo esc_url($image ?: 'https://alyaesthetic.id/wp-content/uploads/2024/06/ALYA_5754_Edit-scaled-e1749969873976.png'); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy" width="600" height="750">
             <div class="about__badge">
-                <div class="about__badge-icon">
+                <div class="ic">
                     <svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6-5.5-3-5.5 3 1-6L3 8.9 9 8z"/></svg>
                 </div>
                 <div>
@@ -38,9 +36,9 @@ $points   = get_theme_mod('alya_v2_about_points', [
             <?php if (!empty($points) && is_array($points)) : ?>
                 <div class="about__points">
                     <?php foreach ($points as $point) : ?>
-                        <div class="about__points-item">
+                        <div class="pt">
                             <svg viewBox="0 0 24 24"><path d="M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.5-1.5z"/></svg>
-                            <?php echo esc_html($point); ?>
+                            <span><?php echo esc_html($point); ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>

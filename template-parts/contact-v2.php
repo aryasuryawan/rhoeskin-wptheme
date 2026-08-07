@@ -13,15 +13,13 @@ $maps     = get_theme_mod('alya_google_maps_embed', '');
 $wa_url   = alya_wa_link();
 ?>
 
-<section class="contact contact--v2" id="kontak">
-    <div class="container">
-        <div class="sec-head">
-            <div>
-                <span class="eyebrow">Kontak Kami</span>
-                <h2>Kunjungi atau Hubungi Kami</h2>
-            </div>
-            <p class="lead">Buat janji temu melalui WhatsApp atau kunjungi klinik kami langsung di Jakarta Selatan.</p>
+<section class="contact" id="kontak">
+    <div class="container sec-head">
+        <div>
+            <span class="eyebrow">Kontak Kami</span>
+            <h2>Kunjungi atau Hubungi Kami</h2>
         </div>
+        <p class="lead">Buat janji temu melalui WhatsApp atau kunjungi klinik kami langsung di Jakarta Selatan.</p>
     </div>
     <div class="container contact__grid">
         <div class="contact__info">
@@ -52,12 +50,12 @@ $wa_url   = alya_wa_link();
                         </div>
                         <div>
                             <b>WhatsApp</b>
-                            <span>Respon cepat untuk booking & konsultasi</span>
+                            <span>Respon cepat untuk booking &amp; konsultasi</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <a class="btn btn--full" href="<?php echo esc_url($wa_url); ?>" target="_blank" rel="noopener">Chat via WhatsApp</a>
+            <a class="btn" href="<?php echo esc_url($wa_url); ?>" target="_blank" rel="noopener" style="width:100%;justify-content:center">Chat via WhatsApp</a>
         </div>
         <div class="contact__map">
             <?php if ($maps) : ?>

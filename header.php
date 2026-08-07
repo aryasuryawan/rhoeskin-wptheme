@@ -1,6 +1,6 @@
 <?php
 /**
- * Header Template
+ * Header Template — matches static HTML template
  *
  * @package Alya_Esthetic
  */
@@ -19,55 +19,46 @@ defined('ABSPATH') || exit;
 
 <a class="skip-link screen-reader-text" href="#main"><?php esc_html_e('Skip to content', 'alya-esthetic'); ?></a>
 
-<header id="site-header" class="site-header <?php echo get_theme_mod('alya_header_sticky', true) ? 'site-header--sticky' : ''; ?>">
-    <div class="container">
-        <div class="site-header__inner">
-            <!-- Logo -->
-            <a href="<?php echo esc_url(home_url('/')); ?>" class="site-header__logo" aria-label="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>">
-                <?php if (get_theme_mod('alya_logo')) : ?>
-                    <img src="<?php echo esc_url(get_theme_mod('alya_logo')); ?>" alt="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>" width="200" height="60" loading="eager">
-                <?php else : ?>
-                    <span class="site-header__text-logo"><?php echo esc_html(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?></span>
-                <?php endif; ?>
-            </a>
-
-            <!-- Navigation -->
-            <nav class="site-header__nav" aria-label="Main Navigation">
+<header id="siteHeader">
+    <div class="container nav">
+        <a class="logo" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>">
+            <?php if (get_theme_mod('alya_logo')) : ?>
+                <img src="<?php echo esc_url(get_theme_mod('alya_logo')); ?>" alt="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>">
+            <?php else : ?>
+                <img src="https://alyaesthetic.id/wp-content/uploads/2024/06/logo-and-text.352ad43b.svg" alt="Alya Esthetic Center">
+            <?php endif; ?>
+        </a>
+        <nav class="nav__elms">
+            <?php if (is_front_page() && get_theme_mod('alya_homepage_style', 'default') === 'v2') : ?>
+                <ul class="nav__links" id="navLinks">
+                    <li><a href="#beranda" class="active">Beranda</a></li>
+                    <li><a href="#tentang">Tentang</a></li>
+                    <li><a href="#layanan">Layanan</a></li>
+                    <li><a href="#dokter">Dokter</a></li>
+                    <li><a href="#testimoni">Testimoni</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="<?php echo esc_url(get_permalink(get_option('page_for_posts')) ?: home_url('/artikel/')); ?>">Artikel</a></li>
+                    <li><a href="<?php echo esc_url(get_post_type_archive_link('jobs') ?: home_url('/karir/')); ?>">Karir</a></li>
+                    <li><a href="#kontak">Kontak</a></li>
+                </ul>
+            <?php else : ?>
                 <?php
                 wp_nav_menu([
                     'theme_location' => 'primary',
                     'container'      => false,
-                    'menu_class'     => 'nav-list',
+                    'menu_id'        => 'navLinks',
+                    'menu_class'     => 'nav__links',
                     'fallback_cb'    => false,
-                    'depth'          => 2,
+                    'depth'          => 3,
+                    'walker'         => new Alya_Dropdown_Walker(),
                 ]);
                 ?>
-            </nav>
-
-            <!-- CTA + WhatsApp -->
-            <div class="site-header__actions">
-                <?php
-                $cta_text  = get_theme_mod('alya_header_cta_text', 'Konsultasi Gratis');
-                $cta_url   = get_theme_mod('alya_header_cta_url', '#konsultasi');
-                ?>
-                <a href="<?php echo esc_url($cta_url); ?>" class="btn btn--primary btn--sm"><?php echo esc_html($cta_text); ?></a>
-
-                <?php if (get_theme_mod('alya_wa_enable', true)) : ?>
-                    <a href="<?php echo esc_url(alya_wa_link()); ?>" class="btn btn--whatsapp btn--sm" target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp">
-                        <?php echo alya_icon('whatsapp'); ?>
-                    </a>
-                <?php endif; ?>
-            </div>
-
-            <!-- Mobile Toggle -->
-            <button class="site-header__toggle" aria-label="Toggle Menu" aria-expanded="false">
-                <span class="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>
+            <?php endif; ?>
+            <a class="btn btn--ghostdark" href="<?php echo (is_front_page() && get_theme_mod('alya_homepage_style', 'default') === 'v2') ? '#kontak' : esc_url(get_permalink(get_page_by_path('kontak')) ?: home_url('/kontak/')); ?>">Buat Janji</a>
+            <button class="burger" id="burger" aria-label="Menu">
+                <span></span><span></span><span></span>
             </button>
-        </div>
+        </nav>
     </div>
 </header>
 
