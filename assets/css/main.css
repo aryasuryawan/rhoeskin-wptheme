@@ -1643,7 +1643,6 @@ footer .socials a:hover svg{fill:#fff}
   /* Treatment/Article layouts */
   .art-layout{grid-template-columns:1fr;max-width:800px;padding:24px}
   .book-card{position:static;margin-top:10px}
-  .art-layout{grid-template-columns:1fr 280px;gap:32px}
   .share-rail{display:none}
   .related--treatment .related__grid{grid-template-columns:1fr 1fr}
   .contact .grid{grid-template-columns:1fr}
