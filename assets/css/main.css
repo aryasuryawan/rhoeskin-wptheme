@@ -32,6 +32,14 @@ table{border-collapse:collapse}
 .nav__links a:hover::after{width:100%}
 .nav__links a.active{color:var(--brand)}
 .nav__links a.active::after{width:100%}
+.nav__links .promo-nav-item{position:relative}
+.nav__links .promo-nav-item > a{color:var(--promo,#c0392b);font-weight:600;opacity:1;background:linear-gradient(135deg,rgba(192,57,43,.1),rgba(192,57,43,.04));border:1px solid rgba(192,57,43,.25);border-radius:999px;padding:8px 18px}
+.nav__links .promo-nav-item > a:hover{background:linear-gradient(135deg,#c0392b,#e0684f);color:#fff;opacity:1}
+.nav__links .promo-nav-item > a::after{display:none}
+.nav__links .promo-nav-item > a.active{color:var(--promo,#c0392b)}
+.nav__links .promo-nav-item > a.active::after{display:none}
+.promo-nav-badge{display:inline-flex;align-items:center;background:var(--promo,#c0392b);color:#fff;font-size:.6rem;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:999px;margin-left:8px;vertical-align:middle;line-height:1.4;transform:translateY(-1px)}
+.nav__links .promo-nav-item > a:hover .promo-nav-badge{background:#fff;color:var(--promo,#c0392b)}
 .nav__links .dropdown a{display:block;padding:10px 14px;border-radius:10px;font-size:.86rem;color:var(--ink);white-space:nowrap}
 .nav__links .dropdown a::after{display:none}
 .nav__links .dropdown a:hover{background:var(--brand-soft);color:var(--brand)}
@@ -1626,6 +1634,9 @@ footer .socials a:hover svg{fill:#fff}
   .has-dropdown .dropdown{position:static;opacity:1;visibility:visible;transform:none;box-shadow:none;border:none;padding:0 0 0 16px;margin-top:6px;background:transparent}
   .nav__link-wrap svg{display:none}
   .nav__links .dropdown a{padding:8px 0;font-size:.84rem;color:var(--muted)}
+  .nav__links .promo-nav-item > a{background:transparent;border:none;padding:0;border-radius:0;font-size:.88rem;color:var(--promo,#c0392b)}
+  .nav__links .promo-nav-item > a:hover{background:transparent;color:var(--promo,#c0392b)}
+  .promo-nav-badge{margin-left:6px;transform:none}
   .burger{display:flex}
   #siteHeader .btn{display:none}
 

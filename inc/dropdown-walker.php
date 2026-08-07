@@ -29,6 +29,12 @@ class Alya_Dropdown_Walker extends Walker_Nav_Menu {
         if (get_queried_object_id() == $item->object_id) {
             $classes[] = 'active';
         }
+
+        // Mark menu item that points to the promo archive
+        $promo_url = get_post_type_archive_link('promo');
+        if ($promo_url && trailingslashit($item->url) === trailingslashit($promo_url)) {
+            $classes[] = 'promo-nav-item';
+        }
         
         $class_names = join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
         $class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
@@ -59,6 +65,11 @@ class Alya_Dropdown_Walker extends Walker_Nav_Menu {
             $item_output .= $item->title . '<svg viewBox="0 0 24 24" width="10" height="10"><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg>';
         } else {
             $item_output .= $item->title;
+        }
+
+        $promo_url = get_post_type_archive_link('promo');
+        if ($promo_url && trailingslashit($item->url) === trailingslashit($promo_url)) {
+            $item_output .= '<span class="promo-nav-badge">HOT</span>';
         }
         
         $item_output .= '</a>';

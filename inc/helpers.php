@@ -24,11 +24,15 @@ function alya_home_nav_fallback() {
     ];
     echo '<ul class="nav__links" id="navLinks">';
     foreach ($items as $item) {
+        $promo_url = get_post_type_archive_link('promo');
+        $is_promo  = $promo_url && trailingslashit($item[0]) === trailingslashit($promo_url);
         printf(
-            '<li><a href="%s"%s>%s</a></li>',
+            '<li%s><a href="%s"%s>%s%s</a></li>',
+            $is_promo ? ' class="promo-nav-item"' : '',
             esc_url($item[0]),
             $item[2] ? ' class="active"' : '',
-            esc_html($item[1])
+            esc_html($item[1]),
+            $is_promo ? '<span class="promo-nav-badge">HOT</span>' : ''
         );
     }
     echo '</ul>';
