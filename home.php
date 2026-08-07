@@ -151,7 +151,7 @@ $query = new WP_Query($args);
             while ($popular->have_posts()) : $popular->the_post();
                 $pop_img = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
                 if (!$pop_img) {
-                    $pop_img = 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png';
+                    $pop_img = get_template_directory_uri() . '/assets/images/treatments/glass-skin-facial.png';
                 }
         ?>
             <div class="popular-item">

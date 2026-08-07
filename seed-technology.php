@@ -48,16 +48,17 @@ if (!file_exists($tech_dir)) {
     wp_mkdir_p($tech_dir);
 }
 
+$treat_uri = get_template_directory_uri() . '/assets/images/treatments';
 $images = [
     'hero-bg'          => 'https://alyaesthetic.id/wp-content/uploads/2025/11/DSCF5148-scaled-e1762063528772.jpg',
     'laser-1'          => 'https://alyaesthetic.id/wp-content/uploads/2024/08/31.-laser-1024x819.png',
-    'laser-2'          => 'https://alyaesthetic.id/wp-content/uploads/2024/08/30.-laser-hair-removal-1024x819.png',
-    'laser-3'          => 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
-    'laser-4'          => 'https://alyaesthetic.id/wp-content/uploads/2024/08/19.-skin-booster-1024x819.png',
-    'energy-1'         => 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
-    'energy-2'         => 'https://alyaesthetic.id/wp-content/uploads/2024/08/19.-skin-booster-1024x819.png',
+    'laser-2'          => $treat_uri . '/laser-hair-removal.png',
+    'laser-3'          => $treat_uri . '/glass-skin-facial.png',
+    'laser-4'          => $treat_uri . '/skin-booster.png',
+    'energy-1'         => $treat_uri . '/glass-skin-facial.png',
+    'energy-2'         => $treat_uri . '/skin-booster.png',
     'slimming-1'       => 'https://alyaesthetic.id/wp-content/uploads/2024/08/31.-laser-1024x819.png',
-    'slimming-2'       => 'https://alyaesthetic.id/wp-content/uploads/2024/08/30.-laser-hair-removal-1024x819.png',
+    'slimming-2'       => $treat_uri . '/laser-hair-removal.png',
 ];
 
 $image_ids = [];

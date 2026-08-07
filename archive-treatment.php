@@ -19,11 +19,12 @@ $service_terms = get_terms([
     'order'      => 'ASC',
 ]);
 
+$treat_img_uri = get_template_directory_uri() . '/assets/images/treatments';
 $fallback_imgs = [
-    'skin-serenity'     => 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
-    'beauty-advance'    => 'https://alyaesthetic.id/wp-content/uploads/2024/08/13.-filler-1024x819.png',
-    'slimming-wellness' => 'https://alyaesthetic.id/wp-content/uploads/2024/09/34.-slimming-injection-1024x819.png',
-    'alya-beauty-bar'   => 'https://alyaesthetic.id/wp-content/uploads/2024/08/30.-laser-hair-removal-1024x819.png',
+    'skin-serenity'     => $treat_img_uri . '/glass-skin-facial.png',
+    'beauty-advance'    => $treat_img_uri . '/filler.png',
+    'slimming-wellness' => $treat_img_uri . '/slimming-injection.png',
+    'alya-beauty-bar'   => $treat_img_uri . '/laser-hair-removal.png',
 ];
 ?>
 
@@ -54,7 +55,7 @@ $fallback_imgs = [
         $cat_thumb = get_term_meta($term->term_id, 'thumbnail_id', true);
         $cat_img_url = $cat_thumb ? wp_get_attachment_image_url($cat_thumb, 'large') : '';
         if (!$cat_img_url) {
-            $cat_img_url = $fallback_imgs[$term->slug] ?? 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png';
+            $cat_img_url = $fallback_imgs[$term->slug] ?? $treat_img_uri . '/glass-skin-facial.png';
         }
         $cat_link = add_query_arg('service', $term->slug, get_post_type_archive_link('treatment'));
       ?>
@@ -170,7 +171,7 @@ $treatments = new WP_Query($args);
               }
           }
           if (!$img_url) {
-              $img_url = 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png';
+              $img_url = $treat_img_uri . '/glass-skin-facial.png';
           }
         ?>
           <a class="t-card" href="<?php the_permalink(); ?>" data-cat="<?php echo esc_attr($cat_slug); ?>">

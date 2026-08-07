@@ -23,11 +23,13 @@ $tag_map = [
     'alya-beauty-bar'   => 'Perawatan Harian',
 ];
 
+$treat_img_uri = get_template_directory_uri() . '/assets/images/treatments';
+
 $fallback_imgs = [
-    'skin-serenity'     => 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
-    'beauty-advance'    => 'https://alyaesthetic.id/wp-content/uploads/2024/08/13.-filler-1024x819.png',
-    'slimming-wellness' => 'https://alyaesthetic.id/wp-content/uploads/2024/09/34.-slimming-injection-1024x819.png',
-    'alya-beauty-bar'   => 'https://alyaesthetic.id/wp-content/uploads/2024/08/30.-laser-hair-removal-1024x819.png',
+    'skin-serenity'     => $treat_img_uri . '/glass-skin-facial.png',
+    'beauty-advance'    => $treat_img_uri . '/filler.png',
+    'slimming-wellness' => $treat_img_uri . '/slimming-injection.png',
+    'alya-beauty-bar'   => $treat_img_uri . '/laser-hair-removal.png',
 ];
 
 $cards_data = [];
@@ -53,7 +55,7 @@ if (!empty($terms) && !is_wp_error($terms)) {
             }
         }
         if (empty($image_url)) {
-            $image_url = $fallback_imgs[$slug] ?? 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png';
+            $image_url = $fallback_imgs[$slug] ?? $treat_img_uri . '/glass-skin-facial.png';
         }
 
         // Link to /layanan/?service=slug
@@ -81,28 +83,28 @@ if (empty($cards_data)) {
             'title' => 'Skin Serenity',
             'desc'  => 'Facial & perawatan kulit untuk wajah bercahaya alami.',
             'url'   => add_query_arg('service', 'skin-serenity', $treatment_archive),
-            'img'   => 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
+            'img'   => $treat_img_uri . '/glass-skin-facial.png',
         ],
         [
             'tag'   => 'Treatment Lanjutan',
             'title' => 'Beauty Advance',
             'desc'  => 'Filler, skin booster, hingga perawatan pasca hair coloring.',
             'url'   => add_query_arg('service', 'beauty-advance', $treatment_archive),
-            'img'   => 'https://alyaesthetic.id/wp-content/uploads/2024/08/13.-filler-1024x819.png',
+            'img'   => $treat_img_uri . '/filler.png',
         ],
         [
             'tag'   => 'Bentuk Tubuh',
             'title' => 'Slimming & Wellness',
             'desc'  => 'Solusi tubuh ideal dan program wellness terarah.',
             'url'   => add_query_arg('service', 'slimming-wellness', $treatment_archive),
-            'img'   => 'https://alyaesthetic.id/wp-content/uploads/2024/09/34.-slimming-injection-1024x819.png',
+            'img'   => $treat_img_uri . '/slimming-injection.png',
         ],
         [
             'tag'   => 'Perawatan Harian',
             'title' => 'Alya Beauty Bar',
             'desc'  => 'Laser hair removal & layanan kecantikan harian lainnya.',
             'url'   => add_query_arg('service', 'alya-beauty-bar', $treatment_archive),
-            'img'   => 'https://alyaesthetic.id/wp-content/uploads/2024/08/30.-laser-hair-removal-1024x819.png',
+            'img'   => $treat_img_uri . '/laser-hair-removal.png',
         ],
     ];
 }

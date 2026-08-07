@@ -219,7 +219,7 @@ if ($related_treatments && $related_treatments->have_posts()) :
     <div class="treat-cards">
       <?php while ($related_treatments->have_posts()) : $related_treatments->the_post();
         $t_id = get_the_ID();
-        $t_img = get_the_post_thumbnail_url($t_id, 'medium_large') ?: 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png';
+        $t_img = get_the_post_thumbnail_url($t_id, 'medium_large') ?: get_template_directory_uri() . '/assets/images/treatments/glass-skin-facial.png';
       ?>
         <a href="<?php the_permalink(); ?>" class="t-card">
           <img src="<?php echo esc_url($t_img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">

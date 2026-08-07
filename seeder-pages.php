@@ -701,10 +701,10 @@ function alya_seed_pages() {
     $skin_svc = get_posts(['post_type' => 'treatment', 'posts_per_page' => 20, 'post_status' => 'publish', 'orderby' => 'menu_order', 'order' => 'ASC']);
     $layanan_cards = '';
     $fallback_imgs = [
-        'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
-        'https://alyaesthetic.id/wp-content/uploads/2024/08/13.-filler-1024x819.png',
-        'https://alyaesthetic.id/wp-content/uploads/2024/09/34.-slimming-injection-1024x819.png',
-        'https://alyaesthetic.id/wp-content/uploads/2024/08/30.-laser-hair-removal-1024x819.png',
+        get_template_directory_uri() . '/assets/images/treatments/glass-skin-facial.png',
+        get_template_directory_uri() . '/assets/images/treatments/filler.png',
+        get_template_directory_uri() . '/assets/images/treatments/slimming-injection.png',
+        get_template_directory_uri() . '/assets/images/treatments/laser-hair-removal.png',
     ];
     foreach ($skin_svc as $i => $svc) {
         $img = get_the_post_thumbnail_url($svc->ID, 'full') ?: $fallback_imgs[$i % count($fallback_imgs)];
@@ -888,7 +888,7 @@ function alya_seed_pages() {
   <div class="container">
     <div class="t-grid" style="grid-template-columns:repeat(3,1fr)">
       <div class="t-card">
-        <div class="t-card__img"><img src="https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png" alt="Laser Teknologi Terkini" loading="lazy"></div>
+        <div class="t-card__img"><img src="' . get_template_directory_uri() . '/assets/images/treatments/glass-skin-facial.png" alt="Laser Teknologi Terkini" loading="lazy"></div>
         <div class="t-card__body">
           <span class="t-card__tag">Laser</span>
           <h3>Laser Teknologi Terkini</h3>
@@ -896,7 +896,7 @@ function alya_seed_pages() {
         </div>
       </div>
       <div class="t-card">
-        <div class="t-card__img"><img src="https://alyaesthetic.id/wp-content/uploads/2024/08/13.-filler-1024x819.png" alt="RF & Ultrasound" loading="lazy"></div>
+        <div class="t-card__img"><img src="' . get_template_directory_uri() . '/assets/images/treatments/filler.png" alt="RF & Ultrasound" loading="lazy"></div>
         <div class="t-card__body">
           <span class="t-card__tag">RF & Ultrasound</span>
           <h3>Radio Frequency & Ultrasound</h3>
@@ -904,7 +904,7 @@ function alya_seed_pages() {
         </div>
       </div>
       <div class="t-card">
-        <div class="t-card__img"><img src="https://alyaesthetic.id/wp-content/uploads/2024/09/34.-slimming-injection-1024x819.png" alt="Cryotherapy" loading="lazy"></div>
+        <div class="t-card__img"><img src="' . get_template_directory_uri() . '/assets/images/treatments/slimming-injection.png" alt="Cryotherapy" loading="lazy"></div>
         <div class="t-card__body">
           <span class="t-card__tag">Cryotherapy</span>
           <h3>Cryotherapy & Slimming</h3>

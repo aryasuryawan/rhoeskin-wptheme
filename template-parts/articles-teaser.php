@@ -7,6 +7,7 @@
 
 $posts = alya_get_posts('post', ['posts_per_page' => 3]);
 $articles_list = [];
+$treat_img_uri = get_template_directory_uri() . '/assets/images/treatments';
 
 if ($posts && $posts->have_posts()) {
     while ($posts->have_posts()) {
@@ -16,7 +17,7 @@ if ($posts && $posts->have_posts()) {
             'title' => get_the_title(),
             'url'   => get_permalink(),
             'tag'   => !empty($cats) ? $cats[0]->name : 'Tips & Edukasi',
-            'img'   => get_the_post_thumbnail_url(get_the_ID(), 'medium_large') ?: 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
+            'img'   => get_the_post_thumbnail_url(get_the_ID(), 'medium_large') ?: $treat_img_uri . '/glass-skin-facial.png',
         ];
     }
     wp_reset_postdata();
@@ -29,19 +30,19 @@ if (empty($articles_list)) {
             'title' => 'Rahasia Glass Skin: Perawatan yang Tepat untuk Kulit Bercahaya Alami',
             'url'   => $blog_page_url,
             'tag'   => 'Skin Serenity',
-            'img'   => 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png',
+            'img'   => $treat_img_uri . '/glass-skin-facial.png',
         ],
         [
             'title' => 'Slimming Injection vs Diet Ketat: Mana yang Lebih Efektif?',
             'url'   => $blog_page_url,
             'tag'   => 'Slimming & Wellness',
-            'img'   => 'https://alyaesthetic.id/wp-content/uploads/2024/09/34.-slimming-injection-1024x819.png',
+            'img'   => $treat_img_uri . '/slimming-injection.png',
         ],
         [
             'title' => 'Filler Wajah: Apa yang Perlu Diketahui Sebelum Melakukan Treatment',
             'url'   => $blog_page_url,
             'tag'   => 'Beauty Advance',
-            'img'   => 'https://alyaesthetic.id/wp-content/uploads/2024/08/13.-filler-1024x819.png',
+            'img'   => $treat_img_uri . '/filler.png',
         ],
     ];
 }

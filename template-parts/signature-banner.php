@@ -9,7 +9,7 @@ $title    = get_theme_mod('alya_v2_signature_title', 'Glass Skin Facial: Kulit B
 $desc     = get_theme_mod('alya_v2_signature_desc', 'Kombinasi pembersihan mendalam, eksfoliasi lembut, dan infus nutrisi untuk kulit yang tampak lebih halus dan bercahaya seketika.');
 $cta_text = get_theme_mod('alya_v2_signature_cta_text', 'Lihat Detail Treatment');
 $cta_url  = get_theme_mod('alya_v2_signature_cta_url', home_url('/treatment/skin-serenity/'));
-$bg_image = get_theme_mod('alya_v2_signature_bg', 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png');
+$bg_image = get_theme_mod('alya_v2_signature_bg', get_template_directory_uri() . '/assets/images/treatments/glass-skin-facial.png');
 ?>
 
 <section class="signature" <?php if ($bg_image) : ?>style="background-image:url('<?php echo esc_url($bg_image); ?>')"<?php endif; ?>>

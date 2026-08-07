@@ -26,13 +26,14 @@ if (empty($images) || !is_array($images)) {
 }
 
 if (empty($images)) {
+    $treat_dir = get_template_directory_uri() . '/assets/images/treatments';
     $images = [
-        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/08/27.-glass-skin-facial-1024x819.png', 'title' => 'Glass Skin Facial'],
-        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/09/34.-slimming-injection-1024x819.png', 'title' => 'Slimming Injection'],
-        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/08/13.-filler-1024x819.png', 'title' => 'Filler Wajah'],
-        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/08/19.-skin-booster-1024x819.png', 'title' => 'Skin Booster'],
-        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2024/08/30.-laser-hair-removal-1024x819.png', 'title' => 'Laser Hair Removal'],
-        ['url' => 'https://alyaesthetic.id/wp-content/uploads/2025/01/37.-Hair-Coloring-1024x819.png', 'title' => 'Hair Coloring'],
+        ['url' => $treat_dir . '/glass-skin-facial.png', 'title' => 'Glass Skin Facial'],
+        ['url' => $treat_dir . '/slimming-injection.png', 'title' => 'Slimming Injection'],
+        ['url' => $treat_dir . '/filler.png', 'title' => 'Filler Wajah'],
+        ['url' => $treat_dir . '/skin-booster.png', 'title' => 'Skin Booster'],
+        ['url' => $treat_dir . '/laser-hair-removal.png', 'title' => 'Laser Hair Removal'],
+        ['url' => $treat_dir . '/hair-coloring.png', 'title' => 'Hair Coloring'],
     ];
 }
 ?>
