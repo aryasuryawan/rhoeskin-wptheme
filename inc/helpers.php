@@ -9,6 +9,30 @@ defined('ABSPATH') || exit;
 
 // ─── Post Query ───
 
+function alya_home_nav_fallback() {
+    $items = [
+        ['#beranda', 'Beranda', true],
+        ['#tentang', 'Tentang', false],
+        ['#layanan', 'Layanan', false],
+        ['#dokter', 'Dokter', false],
+        ['#testimoni', 'Testimoni', false],
+        ['#faq', 'FAQ', false],
+        [get_permalink(get_option('page_for_posts')) ?: home_url('/artikel/'), 'Artikel', false],
+        [get_post_type_archive_link('jobs') ?: home_url('/karir/'), 'Karir', false],
+        ['#kontak', 'Kontak', false],
+    ];
+    echo '<ul class="nav__links" id="navLinks">';
+    foreach ($items as $item) {
+        printf(
+            '<li><a href="%s"%s>%s</a></li>',
+            esc_url($item[0]),
+            $item[2] ? ' class="active"' : '',
+            esc_html($item[1])
+        );
+    }
+    echo '</ul>';
+}
+
 function alya_get_posts($type, $args = []) {
     $defaults = [
         'post_type'      => $type,

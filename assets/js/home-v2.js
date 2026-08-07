@@ -125,34 +125,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // 5. FAQ Accordion Expand/Collapse
-  var faqQuestions = document.querySelectorAll('.faq-item__q');
-  faqQuestions.forEach(function (q) {
-    q.addEventListener('click', function () {
-      var item = q.closest('.faq-item');
-      if (!item) return;
-      var ans = item.querySelector('.faq-item__a');
-      if (!ans) return;
-
-      var wasOpen = item.classList.contains('open');
-      var parent = item.parentElement;
-
-      // Close other items in the same panel
-      if (parent) {
-        parent.querySelectorAll('.faq-item').forEach(function (i) {
-          i.classList.remove('open');
-          var a = i.querySelector('.faq-item__a');
-          if (a) a.style.maxHeight = null;
-        });
-      }
-
-      if (!wasOpen) {
-        item.classList.add('open');
-        ans.style.maxHeight = ans.scrollHeight + 'px';
-      }
-    });
-  });
-
   // Calculate height for initial open accordion items
   document.querySelectorAll('.faq-item.open .faq-item__a').forEach(function (ans) {
     ans.style.maxHeight = ans.scrollHeight + 'px';

@@ -486,10 +486,14 @@
                 var wasOpen = item.classList.contains('open');
 
                 // Close all in same panel
-                item.parentElement.querySelectorAll('.faq-item').forEach(function(i) {
-                    i.classList.remove('open');
-                    i.querySelector('.faq-item__a').style.maxHeight = null;
-                });
+                var parent = item.parentElement;
+                if (parent) {
+                    parent.querySelectorAll('.faq-item').forEach(function(i) {
+                        i.classList.remove('open');
+                        var innerAns = i.querySelector('.faq-item__a');
+                        if (innerAns) innerAns.style.maxHeight = null;
+                    });
+                }
 
                 // Toggle current
                 if (!wasOpen) {

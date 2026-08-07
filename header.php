@@ -30,17 +30,17 @@ defined('ABSPATH') || exit;
         </a>
         <nav class="nav__elms">
             <?php if (is_front_page() && get_theme_mod('alya_homepage_style', 'default') === 'v2') : ?>
-                <ul class="nav__links" id="navLinks">
-                    <li><a href="#beranda" class="active">Beranda</a></li>
-                    <li><a href="#tentang">Tentang</a></li>
-                    <li><a href="#layanan">Layanan</a></li>
-                    <li><a href="#dokter">Dokter</a></li>
-                    <li><a href="#testimoni">Testimoni</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                    <li><a href="<?php echo esc_url(get_permalink(get_option('page_for_posts')) ?: home_url('/artikel/')); ?>">Artikel</a></li>
-                    <li><a href="<?php echo esc_url(get_post_type_archive_link('jobs') ?: home_url('/karir/')); ?>">Karir</a></li>
-                    <li><a href="#kontak">Kontak</a></li>
-                </ul>
+                <?php
+                wp_nav_menu([
+                    'theme_location' => 'home',
+                    'container'      => false,
+                    'menu_id'        => 'navLinks',
+                    'menu_class'     => 'nav__links',
+                    'fallback_cb'    => 'alya_home_nav_fallback',
+                    'depth'          => 1,
+                    'walker'         => new Alya_Dropdown_Walker(),
+                ]);
+                ?>
             <?php else : ?>
                 <?php
                 wp_nav_menu([

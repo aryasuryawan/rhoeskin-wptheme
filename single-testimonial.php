@@ -15,8 +15,6 @@ $avatar   = get_the_post_thumbnail(get_the_ID(), 'alya-thumb');
 $rating   = get_field('alya_rating') ?: 5;
 $role     = get_field('alya_role') ?: '';
 $service  = get_field('alya_service_used') ?: '';
-$before   = get_field('alya_before');
-$after    = get_field('alya_after');
 $archive  = get_post_type_archive_link('testimonial');
 ?>
 
@@ -37,7 +35,7 @@ $archive  = get_post_type_archive_link('testimonial');
 </section>
 
 <!-- CONTENT -->
-<section>
+<section class="alya-section">
   <div class="art-layout">
     <div class="share-rail">
       <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo esc_url(get_permalink()); ?>" target="_blank" rel="noopener" aria-label="Facebook"><?php echo alya_icon('facebook'); ?></a>
@@ -46,53 +44,38 @@ $archive  = get_post_type_archive_link('testimonial');
     </div>
 
     <article class="art-content">
-      <!-- Author -->
-      <div class="author-box">
-        <?php if ($avatar) : ?>
-          <?php echo $avatar; ?>
-        <?php endif; ?>
-        <div>
-          <h4><?php echo esc_html($name); ?></h4>
-          <?php if ($role) : ?>
-            <span><?php echo esc_html($role); ?></span>
+      <!-- Author Card: avatar + name + rating + content -->
+      <div class="testi-author-card">
+        <div class="testi-author-card__header">
+          <?php if ($avatar) : ?>
+            <div class="testi-author-card__avatar"><?php echo $avatar; ?></div>
           <?php endif; ?>
-          <p><?php echo esc_html($service); ?></p>
+          <div class="testi-author-card__meta">
+            <h4><?php echo esc_html($name); ?></h4>
+            <?php if ($role) : ?>
+              <span class="testi-author-card__role"><?php echo esc_html($role); ?></span>
+            <?php endif; ?>
+            <?php if ($service) : ?>
+              <p class="testi-author-card__service"><?php echo esc_html($service); ?></p>
+            <?php endif; ?>
+            <!-- Rating -->
+            <div class="rating-stars">
+              <?php for ($i = 1; $i <= 5; $i++) : ?>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="<?php echo $i <= $rating ? 'var(--brand)' : 'var(--line)'; ?>"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <?php endfor; ?>
+              <span class="rating-label"><?php echo esc_html($rating); ?>/5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial Content -->
+        <div class="entry-content testi-author-card__content">
+          <?php the_content(); ?>
         </div>
       </div>
 
-      <!-- Rating -->
-      <div style="margin:24px 0;display:flex;gap:4px">
-        <?php for ($i = 1; $i <= 5; $i++) : ?>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="<?php echo $i <= $rating ? 'var(--brand)' : 'var(--line)'; ?>"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        <?php endfor; ?>
-        <span style="margin-left:8px;font-size:.88rem;color:var(--muted);font-weight:600"><?php echo esc_html($rating); ?>/5</span>
-      </div>
-
-      <!-- Testimonial Content -->
-      <div class="entry-content" style="margin-top:24px">
-        <?php the_content(); ?>
-      </div>
-
-      <!-- Before / After -->
-      <?php if ($before || $after) : ?>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px">
-        <?php if ($before && is_array($before)) : ?>
-          <div>
-            <span class="eyebrow" style="font-size:.72rem;margin-bottom:8px">Before</span>
-            <img src="<?php echo esc_url($before['url']); ?>" alt="Before" style="width:100%;border-radius:16px;object-fit:cover;aspect-ratio:1/1">
-          </div>
-        <?php endif; ?>
-        <?php if ($after && is_array($after)) : ?>
-          <div>
-            <span class="eyebrow" style="font-size:.72rem;margin-bottom:8px">After</span>
-            <img src="<?php echo esc_url($after['url']); ?>" alt="After" style="width:100%;border-radius:16px;object-fit:cover;aspect-ratio:1/1">
-          </div>
-        <?php endif; ?>
-      </div>
-      <?php endif; ?>
-
       <!-- CTA -->
-      <div class="apply-box" style="margin-top:40px">
+      <div class="testi-cta">
         <div>
           <h4>Mau hasil yang sama?</h4>
           <p>Konsultasikan kebutuhan Anda dengan tim dokter kami.</p>
@@ -111,6 +94,7 @@ $archive  = get_post_type_archive_link('testimonial');
     </aside>
   </div>
 </section>
+
 
 <script>
 (function(){

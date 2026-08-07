@@ -41,6 +41,7 @@ function alya_setup() {
     register_nav_menus([
         'primary'   => __('Menu Utama', 'alya-esthetic'),
         'footer'    => __('Menu Footer', 'alya-esthetic'),
+        'home'      => __('Menu Homepage', 'alya-esthetic'),
     ]);
 }
 add_action('after_setup_theme', 'alya_setup');
@@ -94,7 +95,7 @@ function alya_scripts() {
     }
 
     // Single blog post specific assets
-    if (is_singular('post')) {
+    if (is_singular('post') || is_singular('testimonial')) {
         wp_enqueue_style('alya-single-blog', ALYA_URI . '/assets/css/single-blog.css', ['alya-main'], ALYA_VERSION);
         wp_enqueue_script('alya-single-blog', ALYA_URI . '/assets/js/single-blog.js', [], ALYA_VERSION, true);
     }
@@ -228,6 +229,7 @@ add_action('widgets_init', 'alya_widgets_init');
 require_once ALYA_DIR . '/inc/helpers.php';
 require_once ALYA_DIR . '/inc/cpt.php';
 require_once ALYA_DIR . '/inc/acf.php';
+require_once ALYA_DIR . '/inc/gallery-meta.php';
 require_once ALYA_DIR . '/inc/customizer.php';
 require_once ALYA_DIR . '/inc/security.php';
 require_once ALYA_DIR . '/inc/social.php';

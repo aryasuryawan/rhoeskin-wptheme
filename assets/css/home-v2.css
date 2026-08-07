@@ -1198,6 +1198,7 @@ header#siteHeader {
   font-size: 1rem;
   color: var(--ink);
   font-weight: 500;
+  pointer-events: none;
 }
 
 .faq-item__q .plus {
@@ -1210,6 +1211,7 @@ header#siteHeader {
   flex: none;
   position: relative;
   transition: 0.3s;
+  pointer-events: none;
 }
 
 .faq-item__q .plus::before,

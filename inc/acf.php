@@ -380,22 +380,6 @@ acf_add_local_field_group([
             'name'  => 'alya_service_used',
             'type'  => 'text',
         ],
-        [
-            'key'          => 'field_alya_test_before',
-            'label'        => 'Before Photo',
-            'name'         => 'alya_before',
-            'type'         => 'image',
-            'return_format' => 'array',
-            'preview_size'  => 'thumbnail',
-        ],
-        [
-            'key'          => 'field_alya_test_after',
-            'label'        => 'After Photo',
-            'name'         => 'alya_after',
-            'type'         => 'image',
-            'return_format' => 'array',
-            'preview_size'  => 'thumbnail',
-        ],
     ],
     'location' => [
         [
@@ -435,23 +419,6 @@ acf_add_local_field_group([
             'type'  => 'textarea',
             'rows'  => 3,
         ],
-        [
-            'key'          => 'field_alya_gallery_images',
-            'label'        => 'Gallery Images',
-            'name'         => 'alya_gallery_images',
-            'type'         => 'relationship',
-            'post_type'    => ['attachment'],
-            'filters'      => ['search'],
-            'return_format' => 'array',
-        ],
-        [
-            'key'   => 'field_alya_tech_items',
-            'label' => 'Technology Items (one per line: Title | Description)',
-            'name'  => 'alya_tech_items',
-            'type'  => 'textarea',
-            'rows'  => 6,
-            'instructions' => 'Format: Nd:YAG Laser | Perawatan pigmentasi dan vaskular — one item per line.',
-        ],
     ],
     'location' => [
         [
@@ -471,6 +438,60 @@ acf_add_local_field_group([
 ]);
 
 /* ================================================================
+ * FIELD GROUP: Technology page only
+ * ================================================================ */
+acf_add_local_field_group([
+    'key'    => 'group_alya_technology',
+    'title'  => 'Technology Settings',
+    'fields' => [
+        [
+            'key'   => 'field_alya_tech_items',
+            'label' => 'Technology Items (one per line: Title | Description)',
+            'name'  => 'alya_tech_items',
+            'type'  => 'textarea',
+            'rows'  => 6,
+            'instructions' => 'Format: Nd:YAG Laser | Perawatan pigmentasi dan vaskular — one item per line.',
+        ],
+    ],
+    'location' => [
+        [
+            ['param' => 'page_template', 'operator' => '==', 'value' => 'page-technology.php'],
+        ],
+    ],
+    'position'        => 'normal',
+    'style'           => 'default',
+    'label_placement' => 'top',
+    'active'          => true,
+]);
+
+/* ================================================================
+ * FIELD GROUP: Gallery page only
+ * ================================================================ */
+acf_add_local_field_group([
+    'key'    => 'group_alya_gallery',
+    'title'  => 'Gallery Settings',
+    'fields' => [
+        [
+            'key'   => 'field_alya_gallery_disclaimer',
+            'label' => 'Disclaimer (Catatan Penting)',
+            'name'  => 'alya_gallery_disclaimer',
+            'type'  => 'textarea',
+            'rows'  => 4,
+            'instructions' => 'Teks catatan penting yang tampil di bagian atas halaman galeri.',
+        ],
+    ],
+    'location' => [
+        [
+            ['param' => 'page_template', 'operator' => '==', 'value' => 'page-gallery.php'],
+        ],
+    ],
+    'position'        => 'normal',
+    'style'           => 'default',
+    'label_placement' => 'top',
+    'active'          => true,
+]);
+
+/* ================================================================
  * Admin Script — Image previews for gallery relationship fields
  * ================================================================ */
 add_action('admin_enqueue_scripts', function ($hook) {
@@ -481,7 +502,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
 (function($){
   if (typeof acf === 'undefined') return;
 
-  var galleryFields = ['field_alya_svc_gallery','field_alya_tr_gallery','field_alya_gallery_images'];
+  var galleryFields = ['field_alya_svc_gallery','field_alya_tr_gallery'];
 
   function findAcfField($el) {
     var $field = $el.closest('.acf-field');

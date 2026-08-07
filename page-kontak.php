@@ -248,9 +248,13 @@ $wa_number = get_theme_mod('alya_phone_link', '6281290000000');
       credentials: 'same-origin' 
     })
     .then(function(res) {
-      return res.json();
+      return res.text();
     })
-    .then(function(data) {
+    .then(function(text) {
+      var data = {};
+      try {
+        data = JSON.parse(text);
+      } catch(e) {}
       // Success feedback
       showStatus('Berhasil mengirim permintaan! Mengalihkan ke WhatsApp...', 'success');
       

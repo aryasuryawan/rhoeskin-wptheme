@@ -32,6 +32,15 @@ if (is_string($raw_items) && !empty(trim($raw_items))) {
         ];
     }
 }
+
+$per_page       = 6;
+$gallery_items  = array_values(array_filter($gallery_items, function ($item) {
+    return !empty($item['before_id']) && !empty($item['after_id']);
+}));
+$total_pages    = max(1, (int) ceil(count($gallery_items) / $per_page));
+$paged          = get_query_var('paged') ? get_query_var('paged') : (get_query_var('page') ? get_query_var('page') : 1);
+$paged          = max(1, min((int) $paged, $total_pages));
+$page_items     = array_slice($gallery_items, ($paged - 1) * $per_page, $per_page);
 ?>
 
 <!-- PAGE HERO -->
@@ -77,8 +86,7 @@ if (is_string($raw_items) && !empty(trim($raw_items))) {
 <section style="padding:0">
   <div class="container">
     <div class="ba-grid" id="baGrid">
-      <?php foreach ($gallery_items as $item) :
-          if (!$item['before_id'] || !$item['after_id']) continue;
+      <?php foreach ($page_items as $item) :
           $before_url = wp_get_attachment_image_url($item['before_id'], 'large') ?: $img_uri . '/fallback.png';
           $after_url  = wp_get_attachment_image_url($item['after_id'], 'large') ?: $img_uri . '/fallback.png';
           $before_alt = get_post_meta($item['before_id'], '_wp_attachment_image_alt', true) ?: 'Before';
@@ -107,6 +115,27 @@ if (is_string($raw_items) && !empty(trim($raw_items))) {
       </div>
       <?php endforeach; ?>
     </div>
+
+    <?php if ($total_pages > 1) : ?>
+    <nav class="pagination" style="padding:40px 0 0">
+        <?php
+        if (get_option('permalink_structure')) {
+            $paginate_base = user_trailingslashit(trailingslashit(get_permalink()) . 'page/%#%/');
+        } else {
+            $paginate_base = add_query_arg('paged', '%#%', get_permalink());
+        }
+        echo paginate_links([
+            'base'      => $paginate_base,
+            'format'    => '',
+            'current'   => $paged,
+            'total'     => $total_pages,
+            'prev_text' => '&laquo; Sebelumnya',
+            'next_text' => 'Selanjutnya &raquo;',
+            'type'      => 'list',
+        ]);
+        ?>
+    </nav>
+    <?php endif; ?>
   </div>
 </section>
 
