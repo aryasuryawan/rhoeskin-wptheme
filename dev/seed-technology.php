@@ -6,7 +6,7 @@
  * Run: php seed-technology.php
  */
 
-require_once dirname(__DIR__, 3) . '/wp-load.php';
+require_once dirname(__DIR__, 4) . '/wp-load.php';
 
 echo "=== Technology Page Seeder ===" . PHP_EOL . PHP_EOL;
 

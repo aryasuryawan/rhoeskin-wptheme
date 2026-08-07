@@ -37,19 +37,19 @@ function alya_run_seeders() {
     $log       = "=== Alya Esthetic Seed Log ===\n";
     $log       .= "Date: " . date('Y-m-d H:i:s') . "\n\n";
 
-    // 1. Customizer settings (seeder-v2.php)
-    $log .= "--- Step 1: Customizer Settings (seeder-v2.php) ---\n";
-    require_once $theme_dir . '/seeder-v2.php';
+    // 1. Customizer settings (dev/seeder-v2.php)
+    $log .= "--- Step 1: Customizer Settings (dev/seeder-v2.php) ---\n";
+    require_once $theme_dir . '/dev/seeder-v2.php';
     $log .= "Customizer settings applied.\n\n";
 
-    // 2. Images (seeder-images.php)
-    $log .= "--- Step 2: Images (seeder-images.php) ---\n";
-    require_once $theme_dir . '/seeder-images.php';
+    // 2. Images (dev/seeder-images.php)
+    $log .= "--- Step 2: Images (dev/seeder-images.php) ---\n";
+    require_once $theme_dir . '/dev/seeder-images.php';
     $log .= "Images downloaded and assigned.\n\n";
 
-    // 3. Page content (seeder-pages.php)
-    $log .= "--- Step 3: Page Content (seeder-pages.php) ---\n";
-    require_once $theme_dir . '/seeder-pages.php';
+    // 3. Page content (dev/seeder-pages.php)
+    $log .= "--- Step 3: Page Content (dev/seeder-pages.php) ---\n";
+    require_once $theme_dir . '/dev/seeder-pages.php';
     if (function_exists('alya_seed_pages')) {
         alya_seed_pages();
     }
