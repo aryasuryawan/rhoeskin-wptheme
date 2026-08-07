@@ -49,7 +49,7 @@ function alya_seed_pages() {
     }
     if ($tentang_id) {
         // Set template
-        update_post_meta($tentang_id, '_wp_page_template', 'page-about.php');
+        update_post_meta($tentang_id, '_wp_page_template', 'templates/page-about.php');
         
         // Clear post_content (remove HTML static content)
         wp_update_post(['ID' => $tentang_id, 'post_content' => '']);
@@ -671,7 +671,7 @@ function alya_seed_pages() {
     </aside>
   </div>
 </section>';
-        wp_update_post(['ID' => $karir_id, 'post_content' => $karir_content, 'page_template' => 'page-karir.php']);
+        wp_update_post(['ID' => $karir_id, 'post_content' => $karir_content, 'page_template' => 'templates/page-karir.php']);
         echo "  [UPDATE] Karir #" . $karir_id . "\n";
     } else {
         echo "  [SKIP] Karir page not found\n";
@@ -942,11 +942,11 @@ function alya_seed_pages() {
             'post_name'    => 'galeri',
             'post_status'  => 'publish',
             'post_content' => '',
-            'page_template' => 'page-gallery.php',
+            'page_template' => 'templates/page-gallery.php',
         ]);
         echo "  [CREATE] Galeri #" . $galeri_id . "\n";
     } else {
-        wp_update_post(['ID' => $galeri_id, 'page_template' => 'page-gallery.php']);
+        wp_update_post(['ID' => $galeri_id, 'page_template' => 'templates/page-gallery.php']);
     }
 
     // Helper to find attachment by filename (with or without 'seed-' prefix)

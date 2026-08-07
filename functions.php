@@ -14,6 +14,18 @@ define('ALYA_DIR', get_template_directory());
 define('ALYA_URI', get_template_directory_uri());
 
 /**
+ * Register custom page templates located in /templates
+ */
+add_filter('theme_page_templates', function ($templates) {
+    $templates['templates/page-about.php']       = 'Tentang';
+    $templates['templates/page-dokter.php']      = 'Halaman Dokter';
+    $templates['templates/page-gallery.php']     = 'Before & After Gallery';
+    $templates['templates/page-karir.php']       = 'Halaman Karir';
+    $templates['templates/page-technology.php']  = 'Technology Page';
+    return $templates;
+});
+
+/**
  * Theme Setup
  */
 function alya_setup() {
@@ -55,12 +67,12 @@ function alya_scripts() {
     wp_enqueue_style('alya-main', ALYA_URI . '/assets/css/main.css', ['alya-variables'], ALYA_VERSION);
 
     // Technology page specific styles
-    if (is_page_template('page-technology.php')) {
+    if (is_page_template('templates/page-technology.php')) {
         wp_enqueue_style('alya-page-technology', ALYA_URI . '/assets/css/page-technology.css', ['alya-main'], ALYA_VERSION);
     }
 
     // Gallery page specific styles
-    if (is_page_template('page-gallery.php')) {
+    if (is_page_template('templates/page-gallery.php')) {
         wp_enqueue_style('alya-page-gallery', ALYA_URI . '/assets/css/page-gallery.css', ['alya-main'], ALYA_VERSION);
     }
 
@@ -77,7 +89,7 @@ function alya_scripts() {
     }
 
     // Doctors archive specific styles
-    if (is_post_type_archive('doctor') || is_page('dokter') || is_page_template('page-dokter.php')) {
+    if (is_post_type_archive('doctor') || is_page('dokter') || is_page_template('templates/page-dokter.php')) {
         wp_enqueue_style('alya-page-doctors', ALYA_URI . '/assets/css/page-doctors.css', ['alya-main'], ALYA_VERSION);
         wp_enqueue_script('alya-page-doctors', ALYA_URI . '/assets/js/page-doctors.js', [], ALYA_VERSION, true);
     }
@@ -101,7 +113,7 @@ function alya_scripts() {
     }
 
     // Jobs / Karir archive specific styles
-    if (is_post_type_archive('jobs') || is_tax('career_category') || is_tax('job_type') || is_page('karir') || is_page('jobs') || is_page_template('page-karir.php')) {
+    if (is_post_type_archive('jobs') || is_tax('career_category') || is_tax('job_type') || is_page('karir') || is_page('jobs') || is_page_template('templates/page-karir.php')) {
         wp_enqueue_style('alya-page-jobs', ALYA_URI . '/assets/css/page-jobs.css', ['alya-main'], ALYA_VERSION);
         wp_enqueue_script('alya-page-jobs', ALYA_URI . '/assets/js/page-jobs.js', [], ALYA_VERSION, true);
     }
@@ -113,7 +125,7 @@ function alya_scripts() {
     }
 
     // About page specific assets
-    if (is_page_template('page-about.php') || is_page('tentang')) {
+    if (is_page_template('templates/page-about.php') || is_page('tentang')) {
         wp_enqueue_style('alya-page-about', ALYA_URI . '/assets/css/page-about.css', ['alya-main'], ALYA_VERSION);
         wp_enqueue_script('alya-page-about', ALYA_URI . '/assets/js/page-about.js', [], ALYA_VERSION, true);
     }
@@ -149,7 +161,7 @@ function alya_body_classes($classes) {
         $homepage_style = get_theme_mod('alya_homepage_style', 'default');
         $classes[] = $homepage_style === 'v2' ? 'home-v2' : 'home-v1';
     }
-    if (is_page_template('page-about.php') || is_page('tentang')) {
+    if (is_page_template('templates/page-about.php') || is_page('tentang')) {
         $classes[] = 'page-about';
     }
     if (is_post_type_archive('treatment') || is_tax('treatment_category') || is_tax('service') || is_page('layanan') || is_page_template('page-services.php') || is_page_template('page-layanan.php')) {
@@ -158,7 +170,7 @@ function alya_body_classes($classes) {
     if (is_singular('treatment')) {
         $classes[] = 'single-treatment';
     }
-    if (is_post_type_archive('doctor') || is_page('dokter') || is_page_template('page-dokter.php')) {
+    if (is_post_type_archive('doctor') || is_page('dokter') || is_page_template('templates/page-dokter.php')) {
         $classes[] = 'page-doctors';
     }
     if (is_singular('doctor')) {
@@ -170,7 +182,7 @@ function alya_body_classes($classes) {
     if (is_singular('post')) {
         $classes[] = 'single-blog';
     }
-    if (is_post_type_archive('jobs') || is_tax('career_category') || is_tax('job_type') || is_page('karir') || is_page('jobs') || is_page_template('page-karir.php')) {
+    if (is_post_type_archive('jobs') || is_tax('career_category') || is_tax('job_type') || is_page('karir') || is_page('jobs') || is_page_template('templates/page-karir.php')) {
         $classes[] = 'page-jobs';
     }
     if (is_singular('jobs')) {

@@ -422,13 +422,13 @@ acf_add_local_field_group([
     ],
     'location' => [
         [
-            ['param' => 'page_template', 'operator' => '==', 'value' => 'page-gallery.php'],
+            ['param' => 'page_template', 'operator' => '==', 'value' => 'templates/page-gallery.php'],
         ],
         [
-            ['param' => 'page_template', 'operator' => '==', 'value' => 'page-technology.php'],
+            ['param' => 'page_template', 'operator' => '==', 'value' => 'templates/page-technology.php'],
         ],
         [
-            ['param' => 'page_template', 'operator' => '==', 'value' => 'page-about.php'],
+            ['param' => 'page_template', 'operator' => '==', 'value' => 'templates/page-about.php'],
         ],
     ],
     'position'        => 'normal',
@@ -455,7 +455,7 @@ acf_add_local_field_group([
     ],
     'location' => [
         [
-            ['param' => 'page_template', 'operator' => '==', 'value' => 'page-technology.php'],
+            ['param' => 'page_template', 'operator' => '==', 'value' => 'templates/page-technology.php'],
         ],
     ],
     'position'        => 'normal',
@@ -482,7 +482,7 @@ acf_add_local_field_group([
     ],
     'location' => [
         [
-            ['param' => 'page_template', 'operator' => '==', 'value' => 'page-gallery.php'],
+            ['param' => 'page_template', 'operator' => '==', 'value' => 'templates/page-gallery.php'],
         ],
     ],
     'position'        => 'normal',

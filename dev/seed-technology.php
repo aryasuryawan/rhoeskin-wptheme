@@ -34,8 +34,8 @@ if (!$page_id) {
 echo "1. Found page: " . get_the_title($page_id) . " (ID: {$page_id})" . PHP_EOL;
 
 // Set template
-update_post_meta($page_id, '_wp_page_template', 'page-technology.php');
-echo "   Template set to: page-technology.php" . PHP_EOL . PHP_EOL;
+update_post_meta($page_id, '_wp_page_template', 'templates/page-technology.php');
+echo "   Template set to: templates/page-technology.php" . PHP_EOL . PHP_EOL;
 
 // ═══════════════════════════════════════════
 // 2. DOWNLOAD IMAGES
@@ -395,7 +395,7 @@ if (empty($existing_group)) {
                 [
                     'param'    => 'page_template',
                     'operator' => '==',
-                    'value'    => 'page-technology.php',
+                    'value'    => 'templates/page-technology.php',
                 ],
             ],
         ],

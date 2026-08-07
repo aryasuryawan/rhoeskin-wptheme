@@ -26,7 +26,7 @@ function alya_is_gallery_page($post_id = 0) {
     if (!$post_id) {
         $post_id = get_the_ID();
     }
-    return $post_id && get_page_template_slug($post_id) === 'page-gallery.php';
+    return $post_id && get_page_template_slug($post_id) === 'templates/page-gallery.php';
 }
 
 function alya_gallery_items_box_render($post) {
