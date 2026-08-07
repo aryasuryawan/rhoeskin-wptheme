@@ -106,6 +106,18 @@ function alya_scripts() {
         wp_enqueue_script('alya-page-blog', ALYA_URI . '/assets/js/page-blog.js', [], ALYA_VERSION, true);
     }
 
+    // Promo archive specific styles
+    if (is_post_type_archive('promo') || is_tax('promo_category')) {
+        wp_enqueue_style('alya-page-promo', ALYA_URI . '/assets/css/page-promo.css', ['alya-main'], ALYA_VERSION);
+        wp_enqueue_script('alya-page-promo', ALYA_URI . '/assets/js/page-promo.js', [], ALYA_VERSION, true);
+    }
+
+    // Single promo specific assets
+    if (is_singular('promo')) {
+        wp_enqueue_style('alya-single-promo', ALYA_URI . '/assets/css/page-promo.css', ['alya-main'], ALYA_VERSION);
+        wp_enqueue_script('alya-single-promo', ALYA_URI . '/assets/js/page-promo.js', [], ALYA_VERSION, true);
+    }
+
     // Single blog post specific assets
     if (is_singular('post') || is_singular('testimonial')) {
         wp_enqueue_style('alya-single-blog', ALYA_URI . '/assets/css/single-blog.css', ['alya-main'], ALYA_VERSION);
@@ -178,6 +190,12 @@ function alya_body_classes($classes) {
     }
     if (is_home() || is_archive() || is_category() || is_tag() || is_page('blog') || is_page('artikel') || is_page_template('page-blog.php') || is_page_template('page-artikel.php')) {
         $classes[] = 'page-blog';
+    }
+    if (is_post_type_archive('promo') || is_tax('promo_category')) {
+        $classes[] = 'page-promo';
+    }
+    if (is_singular('promo')) {
+        $classes[] = 'single-promo';
     }
     if (is_singular('post')) {
         $classes[] = 'single-blog';

@@ -101,6 +101,29 @@ function alya_register_cpts() {
             'show_in_rest'        => true,
             'capability_type'     => 'post',
         ],
+        'promo' => [
+            'label'               => 'Promo',
+            'labels'              => [
+                'name'               => 'Promo',
+                'singular_name'      => 'Promo',
+                'add_new'            => 'Tambah Promo',
+                'add_new_item'       => 'Tambah Promo Baru',
+                'edit_item'          => 'Edit Promo',
+                'new_item'           => 'Promo Baru',
+                'view_item'          => 'Lihat Promo',
+                'search_items'       => 'Cari Promo',
+                'not_found'          => 'Tidak ada promo ditemukan',
+                'not_found_in_trash' => 'Tidak ada promo di trash',
+                'menu_name'          => 'Promo',
+            ],
+            'public'              => true,
+            'has_archive'         => true,
+            'rewrite'             => ['slug' => 'promo'],
+            'menu_icon'           => 'dashicons-megaphone',
+            'supports'            => ['title', 'editor', 'thumbnail', 'excerpt', 'revisions'],
+            'show_in_rest'        => true,
+            'capability_type'     => 'post',
+        ],
         'faq' => [
             'label'               => 'FAQ',
             'labels'              => [
@@ -228,6 +251,27 @@ function alya_register_cpts() {
         'public'            => true,
         'show_in_rest'      => true,
         'rewrite'           => ['slug' => 'kategori-dokter'],
+        'show_admin_column' => true,
+    ]);
+
+    // Taxonomy for promo categories (tabs)
+    register_taxonomy('promo_category', ['promo'], [
+        'label'             => 'Kategori Promo',
+        'labels'            => [
+            'name'          => 'Kategori Promo',
+            'singular_name' => 'Kategori',
+            'search_items'  => 'Cari Kategori',
+            'all_items'     => 'Semua Kategori',
+            'edit_item'     => 'Edit Kategori',
+            'update_item'   => 'Update Kategori',
+            'add_new_item'  => 'Tambah Kategori Baru',
+            'new_item_name' => 'Nama Kategori Baru',
+            'menu_name'     => 'Kategori',
+        ],
+        'hierarchical'      => true,
+        'public'            => true,
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'kategori-promo'],
         'show_admin_column' => true,
     ]);
 

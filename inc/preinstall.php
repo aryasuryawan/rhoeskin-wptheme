@@ -55,6 +55,11 @@ function alya_run_seeders() {
     }
     $log .= "Page content seeded.\n\n";
 
+    // 4. Promo posts (dev/seed-promo.php)
+    $log .= "--- Step 4: Promo Posts (dev/seed-promo.php) ---\n";
+    require_once $theme_dir . '/dev/seed-promo.php';
+    $log .= "Promo posts seeded.\n\n";
+
     $log .= "=== Seed Complete ===\n";
 
     // Write log file

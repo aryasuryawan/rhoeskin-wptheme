@@ -851,6 +851,93 @@ acf_add_local_field_group([
 ]);
 
 /* ================================================================
+ * FIELD GROUP: Promo
+ * ================================================================ */
+acf_add_local_field_group([
+    'key'    => 'group_alya_promo',
+    'title'  => 'Detail Promo',
+    'fields' => [
+        [
+            'key'         => 'field_alya_promo_ribbon',
+            'label'       => 'Badge / Ribbon',
+            'name'        => 'alya_promo_ribbon',
+            'type'        => 'text',
+            'placeholder' => 'Contoh: Diskon 20% / Gratis Konsultasi',
+        ],
+        [
+            'key'         => 'field_alya_promo_price_old',
+            'label'       => 'Harga Sebelumnya',
+            'name'        => 'alya_promo_price_old',
+            'type'        => 'text',
+            'placeholder' => 'Contoh: Rp1.500.000',
+        ],
+        [
+            'key'         => 'field_alya_promo_price_new',
+            'label'       => 'Harga Promo',
+            'name'        => 'alya_promo_price_new',
+            'type'        => 'text',
+            'placeholder' => 'Contoh: Rp1.200.000 / Mulai Rp2.100.000',
+        ],
+        [
+            'key'         => 'field_alya_promo_save_text',
+            'label'       => 'Teks Hemat (opsional)',
+            'name'        => 'alya_promo_save_text',
+            'type'        => 'text',
+            'placeholder' => 'Contoh: Hemat Rp300.000',
+        ],
+        [
+            'key'           => 'field_alya_promo_deadline',
+            'label'         => 'Berlaku Hingga',
+            'name'          => 'alya_promo_deadline',
+            'type'          => 'date_picker',
+            'display_format' => 'd/m/Y',
+            'return_format'  => 'j M Y',
+            'first_day'      => 1,
+        ],
+        [
+            'key'         => 'field_alya_promo_code',
+            'label'       => 'Kode Promo',
+            'name'        => 'alya_promo_code',
+            'type'        => 'text',
+            'placeholder' => 'Contoh: SKINBOOST20',
+        ],
+        [
+            'key'         => 'field_alya_promo_slots',
+            'label'       => 'Kuota / Slot',
+            'name'        => 'alya_promo_slots',
+            'type'        => 'text',
+            'placeholder' => 'Contoh: Sisa 12 slot / Kuota terbatas',
+        ],
+        [
+            'key'         => 'field_alya_promo_quota',
+            'label'       => 'Persentase Kuota Terisi',
+            'name'        => 'alya_promo_quota',
+            'type'        => 'number',
+            'min'         => 0,
+            'max'         => 100,
+            'step'        => 1,
+            'placeholder' => 'Contoh: 60',
+        ],
+        [
+            'key'         => 'field_alya_promo_wa_link',
+            'label'       => 'Link Klaim WhatsApp',
+            'name'        => 'alya_promo_wa_link',
+            'type'        => 'url',
+            'placeholder' => 'https://wa.me/6281xxxxxxxxxx',
+        ],
+    ],
+    'location' => [
+        [
+            ['param' => 'post_type', 'operator' => '==', 'value' => 'promo'],
+        ],
+    ],
+    'position'        => 'normal',
+    'style'           => 'default',
+    'label_placement' => 'top',
+    'active'          => true,
+]);
+
+/* ================================================================
  * DOCTOR REPEATER META BOXES
  * — Education, Experience, Practice Schedule, Stats, Certifications
  * ================================================================ */
@@ -1153,7 +1240,12 @@ function alya_render_treatment_faqs_mb($post) {
     alya_render_doctor_repeater(
         'alya_faqs',
         ['question' => '❓ Pertanyaan', 'answer' => '💬 Jawaban'],
-        [['question' => 'Apakah treatment ini sakit?', 'answer' => 'Tidak, treatment ini tidak menyebabkan rasa sakit.']],
+        [
+            ['question' => 'Apakah treatment ini menimbulkan rasa sakit?', 'answer' => 'Tidak. Treatment ini adalah treatment non-invasif yang nyaman dilakukan dan tidak menimbulkan rasa sakit maupun downtime.'],
+            ['question' => 'Berapa kali sebaiknya treatment ini dilakukan?', 'answer' => 'Untuk hasil optimal, disarankan dilakukan secara rutin setiap 3–4 minggu sekali, disesuaikan dengan kondisi kulit masing-masing.'],
+            ['question' => 'Apakah aman untuk kulit sensitif?', 'answer' => 'Aman. Namun tim dokter akan melakukan analisa kulit terlebih dahulu untuk menyesuaikan produk dan teknik yang digunakan.'],
+            ['question' => 'Apa yang harus dilakukan setelah treatment?', 'answer' => 'Gunakan sunscreen secara rutin dan hindari eksfoliasi tambahan selama 2–3 hari setelah treatment untuk hasil yang optimal.'],
+        ],
         'alya_save_tr_faqs', 'alya_tr_faqs_nonce', $post->ID
     );
     echo '<p class="alya-rep-hint">Contoh: Apakah treatment ini sakit? | Tidak, treatment ini nyaman</p>';
@@ -1171,6 +1263,79 @@ add_action('save_post_treatment', function ($post_id) {
 
     alya_save_doctor_repeater($post_id, 'alya_faqs',
         'alya_tr_faqs_nonce', 'alya_save_tr_faqs',
+        ['question' => '', 'answer' => '']);
+});
+
+/* ================================================================
+ * PROMO REPEATER META BOXES
+ * — Quick Facts, Syarat & Ketentuan, FAQ
+ * ================================================================ */
+
+/* ── Register meta boxes ─────────────────────────────────────── */
+add_action('add_meta_boxes', function () {
+    $screen = get_current_screen();
+    if (!$screen || $screen->post_type !== 'promo') return;
+
+    $boxes = [
+        ['alya_promo_quickfacts_mb', '⚡ Fakta Singkat / Quick Facts',  'alya_render_promo_quickfacts_mb', 'normal'],
+        ['alya_promo_tnc_mb',        '📜 Syarat & Ketentuan',          'alya_render_promo_tnc_mb',        'normal'],
+        ['alya_promo_faqs_mb',       '❓ FAQ — Pertanyaan Umum',       'alya_render_promo_faqs_mb',       'normal'],
+    ];
+    foreach ($boxes as $b) {
+        add_meta_box($b[0], $b[1], $b[2], 'promo', $b[3], 'default');
+    }
+}, 20);
+
+/* ── Render callbacks ────────────────────────────────────────── */
+
+function alya_render_promo_quickfacts_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_promo_quickfacts',
+        ['title' => 'Judul', 'description' => 'Keterangan'],
+        [['title' => '1x Sesi', 'description' => 'Durasi ± 45 menit']],
+        'alya_save_promo_quickfacts', 'alya_promo_quickfacts_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: 1x Sesi | Durasi ± 45 menit</p>';
+}
+
+function alya_render_promo_tnc_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_promo_tnc',
+        ['text' => 'Ketentuan'],
+        [['text' => 'Berlaku hingga tanggal yang tertera atau selama kuota tersedia']],
+        'alya_save_promo_tnc', 'alya_promo_tnc_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: Berlaku hingga tanggal yang tertera atau selama kuota tersedia</p>';
+}
+
+function alya_render_promo_faqs_mb($post) {
+    alya_rep_scripts_once();
+    alya_render_doctor_repeater(
+        'alya_promo_faqs',
+        ['question' => '❓ Pertanyaan', 'answer' => '💬 Jawaban'],
+        [
+            ['question' => 'Apakah promo ini berlaku untuk semua jenis kulit?', 'answer' => 'Treatment pada dasarnya aman untuk berbagai jenis kulit, namun tetap disesuaikan lewat konsultasi dokter terlebih dahulu.'],
+            ['question' => 'Berapa lama hasil treatment terlihat?', 'answer' => 'Sebagian pasien sudah merasakan hasil sejak sesi pertama, namun hasil optimal umumnya terlihat setelah beberapa waktu dan dapat diulang sesuai anjuran dokter.'],
+        ],
+        'alya_save_promo_faqs', 'alya_promo_faqs_nonce', $post->ID
+    );
+    echo '<p class="alya-rep-hint">Contoh: Apakah promo berlaku semua jenis kulit? | Aman, namun tetap disesuaikan dokter</p>';
+}
+
+/* ── Save all repeaters on promo post save ───────────────────── */
+add_action('save_post_promo', function ($post_id) {
+    alya_save_doctor_repeater($post_id, 'alya_promo_quickfacts',
+        'alya_promo_quickfacts_nonce', 'alya_save_promo_quickfacts',
+        ['title' => '', 'description' => '']);
+
+    alya_save_doctor_repeater($post_id, 'alya_promo_tnc',
+        'alya_promo_tnc_nonce', 'alya_save_promo_tnc',
+        ['text' => '']);
+
+    alya_save_doctor_repeater($post_id, 'alya_promo_faqs',
+        'alya_promo_faqs_nonce', 'alya_save_promo_faqs',
         ['question' => '', 'answer' => '']);
 });
 

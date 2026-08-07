@@ -18,6 +18,7 @@ function alya_home_nav_fallback() {
         ['#testimoni', 'Testimoni', false],
         ['#faq', 'FAQ', false],
         [get_permalink(get_option('page_for_posts')) ?: home_url('/artikel/'), 'Artikel', false],
+        [get_post_type_archive_link('promo') ?: home_url('/promo/'), 'Promo', false],
         [get_post_type_archive_link('jobs') ?: home_url('/karir/'), 'Karir', false],
         ['#kontak', 'Kontak', false],
     ];
@@ -427,6 +428,96 @@ function alya_parse_stats($raw) {
  */
 function alya_parse_schedule($raw) {
     return alya_parse_lines($raw, ['day', 'hours', 'location']);
+}
+
+// ─── Promo Data ───
+
+/**
+ * Format a date with Indonesian month/day names.
+ */
+function alya_date_id($format, $ts) {
+    static $months = [
+        1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
+        7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des',
+    ];
+    static $months_full = [
+        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+        7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+    ];
+    $m = (int) date('n', $ts);
+    $format = str_replace('F', "§", $format);
+    $format = str_replace('M', "¶", $format);
+    $out = date($format, $ts);
+    $out = str_replace("¶", $months[$m], $out);
+    $out = str_replace("§", $months_full[$m], $out);
+    return $out;
+}
+
+/**
+ * Convert a promo deadline value (various formats) to a timestamp.
+ * Supports Ymd, Y-m-d, d/m/Y, d M Y etc.
+ */
+function alya_promo_deadline_ts($raw) {
+    if (!$raw) return 0;
+    if (preg_match('/^\d{8}$/', $raw)) {
+        $y = (int) substr($raw, 0, 4);
+        $m = (int) substr($raw, 4, 2);
+        $d = (int) substr($raw, 6, 2);
+        $ts = mktime(0, 0, 0, $m, $d, $y);
+        return $ts ?: 0;
+    }
+    $ts = strtotime($raw);
+    if (!$ts && preg_match('#^\d{2}/\d{2}/\d{4}$#', $raw)) {
+        list($d, $m, $y) = array_map('intval', explode('/', $raw));
+        $ts = mktime(0, 0, 0, $m, $d, $y);
+    }
+    return $ts ?: 0;
+}
+
+function alya_promo_data($post_id = 0) {
+    if (!$post_id) $post_id = get_the_ID();
+    if (!$post_id) return [];
+
+    $deadline_raw = get_post_meta($post_id, 'alya_promo_deadline', true);
+    $days_left    = '';
+    $deadline     = '';
+    if ($deadline_raw) {
+        $ts = alya_promo_deadline_ts($deadline_raw);
+        if ($ts) {
+            $deadline = alya_date_id('j M Y', $ts);
+            $days = (int) ceil(($ts - current_time('timestamp')) / DAY_IN_SECONDS);
+            if ($days > 0) $days_left = 'Sisa ' . $days . ' hari lagi';
+        }
+    }
+
+    $quickfacts = alya_maybe_rep(get_post_meta($post_id, 'alya_promo_quickfacts', true));
+    $tnc        = alya_maybe_rep(get_post_meta($post_id, 'alya_promo_tnc', true));
+    $faqs       = alya_maybe_rep(get_post_meta($post_id, 'alya_promo_faqs', true));
+
+    return [
+        'ribbon'       => alya_field('alya_promo_ribbon', ''),
+        'price_old'    => alya_field('alya_promo_price_old', ''),
+        'price_new'    => alya_field('alya_promo_price_new', ''),
+        'save_text'    => alya_field('alya_promo_save_text', ''),
+        'deadline'     => $deadline,
+        'deadline_raw' => $deadline_raw,
+        'days_left'    => $days_left,
+        'code'         => alya_field('alya_promo_code', ''),
+        'slots'        => alya_field('alya_promo_slots', ''),
+        'quota'        => (int) alya_field('alya_promo_quota', 0),
+        'wa_link'      => alya_field('alya_promo_wa_link', ''),
+        'quickfacts'   => is_array($quickfacts) ? $quickfacts : [],
+        'tnc'          => is_array($tnc) ? $tnc : [],
+        'faqs'         => is_array($faqs) ? $faqs : [],
+    ];
+}
+
+function alya_promo_wa_link($post_id = 0, $text = '') {
+    $data = alya_promo_data($post_id);
+    $link = $data['wa_link'] ?? '';
+    if ($link) return $link;
+    $msg  = $text ?: 'Halo, saya ingin klaim promo di Alya Esthetic Center.';
+    return alya_wa_link($msg);
 }
 
 // ─── Form Field Helper ───
