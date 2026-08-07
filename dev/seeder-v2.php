@@ -44,6 +44,7 @@ $v2_toggles = [
     'alya_v2_show_about'         => true,
     'alya_v2_show_services_v2'   => true,
     'alya_v2_show_signature'     => true,
+    'alya_v2_show_promo'         => true,
     'alya_v2_show_stats_band'    => true,
     'alya_v2_show_doctors_grid'  => true,
     'alya_v2_show_testimonials'  => true,
@@ -178,7 +179,7 @@ echo "\n14. Cleaning up stale separate options...\n";
 $stale_options = [
     'alya_homepage_style',
     'alya_v2_show_marquee', 'alya_v2_show_about', 'alya_v2_show_services_v2',
-    'alya_v2_show_signature', 'alya_v2_show_stats_band', 'alya_v2_show_doctors_grid',
+    'alya_v2_show_signature', 'alya_v2_show_promo', 'alya_v2_show_stats_band', 'alya_v2_show_doctors_grid',
     'alya_v2_show_testimonials', 'alya_v2_show_instagram', 'alya_v2_show_articles',
     'alya_v2_show_career', 'alya_v2_show_faq', 'alya_v2_show_contact',
     'alya_v2_hero_eyebrow', 'alya_v2_hero_title', 'alya_v2_hero_subtitle',
@@ -188,6 +189,7 @@ $stale_options = [
     'alya_v2_services_title', 'alya_v2_services_lead',
     'alya_v2_signature_title', 'alya_v2_signature_desc',
     'alya_v2_signature_cta_text', 'alya_v2_signature_cta_url',
+    'alya_v2_promo_title', 'alya_v2_promo_lead',
     'alya_v2_faq_title', 'alya_v2_faq_lead',
     'alya_v2_career_title', 'alya_v2_career_desc',
 ];

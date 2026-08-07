@@ -375,6 +375,7 @@ function alya_customize_register($wp_customize) {
         'alya_v2_show_about'         => 'Tentang Kami',
         'alya_v2_show_services_v2'   => 'Layanan (Photo Cards)',
         'alya_v2_show_signature'     => 'Signature Banner',
+        'alya_v2_show_promo'         => 'Promo (Spesial Bulan Ini)',
         'alya_v2_show_stats_band'    => 'Stats Band',
         'alya_v2_show_doctors_grid'  => 'Dokter (Grid)',
         'alya_v2_show_testimonials'  => 'Testimoni (Featured)',
@@ -482,6 +483,12 @@ function alya_customize_register($wp_customize) {
 
     $wp_customize->add_setting('alya_v2_signature_title', ['default' => 'Glass Skin Facial: Kulit Bercahaya Ala Korea', 'sanitize_callback' => 'sanitize_text_field']);
     $wp_customize->add_control('alya_v2_signature_title', ['label' => 'Signature Title', 'section' => 'alya_homepage_v2_content']);
+
+    $wp_customize->add_setting('alya_v2_promo_title', ['default' => 'Penawaran Spesial Bulan Ini', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('alya_v2_promo_title', ['label' => 'Promo Title', 'section' => 'alya_homepage_v2_content']);
+
+    $wp_customize->add_setting('alya_v2_promo_lead', ['default' => 'Diskon treatment favorit dengan kuota dan periode terbatas — klaim sebelum kehabisan.', 'sanitize_callback' => 'sanitize_textarea_field']);
+    $wp_customize->add_control('alya_v2_promo_lead', ['label' => 'Promo Lead', 'section' => 'alya_homepage_v2_content', 'type' => 'textarea']);
 
     $wp_customize->add_setting('alya_v2_signature_desc', ['default' => 'Kombinasi pembersihan mendalam, eksfoliasi lembut, dan infus nutrisi untuk kulit yang tampak lebih halus dan bercahaya seketika.', 'sanitize_callback' => 'sanitize_textarea_field']);
     $wp_customize->add_control('alya_v2_signature_desc', ['label' => 'Signature Description', 'section' => 'alya_homepage_v2_content', 'type' => 'textarea']);

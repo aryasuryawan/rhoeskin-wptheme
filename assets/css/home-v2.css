@@ -13,6 +13,7 @@
   --bg: #ffffff;
   --bg-soft: #faf7f4;
   --shadow: 0 18px 40px -22px rgba(43, 38, 35, 0.35);
+  --promo: #c0392b;
 }
 
 /* Base resets & typography for Home V2 */
@@ -556,6 +557,191 @@ header#siteHeader {
 .svc-card:hover .svc-card__arrow svg {
   fill: #fff;
   transform: translateX(2px);
+}
+
+/* ---------- Promo ---------- */
+.promo-sec {
+  background: var(--bg);
+  position: relative;
+}
+
+.promo-sec .sec-head .eyebrow {
+  color: var(--promo);
+}
+
+.promo-sec .sec-head .eyebrow::before {
+  background: var(--promo);
+}
+
+.promo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.promo-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.promo-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+  border-color: #f1d9d3;
+}
+
+.promo-card .thumb {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+
+.promo-card__link {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.promo-card__link:focus-visible {
+  outline: 2px solid var(--promo);
+  outline-offset: -2px;
+}
+
+.promo-card .promo-actions {
+  position: relative;
+  z-index: 4;
+}
+
+.promo-card .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.5s;
+}
+
+.promo-card:hover .thumb img {
+  transform: scale(1.06);
+}
+
+.promo-card .ribbon {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  background: var(--promo);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 7px 16px 7px 14px;
+  border-radius: 0 999px 999px 0;
+  box-shadow: 0 8px 18px -8px rgba(192, 57, 43, 0.6);
+  z-index: 2;
+}
+
+.promo-card__body {
+  padding: 22px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.promo-card__body .tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--promo);
+  margin-bottom: 8px;
+}
+
+.promo-card__body h3 {
+  font-size: 1.06rem;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.promo-card__body h3 a {
+  color: inherit;
+  text-decoration: none;
+  transition: 0.25s;
+}
+
+.promo-card__body h3 a:hover {
+  color: var(--promo);
+}
+
+.promo-card__body p {
+  font-size: 0.86rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.promo-card .price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.promo-card .price-old {
+  color: var(--muted);
+  text-decoration: line-through;
+  font-size: 0.85rem;
+}
+
+.promo-card .price-new {
+  color: var(--promo);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.promo-card .expiry {
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.promo-card .expiry svg {
+  width: 14px;
+  height: 14px;
+  fill: var(--promo);
+  flex: none;
+}
+
+.promo-card .promo-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.promo-card .btn--claim {
+  background: #25D366;
+  border-color: #25D366;
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 11px 20px;
+}
+
+.promo-card .btn--claim:hover {
+  background: #1ebc59;
+  border-color: #1ebc59;
+}
+
+.promo-sec__foot {
+  display: flex;
+  justify-content: center;
+  margin-top: 44px;
 }
 
 /* ---------- Signature banner ---------- */
@@ -1401,6 +1587,9 @@ footer .socials a:hover svg {
   .ig-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+  .promo-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 960px) {
@@ -1475,6 +1664,9 @@ footer .socials a:hover svg {
   }
   .ig-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .promo-grid {
+    grid-template-columns: 1fr;
   }
   .career-strip .container {
     flex-direction: column;

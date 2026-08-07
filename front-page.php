@@ -33,6 +33,11 @@ $homepage_style = get_theme_mod('alya_homepage_style', 'default');
     <?php get_template_part('template-parts/services-grid', 'v2'); ?>
 <?php endif; ?>
 
+<!-- ════════════════════════════════════════════ PROMO ════════════════════════════════════════════ -->
+<?php if (get_theme_mod('alya_v2_show_promo', true)) : ?>
+    <?php get_template_part('template-parts/promo-v2'); ?>
+<?php endif; ?>
+
 <!-- ════════════════════════════════════════════ SIGNATURE BANNER ════════════════════════════════════════════ -->
 <?php if (get_theme_mod('alya_v2_show_signature', true)) : ?>
     <?php get_template_part('template-parts/signature-banner'); ?>
