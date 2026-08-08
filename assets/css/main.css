@@ -1299,7 +1299,9 @@ footer .socials a:hover svg{fill:#fff}
     .about__media {
       .badge {
         right: 8px;
-}
+      }
+    }
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1315,8 +1317,8 @@ footer .socials a:hover svg{fill:#fff}
 .social-share__btn svg{width:18px;height:18px;fill:currentColor}
 
 /* ─── Float WhatsApp ─── */
-.fab-wa{position:fixed;bottom:26px;right:26px;width:58px;height:58px;border-radius:50%;background:#25D366;display:flex !important;align-items:center;justify-content:center;box-shadow:0 14px 30px -10px rgba(37,211,102,.6);z-index:99999;transition:.25s;text-decoration:none;cursor:pointer;pointer-events:auto !important}
-.fab-wa:hover{transform:scale(1.1);box-shadow:0 18px 36px -8px rgba(37,211,102,.8)}
+.fab-wa{position:fixed;bottom:26px;right:26px;width:58px;height:58px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 14px 30px -10px rgba(37,211,102,.6);z-index:70;transition:.25s;text-decoration:none;cursor:pointer}
+.fab-wa:hover{transform:scale(1.08);box-shadow:0 18px 36px -8px rgba(37,211,102,.8)}
 .fab-wa svg{width:28px;height:28px;fill:#fff;pointer-events:none}
 
 /* ─── Accordion ─── */
