@@ -97,7 +97,6 @@ defined('ABSPATH') || exit;
                     ?>
                 </div>
             <?php endif; ?>
-            <a class="btn btn--ghostdark" href="<?php echo (is_front_page() && get_theme_mod('alya_homepage_style', 'default') === 'v2') ? '#kontak' : esc_url(get_permalink(get_page_by_path('kontak')) ?: home_url('/kontak/')); ?>">Buat Janji</a>
             <button class="burger" id="burger" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
