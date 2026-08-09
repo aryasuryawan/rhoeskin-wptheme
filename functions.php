@@ -593,6 +593,39 @@ function alya_doctors_filter_handler() {
     // Query featured doctors (hanya di page 1)
     $featured_doctors = [];
     $featured_count = 0;
+    $total_featured_count = 0; // Total featured docs di DB untuk offset calculation
+    
+    // Hitung total featured doctors untuk pagination calculation
+    $count_featured_args = [
+        'post_type'      => 'doctor',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'meta_query'     => [
+            [
+                'key'   => 'alya_is_featured',
+                'value' => '1',
+            ],
+        ],
+    ];
+    
+    if (!empty($category) && $category !== 'all') {
+        $count_featured_args['meta_query'][] = [
+            'key'     => 'alya_specialty',
+            'value'   => $category,
+            'compare' => 'LIKE',
+        ];
+    }
+    
+    if (!empty($search)) {
+        $count_featured_args['s'] = $search;
+    }
+    
+    $count_featured_query = new WP_Query($count_featured_args);
+    $total_featured_count = $count_featured_query->found_posts;
+    wp_reset_postdata();
+    
+    // Fetch featured doctors hanya untuk page 1
     if ($paged === 1) {
         $featured_meta_query = [
             [
@@ -628,7 +661,7 @@ function alya_doctors_filter_handler() {
 
     // Query regular doctors
     $regular_per_page = $per_page - $featured_count;
-    $regular_offset = ($paged === 1) ? 0 : (($paged - 1) * $per_page - $featured_count);
+    $regular_offset = ($paged === 1) ? 0 : (($paged - 1) * $per_page - $total_featured_count);
 
     $regular_meta_query = [
         'relation' => 'OR',
@@ -673,7 +706,7 @@ function alya_doctors_filter_handler() {
 
     // Hitung total pages
     $total_regular = $regular_query->found_posts;
-    $total_all = $featured_count + $total_regular;
+    $total_all = $total_featured_count + $total_regular;
     $max_pages = ceil($total_all / $per_page);
 
     ob_start();
