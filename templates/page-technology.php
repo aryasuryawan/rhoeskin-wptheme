@@ -18,61 +18,50 @@ $hero_title    = get_field('alya_hero_title') ?: 'Teknologi & Medical Devices Be
 $hero_subtitle = get_field('alya_hero_subtitle') ?: 'Rhoé Skin berkomitmen menghadirkan perangkat medis terkini yang telah tersertifikasi BPOM, FDA, dan CE Mark demi hasil perawatan yang aman dan optimal.';
 $hero_stats    = get_field('alya_hero_stats');
 
-// Categories
-$raw_items = get_field('alya_tech_items');
-$tech_items = [];
-if (is_string($raw_items) && !empty(trim($raw_items))) {
-    $lines = array_filter(array_map('trim', explode("\n", $raw_items)));
+// Categories - parse from nested format
+$raw = get_post_meta(get_the_ID(), 'alya_tech_categories', true);
+$categories = [];
+
+if (is_string($raw) && !empty(trim($raw))) {
+    $lines = array_filter(array_map('trim', explode("\n", $raw)));
+    $current_cat = null;
+    
     foreach ($lines as $line) {
-        $parts = array_map('trim', explode('|', $line));
-        if (count($parts) >= 3) {
-            $tech_items[] = [
-                'category_id'    => $parts[0] ?? '',
-                'category_label' => $parts[1] ?? '',
-                'device_title'   => $parts[2] ?? '',
-                'device_desc'    => $parts[3] ?? '',
-                'image_id'       => intval($parts[4] ?? 0),
-                'features_text'  => $parts[5] ?? '',
+        if (strpos($line, 'CAT::') === 0) {
+            // New category
+            $parts = array_map('trim', explode('|', substr($line, 5)));
+            $current_cat = [
+                'category_id'      => $parts[0] ?? '',
+                'category_label'   => $parts[1] ?? '',
+                'category_title'   => $parts[2] ?? '',
+                'category_number'  => $parts[3] ?? '',
+                'category_eyebrow' => $parts[4] ?? '',
+                'category_badge'   => $parts[5] ?? '',
+                'category_bg_alt'  => ($parts[6] ?? '0') === '1',
+                'devices'          => [],
+            ];
+            $categories[] = &$current_cat;
+        } elseif (strpos($line, 'DEV::') === 0 && $current_cat !== null) {
+            // Device under current category
+            $parts = array_map('trim', explode('|', substr($line, 5)));
+            $features = [];
+            if (!empty($parts[3])) {
+                foreach (explode(',', $parts[3]) as $feat) {
+                    $features[] = ['feature_text' => trim($feat)];
+                }
+            }
+            
+            $current_cat['devices'][] = [
+                'device_title' => $parts[0] ?? '',
+                'device_desc'  => $parts[1] ?? '',
+                'image'        => intval($parts[2] ?? 0) ? wp_get_attachment_image_array(intval($parts[2]), 'medium') : null,
+                'features'     => $features,
+                'brand_tag'    => $parts[4] ?? '',
+                'origin_badge' => $parts[5] ?? '',
             ];
         }
     }
 }
-
-// Group by category
-$categories = [];
-foreach ($tech_items as $item) {
-    $cat_id = $item['category_id'];
-    if (!isset($categories[$cat_id])) {
-        $categories[$cat_id] = [
-            'category_id'    => $cat_id,
-            'category_label' => $item['category_label'],
-            'category_title' => $item['category_label'], // Use label as title
-            'category_number'  => str_pad(count($categories) + 1, 2, '0', STR_PAD_LEFT),
-            'category_eyebrow' => '',
-            'category_badge'   => '',
-            'devices'          => [],
-        ];
-    }
-    
-    // Parse features
-    $features = [];
-    if (!empty($item['features_text'])) {
-        foreach (explode(',', $item['features_text']) as $feat) {
-            $features[] = ['feature_text' => trim($feat)];
-        }
-    }
-    
-    $categories[$cat_id]['devices'][] = [
-        'device_title' => $item['device_title'],
-        'device_desc'  => $item['device_desc'],
-        'image'        => $item['image_id'] ? wp_get_attachment_image_array($item['image_id'], 'medium') : null,
-        'features'     => $features,
-        'brand_tag'    => '',
-        'origin_badge' => '',
-    ];
-}
-
-$categories = array_values($categories);
 
 // Certification
 $cert_eyebrow = get_field('alya_cert_eyebrow') ?: 'Sertifikasi & Standar';
