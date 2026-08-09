@@ -356,8 +356,8 @@ add_action('widgets_init', 'alya_widgets_init');
 require_once ALYA_DIR . '/inc/helpers.php';
 require_once ALYA_DIR . '/inc/cpt.php';
 require_once ALYA_DIR . '/inc/acf.php';
-require_once ALYA_DIR . '/inc/acf-technology.php'; // Simple textarea format for technology page
 require_once ALYA_DIR . '/inc/gallery-meta.php';
+require_once ALYA_DIR . '/inc/technology-meta.php';
 require_once ALYA_DIR . '/inc/customizer.php';
 require_once ALYA_DIR . '/inc/security.php';
 require_once ALYA_DIR . '/inc/social.php';
