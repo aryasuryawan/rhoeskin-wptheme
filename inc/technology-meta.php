@@ -33,10 +33,12 @@ function alya_is_technology_page($post_id = 0) {
 function alya_tech_categories_box_render($post) {
     if (!alya_is_technology_page($post->ID)) {
         echo '<p>Meta box ini hanya aktif pada halaman dengan template "Technology Page".</p>';
+        echo '<p><strong>Debug:</strong> Current template: ' . esc_html(get_page_template_slug($post->ID)) . '</p>';
         return;
     }
 
     wp_nonce_field('alya_tech_categories_save', 'alya_tech_categories_nonce');
+    wp_enqueue_media();
 
     $raw = get_post_meta($post->ID, 'alya_tech_categories', true);
     $categories = [];
@@ -147,6 +149,129 @@ function alya_tech_categories_box_render($post) {
 
     <script type="text/html" id="alya-device-tpl">
         <?php alya_tech_device_row('__CAT_IDX__', '__DEV_IDX__', alya_tech_empty_device()); ?>
+    </script>
+    
+    <script type="text/javascript">
+    console.log("=== Technology Meta Box Script ===");
+    console.log("Script tag reached");
+    
+    jQuery(document).ready(function($){
+      console.log("Document ready fired");
+      console.log("jQuery:", typeof $);
+      console.log("wp:", typeof wp);
+      console.log("wp.media:", typeof wp !== "undefined" ? typeof wp.media : "N/A");
+      
+      if (typeof wp === "undefined" || !wp.media) {
+        console.error("WP Media not available!");
+        return;
+      }
+      
+      console.log("Setting up event handlers...");
+
+      var frame = null, targetRow = null, targetField = null;
+
+      function catIndex() { return Date.now(); }
+      function devIndex() { return Date.now() + Math.floor(Math.random() * 10000); }
+
+      // Media picker for devices
+      $("#alya-tech-categories").on("click", ".alya-pick", function(e){
+        e.preventDefault();
+        console.log("Pick button clicked");
+        targetRow = $(this).closest(".alya-tech-device");
+        targetField = $(this).data("field");
+
+        if (frame) { frame.open(); return; }
+
+        frame = wp.media({
+          title: "Select Device Image",
+          button: { text: "Use This Image" },
+          multiple: false
+        });
+
+        frame.on("select", function(){
+          var att = frame.state().get("selection").first().toJSON();
+          if (!targetRow || !targetField) return;
+          var url = att.sizes && att.sizes.medium ? att.sizes.medium.url : att.url;
+          targetRow.find("input[data-id=\"" + targetField + "\"]").val(att.id);
+          targetRow.find(".alya-img[data-field=\"" + targetField + "\"]").html("<img src=\"" + url + "\" alt=\"\">");
+        });
+
+        frame.open();
+      });
+
+      // Clear device image
+      $("#alya-tech-categories").on("click", ".alya-clear", function(e){
+        e.preventDefault();
+        console.log("Clear clicked");
+        var $row = $(this).closest(".alya-tech-device");
+        var field = $(this).data("field");
+        $row.find("input[data-id=\"" + field + "\"]").val("");
+        $row.find(".alya-img[data-field=\"" + field + "\"]").html("<span>No image</span>");
+      });
+
+      // Add category
+      $("#alya-add-category").on("click", function(e){
+        e.preventDefault();
+        console.log("Add category clicked");
+        var tpl = $("#alya-category-tpl").html();
+        console.log("Template found:", !!tpl);
+        var idx = catIndex();
+        $("#alya-tech-categories").append(tpl.replace(/__CAT_IDX__/g, idx));
+        updateCategoryNumbers();
+      });
+
+      // Remove category
+      $("#alya-tech-categories").on("click", ".alya-remove-cat", function(e){
+        e.preventDefault();
+        console.log("Remove category clicked");
+        var $cats = $("#alya-tech-categories").children(".alya-tech-category");
+        if ($cats.length <= 1) {
+          alert("You must have at least one category.");
+          return;
+        }
+        $(this).closest(".alya-tech-category").remove();
+        updateCategoryNumbers();
+      });
+
+      // Add device
+      $("#alya-tech-categories").on("click", ".alya-add-device", function(e){
+        e.preventDefault();
+        console.log("Add device clicked");
+        var $btn = $(this);
+        var catIdx = $btn.data("cat-idx");
+        console.log("Cat index:", catIdx);
+        var $container = $btn.closest(".alya-tech-category").find(".alya-tech-devices");
+        console.log("Container found:", $container.length);
+        var tpl = $("#alya-device-tpl").html();
+        console.log("Device template found:", !!tpl);
+        var idx = devIndex();
+        $container.append(tpl.replace(/__CAT_IDX__/g, catIdx).replace(/__DEV_IDX__/g, idx));
+        console.log("Device added");
+      });
+
+      // Remove device
+      $("#alya-tech-categories").on("click", ".alya-remove-dev", function(e){
+        e.preventDefault();
+        console.log("Remove device clicked");
+        var $devices = $(this).closest(".alya-tech-devices");
+        if ($devices.children(".alya-tech-device").length <= 1) {
+          alert("Each category must have at least one device.");
+          return;
+        }
+        $(this).closest(".alya-tech-device").remove();
+      });
+
+      function updateCategoryNumbers() {
+        $("#alya-tech-categories").children(".alya-tech-category").each(function(i){
+          $(this).attr("data-cat-idx", i);
+          $(this).find(".cat-num").first().text(i + 1);
+          $(this).find(".alya-add-device").attr("data-cat-idx", i);
+          $(this).find(".alya-tech-devices").attr("data-cat-idx", i);
+        });
+      }
+      
+      console.log("All handlers registered successfully");
+    });
     </script>
     <?php
 }
@@ -330,132 +455,4 @@ add_action('save_post', function ($post_id) {
     }
 
     update_post_meta($post_id, 'alya_tech_categories', implode("\n", $lines));
-});
-
-add_action('admin_footer', function () {
-    $screen = get_current_screen();
-    if (!$screen || $screen->id !== 'page') return;
-    
-    global $post;
-    if (!$post || !alya_is_technology_page($post->ID)) return;
-
-    wp_enqueue_media();
-    ?>
-    <script type="text/javascript">
-    console.log("Technology meta box script loading...");
-    
-(function($){
-  console.log("Inside jQuery wrapper");
-  console.log("jQuery version:", $.fn.jquery);
-  console.log("wp available:", typeof wp);
-  console.log("wp.media available:", typeof wp !== "undefined" ? typeof wp.media : "wp not defined");
-  
-  if (typeof wp === "undefined" || !wp.media) {
-    console.error("WP Media not available - script will not run");
-    return;
-  }
-  
-  console.log("All checks passed, setting up handlers...");
-
-  var frame = null, targetRow = null, targetField = null;
-
-  function catIndex() { return Date.now(); }
-  function devIndex() { return Date.now() + Math.floor(Math.random() * 10000); }
-
-  // Media picker for devices
-  $("#alya-tech-categories").on("click", ".alya-pick", function(e){
-    e.preventDefault();
-    console.log("Pick button clicked");
-    targetRow = $(this).closest(".alya-tech-device");
-    targetField = $(this).data("field");
-
-    if (frame) { frame.open(); return; }
-
-    frame = wp.media({
-      title: "Select Device Image",
-      button: { text: "Use This Image" },
-      multiple: false
-    });
-
-    frame.on("select", function(){
-      var att = frame.state().get("selection").first().toJSON();
-      if (!targetRow || !targetField) return;
-      var url = att.sizes && att.sizes.medium ? att.sizes.medium.url : att.url;
-      targetRow.find("input[data-id=\"" + targetField + "\"]").val(att.id);
-      targetRow.find(".alya-img[data-field=\"" + targetField + "\"]").html("<img src=\"" + url + "\" alt=\"\">");
-    });
-
-    frame.open();
-  });
-
-  // Clear device image
-  $("#alya-tech-categories").on("click", ".alya-clear", function(e){
-    e.preventDefault();
-    var $row = $(this).closest(".alya-tech-device");
-    var field = $(this).data("field");
-    $row.find("input[data-id=\"" + field + "\"]").val("");
-    $row.find(".alya-img[data-field=\"" + field + "\"]").html("<span>No image</span>");
-  });
-
-  // Add category
-  $("#alya-add-category").on("click", function(e){
-    e.preventDefault();
-    console.log("Add category clicked");
-    var tpl = $("#alya-category-tpl").html();
-    console.log("Template found:", !!tpl);
-    var idx = catIndex();
-    $("#alya-tech-categories").append(tpl.replace(/__CAT_IDX__/g, idx));
-    updateCategoryNumbers();
-  });
-
-  // Remove category
-  $("#alya-tech-categories").on("click", ".alya-remove-cat", function(e){
-    e.preventDefault();
-    var $cats = $("#alya-tech-categories").children(".alya-tech-category");
-    if ($cats.length <= 1) {
-      alert("You must have at least one category.");
-      return;
-    }
-    $(this).closest(".alya-tech-category").remove();
-    updateCategoryNumbers();
-  });
-
-  // Add device
-  $("#alya-tech-categories").on("click", ".alya-add-device", function(e){
-    e.preventDefault();
-    console.log("Add device clicked");
-    var $btn = $(this);
-    var catIdx = $btn.data("cat-idx");
-    console.log("Cat index:", catIdx);
-    var $container = $btn.closest(".alya-tech-category").find(".alya-tech-devices");
-    console.log("Container found:", $container.length);
-    var tpl = $("#alya-device-tpl").html();
-    console.log("Device template found:", !!tpl);
-    var idx = devIndex();
-    $container.append(tpl.replace(/__CAT_IDX__/g, catIdx).replace(/__DEV_IDX__/g, idx));
-    console.log("Device added");
-  });
-
-  // Remove device
-  $("#alya-tech-categories").on("click", ".alya-remove-dev", function(e){
-    e.preventDefault();
-    var $devices = $(this).closest(".alya-tech-devices");
-    if ($devices.children(".alya-tech-device").length <= 1) {
-      alert("Each category must have at least one device.");
-      return;
-    }
-    $(this).closest(".alya-tech-device").remove();
-  });
-
-  function updateCategoryNumbers() {
-    $("#alya-tech-categories").children(".alya-tech-category").each(function(i){
-      $(this).attr("data-cat-idx", i);
-      $(this).find(".cat-num").first().text(i + 1);
-      $(this).find(".alya-add-device").attr("data-cat-idx", i);
-      $(this).find(".alya-tech-devices").attr("data-cat-idx", i);
-    });
-  }
-})(jQuery);
-    </script>
-    <?php
 });
