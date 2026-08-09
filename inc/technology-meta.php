@@ -332,18 +332,30 @@ add_action('save_post', function ($post_id) {
     update_post_meta($post_id, 'alya_tech_categories', implode("\n", $lines));
 });
 
-add_action('admin_enqueue_scripts', function ($hook) {
-    if (!in_array($hook, ['post.php', 'post-new.php'], true)) return;
+add_action('admin_footer', function () {
     $screen = get_current_screen();
     if (!$screen || $screen->id !== 'page') return;
-
-    $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
-    if ($post_id && !alya_is_technology_page($post_id)) return;
+    
+    global $post;
+    if (!$post || !alya_is_technology_page($post->ID)) return;
 
     wp_enqueue_media();
-    wp_add_inline_script('jquery', '
+    ?>
+    <script type="text/javascript">
+    console.log("Technology meta box script loading...");
+    
 (function($){
-  if (typeof wp === "undefined" || !wp.media) return;
+  console.log("Inside jQuery wrapper");
+  console.log("jQuery version:", $.fn.jquery);
+  console.log("wp available:", typeof wp);
+  console.log("wp.media available:", typeof wp !== "undefined" ? typeof wp.media : "wp not defined");
+  
+  if (typeof wp === "undefined" || !wp.media) {
+    console.error("WP Media not available - script will not run");
+    return;
+  }
+  
+  console.log("All checks passed, setting up handlers...");
 
   var frame = null, targetRow = null, targetField = null;
 
@@ -353,6 +365,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
   // Media picker for devices
   $("#alya-tech-categories").on("click", ".alya-pick", function(e){
     e.preventDefault();
+    console.log("Pick button clicked");
     targetRow = $(this).closest(".alya-tech-device");
     targetField = $(this).data("field");
 
@@ -387,7 +400,9 @@ add_action('admin_enqueue_scripts', function ($hook) {
   // Add category
   $("#alya-add-category").on("click", function(e){
     e.preventDefault();
+    console.log("Add category clicked");
     var tpl = $("#alya-category-tpl").html();
+    console.log("Template found:", !!tpl);
     var idx = catIndex();
     $("#alya-tech-categories").append(tpl.replace(/__CAT_IDX__/g, idx));
     updateCategoryNumbers();
@@ -408,12 +423,17 @@ add_action('admin_enqueue_scripts', function ($hook) {
   // Add device
   $("#alya-tech-categories").on("click", ".alya-add-device", function(e){
     e.preventDefault();
+    console.log("Add device clicked");
     var $btn = $(this);
     var catIdx = $btn.data("cat-idx");
+    console.log("Cat index:", catIdx);
     var $container = $btn.closest(".alya-tech-category").find(".alya-tech-devices");
+    console.log("Container found:", $container.length);
     var tpl = $("#alya-device-tpl").html();
+    console.log("Device template found:", !!tpl);
     var idx = devIndex();
     $container.append(tpl.replace(/__CAT_IDX__/g, catIdx).replace(/__DEV_IDX__/g, idx));
+    console.log("Device added");
   });
 
   // Remove device
@@ -436,5 +456,6 @@ add_action('admin_enqueue_scripts', function ($hook) {
     });
   }
 })(jQuery);
-', 'after');
+    </script>
+    <?php
 });
