@@ -59,13 +59,21 @@ table{border-collapse:collapse}
 .nav__links .dropdown a:hover{background:var(--brand-soft);color:var(--brand)}
 .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;position:relative;z-index:100}
 .burger span{width:26px;height:2px;background:var(--ink);transition:.3s}
-/* ─── Polylang Language Dropdown ─── */
-.lang-dropdown{display:flex;align-items:center}
-.lang-dropdown select{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 10px center;background-size:10px;padding:8px 32px 8px 12px;border:1px solid var(--line);border-radius:8px;font-size:.88rem;font-weight:500;color:var(--ink);cursor:pointer;transition:.25s;min-width:100px}
-.lang-dropdown select:hover{border-color:var(--brand);background-color:var(--bg-alt)}
-.lang-dropdown select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(176,131,106,.12)}
-.lang-dropdown select option{padding:8px 12px}
-@media (max-width:960px){.lang-dropdown{margin-right:10px}.lang-dropdown select{min-width:80px;padding:6px 28px 6px 10px;font-size:.82rem}}
+/* ─── Custom Language Switcher (Flag Only) ─── */
+.lang-switcher-custom{position:relative;display:flex;align-items:center}
+.lang-switcher-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#fff;border:1px solid var(--line);border-radius:8px;cursor:pointer;transition:.25s}
+.lang-switcher-btn:hover{border-color:var(--brand);background:var(--bg-alt)}
+.lang-switcher-btn img{width:24px;height:auto;display:block;border-radius:2px}
+.lang-switcher-btn svg{width:10px;height:10px;transition:.25s}
+.lang-switcher-custom:hover .lang-switcher-btn svg{transform:rotate(180deg)}
+.lang-switcher-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:6px;min-width:60px;opacity:0;visibility:hidden;transform:translateY(-8px);transition:.25s;z-index:100}
+.lang-switcher-custom:hover .lang-switcher-dropdown{opacity:1;visibility:visible;transform:translateY(0)}
+.lang-option{display:block;padding:8px 12px;border-radius:6px;transition:.2s;text-align:center}
+.lang-option:hover{background:var(--bg-alt)}
+.lang-option img{width:24px;height:auto;margin:0 auto;border-radius:2px}
+/* Hide default Polylang widget/menu items in header to avoid duplicate */
+#siteHeader .widget_polylang,#siteHeader .lang-item{display:none}
+@media (max-width:960px){.lang-switcher-custom{margin-right:10px}.lang-switcher-btn{padding:6px 10px}.lang-switcher-btn img,.lang-option img{width:20px}}
 body.admin-bar #siteHeader{top:32px}
 @media(max-width:782px){body.admin-bar #siteHeader{top:46px}}
 

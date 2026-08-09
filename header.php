@@ -57,17 +57,43 @@ defined('ABSPATH') || exit;
                 ?>
             <?php endif; ?>
             <?php if (function_exists('pll_the_languages')) : ?>
-                <div class="lang-dropdown">
+                <div class="lang-switcher-custom">
                     <?php
-                    pll_the_languages([
-                        'dropdown'               => 1,
-                        'show_names'             => 0,
-                        'show_flags'             => 1,
-                        'hide_if_empty'          => 0,
-                        'force_home'             => 0,
-                        'echo'                   => 1,
+                    $languages = pll_the_languages([
+                        'raw' => 1,
                         'hide_if_no_translation' => 0,
                     ]);
+                    
+                    if (!empty($languages)) {
+                        $current = null;
+                        $others = [];
+                        
+                        foreach ($languages as $lang) {
+                            if ($lang['current_lang']) {
+                                $current = $lang;
+                            } else {
+                                $others[] = $lang;
+                            }
+                        }
+                        
+                        if ($current) :
+                    ?>
+                        <div class="lang-switcher-btn">
+                            <img src="<?php echo esc_url($current['flag']); ?>" alt="<?php echo esc_attr($current['name']); ?>" title="<?php echo esc_attr($current['name']); ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                                <path d="M6 9L1 4h10z"/>
+                            </svg>
+                        </div>
+                        <div class="lang-switcher-dropdown">
+                            <?php foreach ($others as $lang) : ?>
+                                <a href="<?php echo esc_url($lang['url']); ?>" class="lang-option">
+                                    <img src="<?php echo esc_url($lang['flag']); ?>" alt="<?php echo esc_attr($lang['name']); ?>" title="<?php echo esc_attr($lang['name']); ?>">
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php
+                        endif;
+                    }
                     ?>
                 </div>
             <?php endif; ?>
