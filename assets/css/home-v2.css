@@ -922,6 +922,11 @@ header#siteHeader {
   transition: transform 0.2s ease;
 }
 
+.doc-badge svg {
+  display: block;
+  margin: auto;
+}
+
 .doc-badge:hover {
   transform: scale(1.1);
 }

@@ -188,6 +188,11 @@
   transition: transform 0.2s ease;
 }
 
+.doc-badge--archive svg {
+  display: block;
+  margin: auto;
+}
+
 .doc-badge--archive:hover {
   transform: scale(1.08);
 }
