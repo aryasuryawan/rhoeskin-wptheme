@@ -479,6 +479,13 @@ acf_add_local_field_group([
     'title'  => 'Technology Settings',
     'fields' => [
         [
+            'key'   => 'field_alya_tech_test',
+            'label' => 'Test Field (jika ini muncul, ACF working)',
+            'name'  => 'alya_tech_test',
+            'type'  => 'text',
+            'instructions' => 'Jika field ini muncul, berarti ACF field group ter-register dengan benar.',
+        ],
+        [
             'key'          => 'field_alya_tech_categories',
             'label'        => 'Technology Categories',
             'name'         => 'alya_tech_categories',
