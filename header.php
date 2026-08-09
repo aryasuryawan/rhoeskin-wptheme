@@ -56,6 +56,21 @@ defined('ABSPATH') || exit;
                 ]);
                 ?>
             <?php endif; ?>
+            <?php if (function_exists('pll_the_languages')) : ?>
+                <div class="lang-dropdown">
+                    <?php
+                    pll_the_languages([
+                        'dropdown'               => 1,
+                        'show_names'             => 0,
+                        'show_flags'             => 1,
+                        'hide_if_empty'          => 0,
+                        'force_home'             => 0,
+                        'echo'                   => 1,
+                        'hide_if_no_translation' => 0,
+                    ]);
+                    ?>
+                </div>
+            <?php endif; ?>
             <a class="btn btn--ghostdark" href="<?php echo (is_front_page() && get_theme_mod('alya_homepage_style', 'default') === 'v2') ? '#kontak' : esc_url(get_permalink(get_page_by_path('kontak')) ?: home_url('/kontak/')); ?>">Buat Janji</a>
             <button class="burger" id="burger" aria-label="Menu">
                 <span></span><span></span><span></span>
