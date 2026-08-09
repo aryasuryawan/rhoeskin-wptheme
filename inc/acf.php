@@ -479,13 +479,6 @@ acf_add_local_field_group([
     'title'  => 'Technology Settings',
     'fields' => [
         [
-            'key'   => 'field_alya_tech_test',
-            'label' => 'Test Field (jika ini muncul, ACF working)',
-            'name'  => 'alya_tech_test',
-            'type'  => 'text',
-            'instructions' => 'Jika field ini muncul, berarti ACF field group ter-register dengan benar.',
-        ],
-        [
             'key'          => 'field_alya_tech_categories',
             'label'        => 'Technology Categories',
             'name'         => 'alya_tech_categories',
@@ -552,8 +545,9 @@ acf_add_local_field_group([
                     'label'        => 'Devices in this Category',
                     'name'         => 'devices',
                     'type'         => 'repeater',
-                    'layout'       => 'block',
+                    'layout'       => 'row',
                     'button_label' => '+ Add Device',
+                    'collapsed'    => 'field_alya_device_title',
                     'min'          => 0,
                     'max'          => 20,
                     'sub_fields'   => [
