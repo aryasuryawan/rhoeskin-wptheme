@@ -491,7 +491,9 @@ acf_add_local_field_group([
             'name'         => 'alya_tech_categories',
             'type'         => 'repeater',
             'layout'       => 'block',
-            'button_label' => 'Add Category',
+            'button_label' => '+ Add Category',
+            'min'          => 0,
+            'max'          => 10,
             'sub_fields'   => [
                 [
                     'key'   => 'field_alya_tech_cat_id',
@@ -551,7 +553,9 @@ acf_add_local_field_group([
                     'name'         => 'devices',
                     'type'         => 'repeater',
                     'layout'       => 'block',
-                    'button_label' => 'Add Device',
+                    'button_label' => '+ Add Device',
+                    'min'          => 0,
+                    'max'          => 20,
                     'sub_fields'   => [
                         [
                             'key'   => 'field_alya_device_brand_tag',
@@ -589,7 +593,9 @@ acf_add_local_field_group([
                             'name'         => 'features',
                             'type'         => 'repeater',
                             'layout'       => 'table',
-                            'button_label' => 'Add Feature',
+                            'button_label' => '+ Add Feature',
+                            'min'          => 0,
+                            'max'          => 15,
                             'sub_fields'   => [
                                 [
                                     'key'   => 'field_alya_feature_text',
