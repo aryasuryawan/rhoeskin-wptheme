@@ -475,6 +475,150 @@ acf_add_local_field_group([
  * FIELD GROUP: Technology page only
  * ================================================================ */
 acf_add_local_field_group([
+    'key'    => 'group_alya_technology_extra',
+    'title'  => 'Technology Extra Settings',
+    'fields' => [
+        [
+            'key'   => 'field_alya_tech_hero_eyebrow',
+            'label' => 'Hero Eyebrow',
+            'name'  => 'alya_hero_eyebrow',
+            'type'  => 'text',
+            'default_value' => 'Medical Innovation',
+        ],
+        [
+            'key'          => 'field_alya_tech_hero_stats',
+            'label'        => 'Hero Statistics',
+            'name'         => 'alya_hero_stats',
+            'type'         => 'repeater',
+            'layout'       => 'table',
+            'button_label' => '+ Add Stat',
+            'min'          => 0,
+            'max'          => 4,
+            'sub_fields'   => [
+                [
+                    'key'   => 'field_alya_tech_stat_value',
+                    'label' => 'Value',
+                    'name'  => 'value',
+                    'type'  => 'text',
+                    'placeholder' => 'e.g., 20+',
+                ],
+                [
+                    'key'   => 'field_alya_tech_stat_label',
+                    'label' => 'Label',
+                    'name'  => 'label',
+                    'type'  => 'text',
+                    'placeholder' => 'e.g., Perangkat Medis',
+                ],
+            ],
+        ],
+        [
+            'key'   => 'field_alya_tech_cert_eyebrow',
+            'label' => 'Certification Section Eyebrow',
+            'name'  => 'alya_cert_eyebrow',
+            'type'  => 'text',
+            'default_value' => 'Sertifikasi & Standar',
+        ],
+        [
+            'key'   => 'field_alya_tech_cert_title',
+            'label' => 'Certification Section Title',
+            'name'  => 'alya_cert_title',
+            'type'  => 'text',
+            'default_value' => 'Perangkat Berstandar & Bersertifikat Internasional',
+        ],
+        [
+            'key'   => 'field_alya_tech_cert_desc',
+            'label' => 'Certification Section Description',
+            'name'  => 'alya_cert_desc',
+            'type'  => 'textarea',
+            'rows'  => 2,
+            'default_value' => 'Setiap alat yang kami gunakan telah melalui proses sertifikasi ketat dari lembaga regulasi kesehatan terkemuka dunia.',
+        ],
+        [
+            'key'          => 'field_alya_tech_cert_logos',
+            'label'        => 'Certification Logos',
+            'name'         => 'alya_cert_logos',
+            'type'         => 'repeater',
+            'layout'       => 'table',
+            'button_label' => '+ Add Certification',
+            'min'          => 0,
+            'max'          => 6,
+            'sub_fields'   => [
+                [
+                    'key'   => 'field_alya_tech_cert_icon',
+                    'label' => 'Icon (emoji)',
+                    'name'  => 'icon',
+                    'type'  => 'text',
+                    'placeholder' => 'e.g., 🇺🇸',
+                ],
+                [
+                    'key'   => 'field_alya_tech_cert_name',
+                    'label' => 'Cert Name',
+                    'name'  => 'cert_name',
+                    'type'  => 'text',
+                    'placeholder' => 'e.g., FDA',
+                ],
+                [
+                    'key'   => 'field_alya_tech_cert_desc',
+                    'label' => 'Cert Description',
+                    'name'  => 'cert_desc',
+                    'type'  => 'text',
+                    'placeholder' => 'e.g., U.S. Food & Drug Administration',
+                ],
+            ],
+        ],
+        [
+            'key'   => 'field_alya_tech_cta_eyebrow',
+            'label' => 'CTA Eyebrow',
+            'name'  => 'alya_cta_eyebrow',
+            'type'  => 'text',
+            'default_value' => 'Mulai Perjalanan Kecantikan Anda',
+        ],
+        [
+            'key'   => 'field_alya_tech_cta_title',
+            'label' => 'CTA Title',
+            'name'  => 'alya_cta_title',
+            'type'  => 'text',
+            'default_value' => 'Rasakan Teknologi Medis Terbaik',
+        ],
+        [
+            'key'   => 'field_alya_tech_cta_desc',
+            'label' => 'CTA Description',
+            'name'  => 'alya_cta_desc',
+            'type'  => 'textarea',
+            'rows'  => 2,
+            'default_value' => 'Konsultasikan kebutuhan Anda dengan dokter kami dan temukan treatment berbasis teknologi yang paling tepat.',
+        ],
+        [
+            'key'   => 'field_alya_tech_cta_button_label',
+            'label' => 'CTA Button Label',
+            'name'  => 'alya_cta_button_label',
+            'type'  => 'text',
+            'default_value' => 'Konsultasi Gratis',
+        ],
+        [
+            'key'   => 'field_alya_tech_cta_button_url',
+            'label' => 'CTA Button URL',
+            'name'  => 'alya_cta_button_url',
+            'type'  => 'url',
+            'placeholder' => 'https://wa.me/...',
+        ],
+    ],
+    'location' => [
+        [
+            ['param' => 'page_template', 'operator' => '==', 'value' => 'templates/page-technology.php'],
+        ],
+    ],
+    'position'        => 'normal',
+    'style'           => 'default',
+    'label_placement' => 'top',
+    'active'          => true,
+]);
+
+/* ================================================================
+ * FIELD GROUP: Technology page only (OLD - commented out, replaced by custom meta box)
+ * ================================================================ */
+/*
+acf_add_local_field_group([
     'key'    => 'group_alya_technology',
     'title'  => 'Technology Settings',
     'fields' => [
