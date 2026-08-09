@@ -56,7 +56,7 @@ defined('ABSPATH') || exit;
                 ]);
                 ?>
             <?php endif; ?>
-            <?php if (function_exists('pll_the_languages')) : ?>
+            <?php if (get_theme_mod('alya_show_language_switcher', true) && function_exists('pll_the_languages')) : ?>
                 <div class="lang-switcher-custom">
                     <?php
                     $languages = pll_the_languages([

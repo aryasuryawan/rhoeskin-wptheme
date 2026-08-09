@@ -126,6 +126,34 @@ function alya_polylang_cpt_support() {
 add_action('init', 'alya_polylang_cpt_support', 20);
 
 /**
+ * Add Language Switcher Control to Theme Customizer
+ */
+function alya_language_switcher_customizer($wp_customize) {
+    // Add Section for Language Settings
+    $wp_customize->add_section('alya_language_settings', [
+        'title'       => __('Language Switcher', 'alya-esthetic'),
+        'description' => __('Control language switcher display in header', 'alya-esthetic'),
+        'priority'    => 35,
+    ]);
+    
+    // Add Setting: Enable/Disable Language Switcher
+    $wp_customize->add_setting('alya_show_language_switcher', [
+        'default'           => true,
+        'sanitize_callback' => 'rest_sanitize_boolean',
+        'transport'         => 'refresh',
+    ]);
+    
+    // Add Control: Checkbox
+    $wp_customize->add_control('alya_show_language_switcher', [
+        'type'        => 'checkbox',
+        'section'     => 'alya_language_settings',
+        'label'       => __('Show Language Switcher in Header', 'alya-esthetic'),
+        'description' => __('Enable to display flag-based language switcher (requires Polylang plugin)', 'alya-esthetic'),
+    ]);
+}
+add_action('customize_register', 'alya_language_switcher_customizer');
+
+/**
  * Enqueue Assets
  */
 function alya_scripts() {
