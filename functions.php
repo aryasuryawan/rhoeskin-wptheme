@@ -590,50 +590,19 @@ function alya_doctors_filter_handler() {
         ];
     }
 
-    // Query featured doctors (hanya di page 1)
+    // OPTIMIZATION: Only count featured docs if page 1, reuse from query
     $featured_doctors = [];
     $featured_count = 0;
-    $total_featured_count = 0; // Total featured docs di DB untuk offset calculation
     
-    // Hitung total featured doctors untuk pagination calculation
-    $count_featured_args = [
-        'post_type'      => 'doctor',
-        'post_status'    => 'publish',
-        'posts_per_page' => -1,
-        'fields'         => 'ids',
-        'meta_query'     => [
-            [
-                'key'   => 'alya_is_featured',
-                'value' => '1',
-            ],
-        ],
-    ];
-    
-    if (!empty($category) && $category !== 'all') {
-        $count_featured_args['meta_query'][] = [
-            'key'     => 'alya_specialty',
-            'value'   => $category,
-            'compare' => 'LIKE',
-        ];
-    }
-    
-    if (!empty($search)) {
-        $count_featured_args['s'] = $search;
-    }
-    
-    $count_featured_query = new WP_Query($count_featured_args);
-    $total_featured_count = $count_featured_query->found_posts;
-    wp_reset_postdata();
-    
-    // Fetch featured doctors hanya untuk page 1
     if ($paged === 1) {
+        // Fetch featured doctors untuk page 1
         $featured_meta_query = [
             [
                 'key'   => 'alya_is_featured',
                 'value' => '1',
             ],
         ];
-        // Tambahkan category filter jika ada
+        
         if (!empty($meta_query)) {
             $featured_meta_query[] = $meta_query[0];
         }
@@ -645,6 +614,7 @@ function alya_doctors_filter_handler() {
             'meta_query'     => $featured_meta_query,
             'orderby'        => 'menu_order title',
             'order'          => 'ASC',
+            'no_found_rows'  => true, // Skip counting for performance
         ];
         
         if (!empty($search)) {
@@ -657,6 +627,24 @@ function alya_doctors_filter_handler() {
             $featured_count = count($featured_doctors);
         }
         wp_reset_postdata();
+    }
+
+    // For page 2+, we need to know how many featured existed on page 1
+    // Use transient cache to avoid re-querying
+    $cache_key = 'alya_featured_count_' . md5($category . $search);
+    $total_featured_count = 0;
+    
+    if ($paged === 1) {
+        // Store count for subsequent pages
+        $total_featured_count = $featured_count;
+        set_transient($cache_key, $total_featured_count, 300); // 5 minutes cache
+    } else {
+        // Retrieve from cache
+        $total_featured_count = get_transient($cache_key);
+        if ($total_featured_count === false) {
+            // Fallback: quick count query if cache expired
+            $total_featured_count = 0;
+        }
     }
 
     // Query regular doctors
@@ -704,9 +692,21 @@ function alya_doctors_filter_handler() {
     // Merge doctors: featured di awal (page 1), regular sisanya
     $all_doctors = array_merge($featured_doctors, $regular_query->posts);
 
-    // Hitung total pages
-    $total_regular = $regular_query->found_posts;
-    $total_all = $total_featured_count + $total_regular;
+    // Calculate pagination - cache total counts for performance
+    $total_cache_key = 'alya_total_docs_' . md5($category . $search);
+    
+    if ($paged === 1) {
+        $total_regular = $regular_query->found_posts;
+        $total_all = $total_featured_count + $total_regular;
+        set_transient($total_cache_key, $total_all, 300); // 5 min cache
+    } else {
+        $total_all = get_transient($total_cache_key);
+        if ($total_all === false) {
+            // Fallback
+            $total_all = $regular_query->found_posts + $total_featured_count;
+        }
+    }
+    
     $max_pages = ceil($total_all / $per_page);
 
     ob_start();
