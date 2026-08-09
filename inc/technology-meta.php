@@ -1,21 +1,62 @@
 <?php
 /**
- * Technology Categories & Devices — Nested Custom Repeater Meta Box
+ * Technology Categories & Devices — Custom Repeater Meta Box (JSON-based)
  *
- * Two-level repeater: Categories (parent) → Devices (child)
- * Data format:
- *   CAT::CatID|CatLabel|CatTitle|CatNumber|CatEyebrow|CatBadge|BgAlt
- *   DEV::DeviceTitle|DeviceDesc|ImageID|Features|BrandTag|OriginBadge
- *
+ * Storage format: JSON in alya_tech_categories_json meta field
+ * 
  * @package Alya_Esthetic
  */
 
 defined('ABSPATH') || exit;
 
-error_log('Technology meta box file loaded');
+/* ================================================================
+ * HELPER FUNCTIONS
+ * ================================================================ */
+
+/**
+ * Parse legacy text format for backward compatibility
+ */
+function alya_parse_legacy_tech_format($raw) {
+    $categories = [];
+    $lines = array_filter(array_map('trim', explode("\n", $raw)));
+    $current_cat = null;
+    
+    foreach ($lines as $line) {
+        if (strpos($line, 'CAT::') === 0) {
+            $delimiter = (strpos($line, ' | ') !== false) ? ' | ' : '|';
+            $parts = array_map('trim', explode($delimiter, substr($line, 5)));
+            
+            $current_cat = [
+                'cat_id'       => $parts[0] ?? '',
+                'cat_label'    => $parts[1] ?? '',
+                'cat_title'    => $parts[2] ?? '',
+                'cat_number'   => $parts[3] ?? '',
+                'cat_eyebrow'  => $parts[4] ?? '',
+                'cat_badge'    => $parts[5] ?? '',
+                'bg_alt'       => ($parts[6] ?? '0') === '1',
+                'devices'      => [],
+            ];
+            $categories[] = $current_cat;
+            $current_cat = &$categories[count($categories) - 1];
+        } elseif (strpos($line, 'DEV::') === 0 && $current_cat !== null) {
+            $delimiter = (strpos($line, ' | ') !== false) ? ' | ' : '|';
+            $parts = array_map('trim', explode($delimiter, substr($line, 5)));
+            $current_cat['devices'][] = [
+                'device_title'    => $parts[0] ?? '',
+                'device_desc'     => $parts[1] ?? '',
+                'image_id'        => intval($parts[2] ?? 0),
+                'features'        => $parts[3] ?? '',
+                'brand_tag'       => $parts[4] ?? '',
+                'origin_badge'    => $parts[5] ?? '',
+                'certifications'  => $parts[6] ?? '',
+            ];
+        }
+    }
+    
+    return $categories;
+}
 
 add_action('add_meta_boxes', function () {
-    error_log('add_meta_boxes hook fired for technology');
     add_meta_box(
         'alya_tech_categories_box',
         'Technology Categories & Devices',
@@ -24,7 +65,25 @@ add_action('add_meta_boxes', function () {
         'normal',
         'high'
     );
-    error_log('Meta box registered: alya_tech_categories_box');
+    add_meta_box(
+        'alya_tech_hero_stats_box',
+        'Hero Statistics',
+        'alya_tech_hero_stats_box_render',
+        'page',
+        'normal',
+        'high'
+    );
+    add_meta_box(
+        'alya_tech_cert_logos_box',
+        'Certification Logos',
+        'alya_tech_cert_logos_box_render',
+        'page',
+        'normal',
+        'default'
+    );
+    
+    // Hide Galeri Item meta box on Technology page
+    remove_meta_box('alya_gallery_items_box', 'page', 'normal');
 });
 
 function alya_is_technology_page($post_id = 0) {
@@ -35,58 +94,43 @@ function alya_is_technology_page($post_id = 0) {
 }
 
 function alya_tech_categories_box_render($post) {
-    error_log('alya_tech_categories_box_render called for post ID: ' . $post->ID);
-    error_log('Current template: ' . get_page_template_slug($post->ID));
-    error_log('Is technology page: ' . (alya_is_technology_page($post->ID) ? 'YES' : 'NO'));
-    
     if (!alya_is_technology_page($post->ID)) {
         echo '<p>Meta box ini hanya aktif pada halaman dengan template "Technology Page".</p>';
-        echo '<p><strong>Debug:</strong> Current template: ' . esc_html(get_page_template_slug($post->ID)) . '</p>';
         return;
     }
-    
-    error_log('Rendering technology meta box...');
 
     wp_nonce_field('alya_tech_categories_save', 'alya_tech_categories_nonce');
-    wp_enqueue_media();
 
-    $raw = get_post_meta($post->ID, 'alya_tech_categories', true);
+    // Load from JSON (new format)
+    wp_cache_delete($post->ID, 'post_meta');
+    $raw = get_post_meta($post->ID, 'alya_tech_categories_json', true);
+    
     $categories = [];
-
-    if (is_string($raw) && !empty(trim($raw))) {
-        $lines = array_filter(array_map('trim', explode("\n", $raw)));
-        $current_cat = null;
-        
-        foreach ($lines as $line) {
-            if (strpos($line, 'CAT::') === 0) {
-                $parts = array_map('trim', explode('|', substr($line, 5)));
-                $current_cat = [
-                    'cat_id'       => $parts[0] ?? '',
-                    'cat_label'    => $parts[1] ?? '',
-                    'cat_title'    => $parts[2] ?? '',
-                    'cat_number'   => $parts[3] ?? '',
-                    'cat_eyebrow'  => $parts[4] ?? '',
-                    'cat_badge'    => $parts[5] ?? '',
-                    'bg_alt'       => ($parts[6] ?? '0') === '1',
-                    'devices'      => [],
-                ];
-                $categories[] = &$current_cat;
-            } elseif (strpos($line, 'DEV::') === 0 && $current_cat !== null) {
-                $parts = array_map('trim', explode('|', substr($line, 5)));
-                $current_cat['devices'][] = [
-                    'device_title'  => $parts[0] ?? '',
-                    'device_desc'   => $parts[1] ?? '',
-                    'image_id'      => $parts[2] ?? '',
-                    'features'      => $parts[3] ?? '',
-                    'brand_tag'     => $parts[4] ?? '',
-                    'origin_badge'  => $parts[5] ?? '',
-                ];
-            }
+    
+    if (!empty($raw)) {
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            $categories = $decoded;
+        }
+    }
+    
+    // Fallback to old text format for backward compatibility
+    if (empty($categories)) {
+        $old_raw = get_post_meta($post->ID, 'alya_tech_categories', true);
+        if (is_string($old_raw) && !empty(trim($old_raw))) {
+            $categories = alya_parse_legacy_tech_format($old_raw);
         }
     }
 
     if (empty($categories)) {
         $categories[] = alya_tech_empty_category();
+    }
+    
+    // Ensure each category has at least one device
+    foreach ($categories as $idx => $cat) {
+        if (empty($cat['devices'])) {
+            $categories[$idx]['devices'] = [alya_tech_empty_device()];
+        }
     }
 
     ?>
@@ -109,6 +153,15 @@ function alya_tech_categories_box_render($post) {
             align-items: center;
         }
         .alya-tech-category-header h3 { margin: 0; font-size: 16px; font-weight: 600; }
+        .alya-tech-category-header .alya-remove-cat {
+            color: #fff;
+            text-decoration: underline;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 13px;
+        }
+        .alya-tech-category-header .alya-remove-cat:hover { color: #ffc; }
         .alya-tech-devices {
             margin-top: 16px;
             padding-left: 20px;
@@ -139,12 +192,13 @@ function alya_tech_categories_box_render($post) {
         .alya-field input[type=text],
         .alya-field textarea { width: 100%; }
         .alya-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
-        .alya-remove-cat { color: #fff; text-decoration: underline; cursor: pointer; }
-        .alya-remove-dev { color: #d63638; }
     </style>
 
     <div id="alya-tech-categories">
-        <?php foreach ($categories as $cat_idx => $cat) :
+        <?php 
+        // Always use sequential 0,1,2... indexes for consistent form submission
+        $categories = array_values($categories); 
+        foreach ($categories as $cat_idx => $cat) :
             alya_tech_category_row($cat_idx, $cat);
         endforeach; ?>
     </div>
@@ -159,129 +213,6 @@ function alya_tech_categories_box_render($post) {
 
     <script type="text/html" id="alya-device-tpl">
         <?php alya_tech_device_row('__CAT_IDX__', '__DEV_IDX__', alya_tech_empty_device()); ?>
-    </script>
-    
-    <script type="text/javascript">
-    console.log("=== Technology Meta Box Script ===");
-    console.log("Script tag reached");
-    
-    jQuery(document).ready(function($){
-      console.log("Document ready fired");
-      console.log("jQuery:", typeof $);
-      console.log("wp:", typeof wp);
-      console.log("wp.media:", typeof wp !== "undefined" ? typeof wp.media : "N/A");
-      
-      if (typeof wp === "undefined" || !wp.media) {
-        console.error("WP Media not available!");
-        return;
-      }
-      
-      console.log("Setting up event handlers...");
-
-      var frame = null, targetRow = null, targetField = null;
-
-      function catIndex() { return Date.now(); }
-      function devIndex() { return Date.now() + Math.floor(Math.random() * 10000); }
-
-      // Media picker for devices
-      $("#alya-tech-categories").on("click", ".alya-pick", function(e){
-        e.preventDefault();
-        console.log("Pick button clicked");
-        targetRow = $(this).closest(".alya-tech-device");
-        targetField = $(this).data("field");
-
-        if (frame) { frame.open(); return; }
-
-        frame = wp.media({
-          title: "Select Device Image",
-          button: { text: "Use This Image" },
-          multiple: false
-        });
-
-        frame.on("select", function(){
-          var att = frame.state().get("selection").first().toJSON();
-          if (!targetRow || !targetField) return;
-          var url = att.sizes && att.sizes.medium ? att.sizes.medium.url : att.url;
-          targetRow.find("input[data-id=\"" + targetField + "\"]").val(att.id);
-          targetRow.find(".alya-img[data-field=\"" + targetField + "\"]").html("<img src=\"" + url + "\" alt=\"\">");
-        });
-
-        frame.open();
-      });
-
-      // Clear device image
-      $("#alya-tech-categories").on("click", ".alya-clear", function(e){
-        e.preventDefault();
-        console.log("Clear clicked");
-        var $row = $(this).closest(".alya-tech-device");
-        var field = $(this).data("field");
-        $row.find("input[data-id=\"" + field + "\"]").val("");
-        $row.find(".alya-img[data-field=\"" + field + "\"]").html("<span>No image</span>");
-      });
-
-      // Add category
-      $("#alya-add-category").on("click", function(e){
-        e.preventDefault();
-        console.log("Add category clicked");
-        var tpl = $("#alya-category-tpl").html();
-        console.log("Template found:", !!tpl);
-        var idx = catIndex();
-        $("#alya-tech-categories").append(tpl.replace(/__CAT_IDX__/g, idx));
-        updateCategoryNumbers();
-      });
-
-      // Remove category
-      $("#alya-tech-categories").on("click", ".alya-remove-cat", function(e){
-        e.preventDefault();
-        console.log("Remove category clicked");
-        var $cats = $("#alya-tech-categories").children(".alya-tech-category");
-        if ($cats.length <= 1) {
-          alert("You must have at least one category.");
-          return;
-        }
-        $(this).closest(".alya-tech-category").remove();
-        updateCategoryNumbers();
-      });
-
-      // Add device
-      $("#alya-tech-categories").on("click", ".alya-add-device", function(e){
-        e.preventDefault();
-        console.log("Add device clicked");
-        var $btn = $(this);
-        var catIdx = $btn.data("cat-idx");
-        console.log("Cat index:", catIdx);
-        var $container = $btn.closest(".alya-tech-category").find(".alya-tech-devices");
-        console.log("Container found:", $container.length);
-        var tpl = $("#alya-device-tpl").html();
-        console.log("Device template found:", !!tpl);
-        var idx = devIndex();
-        $container.append(tpl.replace(/__CAT_IDX__/g, catIdx).replace(/__DEV_IDX__/g, idx));
-        console.log("Device added");
-      });
-
-      // Remove device
-      $("#alya-tech-categories").on("click", ".alya-remove-dev", function(e){
-        e.preventDefault();
-        console.log("Remove device clicked");
-        var $devices = $(this).closest(".alya-tech-devices");
-        if ($devices.children(".alya-tech-device").length <= 1) {
-          alert("Each category must have at least one device.");
-          return;
-        }
-        $(this).closest(".alya-tech-device").remove();
-      });
-
-      function updateCategoryNumbers() {
-        $("#alya-tech-categories").children(".alya-tech-category").each(function(i){
-          $(this).attr("data-cat-idx", i);
-          $(this).find(".cat-num").first().text(i + 1);
-          $(this).find(".alya-add-device").attr("data-cat-idx", i);
-          $(this).find(".alya-tech-devices").attr("data-cat-idx", i);
-        });
-      }
-      
-      console.log("All handlers registered successfully");
-    });
     </script>
     <?php
 }
@@ -301,17 +232,17 @@ function alya_tech_empty_category() {
 
 function alya_tech_empty_device() {
     return [
-        'device_title' => '',
-        'device_desc'  => '',
-        'image_id'     => '',
-        'features'     => '',
-        'brand_tag'    => '',
-        'origin_badge' => '',
+        'device_title'    => '',
+        'device_desc'     => '',
+        'image_id'        => '',
+        'features'        => '',
+        'brand_tag'       => '',
+        'origin_badge'    => '',
+        'certifications'  => '',
     ];
 }
 
 function alya_tech_category_row($cat_idx, $cat) {
-    // Check if this is template placeholder
     $is_template = $cat_idx === '__CAT_IDX__';
     $display_num = $is_template ? 'X' : ($cat_idx + 1);
     
@@ -319,7 +250,7 @@ function alya_tech_category_row($cat_idx, $cat) {
     <div class="alya-tech-category" data-cat-idx="<?php echo esc_attr($cat_idx); ?>">
         <div class="alya-tech-category-header">
             <h3>📁 Category #<span class="cat-num"><?php echo esc_html($display_num); ?></span></h3>
-            <button type="button" class="button-link alya-remove-cat">Remove Category</button>
+            <button type="button" class="alya-remove-cat">✕ Remove Category</button>
         </div>
 
         <div class="alya-grid">
@@ -364,7 +295,10 @@ function alya_tech_category_row($cat_idx, $cat) {
         <h4 style="margin-bottom: 12px;">🔧 Devices in this Category</h4>
         <div class="alya-tech-devices" data-cat-idx="<?php echo esc_attr($cat_idx); ?>">
             <?php if (!$is_template) : ?>
-                <?php foreach ($cat['devices'] as $dev_idx => $dev) :
+                <?php 
+                // Always use sequential 0,1,2... indexes for devices
+                $cat['devices'] = array_values($cat['devices']);
+                foreach ($cat['devices'] as $dev_idx => $dev) :
                     alya_tech_device_row($cat_idx, $dev_idx, $dev);
                 endforeach; ?>
             <?php else : ?>
@@ -381,6 +315,43 @@ function alya_tech_category_row($cat_idx, $cat) {
 
 function alya_tech_device_row($cat_idx, $dev_idx, $dev) {
     $image_url = $dev['image_id'] ? wp_get_attachment_image_url(intval($dev['image_id']), 'medium') : '';
+    
+    // Parse features - handle both array (new JSON format) and string (old text format)
+    $features = [];
+    if (!empty($dev['features'])) {
+        if (is_array($dev['features'])) {
+            // New JSON format: already an array
+            $features = $dev['features'];
+        } elseif (strpos($dev['features'], 'FEATURES>>') === 0) {
+            // Old text format: FEATURES>>feat1>>feat2
+            $features = array_filter(explode('>>', substr($dev['features'], 10)));
+        } else {
+            // Fallback: comma-separated
+            $features = array_filter(array_map('trim', explode(',', $dev['features'])));
+        }
+    }
+    if (empty($features)) {
+        $features = [''];
+    }
+    
+    // Parse certifications - handle both array (new JSON format) and string (old text format)
+    $certifications = [];
+    if (!empty($dev['certifications'])) {
+        if (is_array($dev['certifications'])) {
+            // New JSON format: already an array
+            $certifications = $dev['certifications'];
+        } elseif (strpos($dev['certifications'], 'CERTS>>') === 0) {
+            // Old text format: CERTS>>cert1>>cert2
+            $certifications = array_filter(explode('>>', substr($dev['certifications'], 7)));
+        } else {
+            // Fallback: comma-separated
+            $certifications = array_filter(array_map('trim', explode(',', $dev['certifications'])));
+        }
+    }
+    if (empty($certifications)) {
+        $certifications = [''];
+    }
+    
     ?>
     <div class="alya-tech-device" data-dev-idx="<?php echo esc_attr($dev_idx); ?>">
         <div class="alya-grid">
@@ -424,9 +395,32 @@ function alya_tech_device_row($cat_idx, $dev_idx, $dev) {
             <textarea name="tech_cat[<?php echo esc_attr($cat_idx); ?>][devices][<?php echo esc_attr($dev_idx); ?>][device_desc]" rows="2"><?php echo esc_textarea($dev['device_desc']); ?></textarea>
         </div>
 
+        <!-- Features Repeatable -->
         <div class="alya-field">
-            <label>Features (comma-separated)</label>
-            <input type="text" name="tech_cat[<?php echo esc_attr($cat_idx); ?>][devices][<?php echo esc_attr($dev_idx); ?>][features]" value="<?php echo esc_attr($dev['features']); ?>" placeholder="Safe, Effective, FDA Approved">
+            <label>Features</label>
+            <div class="alya-device-features" data-cat="<?php echo esc_attr($cat_idx); ?>" data-dev="<?php echo esc_attr($dev_idx); ?>">
+                <?php foreach ($features as $feat_idx => $feat) : ?>
+                    <div class="alya-feature-row" style="display: flex; gap: 8px; margin-bottom: 6px;">
+                        <input type="text" name="tech_cat[<?php echo esc_attr($cat_idx); ?>][devices][<?php echo esc_attr($dev_idx); ?>][features][]" value="<?php echo esc_attr($feat); ?>" placeholder="e.g., Safe & Effective" style="flex: 1;">
+                        <button type="button" class="button button-small alya-remove-feature">✕</button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" class="button button-small alya-add-feature" data-cat="<?php echo esc_attr($cat_idx); ?>" data-dev="<?php echo esc_attr($dev_idx); ?>">+ Add Feature</button>
+        </div>
+
+        <!-- Certifications Repeatable -->
+        <div class="alya-field">
+            <label>Certifications</label>
+            <div class="alya-device-certs" data-cat="<?php echo esc_attr($cat_idx); ?>" data-dev="<?php echo esc_attr($dev_idx); ?>">
+                <?php foreach ($certifications as $cert_idx => $cert) : ?>
+                    <div class="alya-cert-row" style="display: flex; gap: 8px; margin-bottom: 6px;">
+                        <input type="text" name="tech_cat[<?php echo esc_attr($cat_idx); ?>][devices][<?php echo esc_attr($dev_idx); ?>][certifications][]" value="<?php echo esc_attr($cert); ?>" placeholder="e.g., FDA Cleared" style="flex: 1;">
+                        <button type="button" class="button button-small alya-remove-cert">✕</button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" class="button button-small alya-add-cert" data-cat="<?php echo esc_attr($cat_idx); ?>" data-dev="<?php echo esc_attr($dev_idx); ?>">+ Add Certification</button>
         </div>
 
         <button type="button" class="button-link-delete alya-remove-dev">Remove Device</button>
@@ -434,43 +428,469 @@ function alya_tech_device_row($cat_idx, $dev_idx, $dev) {
     <?php
 }
 
+/* ================================================================
+ * HERO STATISTICS META BOX
+ * ================================================================ */
+function alya_tech_hero_stats_box_render($post) {
+    if (!alya_is_technology_page($post->ID)) {
+        echo '<p>Meta box ini hanya aktif pada halaman dengan template "Technology Page".</p>';
+        return;
+    }
+
+    wp_nonce_field('alya_tech_hero_stats_save', 'alya_tech_hero_stats_nonce');
+
+    // Load from JSON (new format)
+    $raw = get_post_meta($post->ID, 'alya_hero_stats_json', true);
+    $stats = [];
+
+    if (!empty($raw)) {
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            $stats = $decoded;
+        }
+    }
+    
+    // Fallback to old text format
+    if (empty($stats)) {
+        $old_raw = get_post_meta($post->ID, 'alya_hero_stats', true);
+        if (is_string($old_raw) && !empty(trim($old_raw))) {
+            $lines = array_filter(array_map('trim', explode("\n", $old_raw)));
+            foreach ($lines as $line) {
+                $delimiter = (strpos($line, ' | ') !== false) ? ' | ' : '|';
+                $parts = array_map('trim', explode($delimiter, $line));
+                if (count($parts) >= 2) {
+                    $stats[] = [
+                        'value' => $parts[0],
+                        'label' => $parts[1],
+                    ];
+                }
+            }
+        }
+    }
+
+    if (empty($stats)) {
+        $stats[] = ['value' => '', 'label' => ''];
+    }
+
+    ?>
+    <style>
+        .alya-stats-container { max-width: 800px; }
+        .alya-stat-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            align-items: flex-start;
+        }
+        .alya-stat-field { flex: 1; }
+        .alya-stat-field label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 13px; }
+        .alya-stat-field input { width: 100%; }
+        .alya-stat-remove { flex: 0 0 auto; padding-top: 24px; }
+    </style>
+
+    <div class="alya-stats-container">
+        <div id="alya-hero-stats">
+            <?php foreach ($stats as $idx => $stat) : ?>
+                <div class="alya-stat-row" data-stat-idx="<?php echo esc_attr($idx); ?>">
+                    <div class="alya-stat-field">
+                        <label>Value <span style="color:#d63638">*</span></label>
+                        <input type="text" name="hero_stat[<?php echo esc_attr($idx); ?>][value]" value="<?php echo esc_attr($stat['value']); ?>" placeholder="e.g., 20+" required>
+                    </div>
+                    <div class="alya-stat-field">
+                        <label>Label <span style="color:#d63638">*</span></label>
+                        <input type="text" name="hero_stat[<?php echo esc_attr($idx); ?>][label]" value="<?php echo esc_attr($stat['label']); ?>" placeholder="e.g., Perangkat Medis" required>
+                    </div>
+                    <div class="alya-stat-remove">
+                        <button type="button" class="button button-small alya-remove-stat">Remove</button>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <p>
+            <button type="button" class="button button-secondary" id="alya-add-stat">+ Add Statistic</button>
+        </p>
+    </div>
+
+    <script type="text/html" id="alya-stat-tpl">
+        <div class="alya-stat-row" data-stat-idx="__STAT_IDX__">
+            <div class="alya-stat-field">
+                <label>Value <span style="color:#d63638">*</span></label>
+                <input type="text" name="hero_stat[__STAT_IDX__][value]" value="" placeholder="e.g., 20+" required>
+            </div>
+            <div class="alya-stat-field">
+                <label>Label <span style="color:#d63638">*</span></label>
+                <input type="text" name="hero_stat[__STAT_IDX__][label]" value="" placeholder="e.g., Perangkat Medis" required>
+            </div>
+            <div class="alya-stat-remove">
+                <button type="button" class="button button-small alya-remove-stat">Remove</button>
+            </div>
+        </div>
+    </script>
+    <?php
+}
+
+/* ================================================================
+ * CERTIFICATION LOGOS META BOX
+ * ================================================================ */
+function alya_tech_cert_logos_box_render($post) {
+    if (!alya_is_technology_page($post->ID)) {
+        echo '<p>Meta box ini hanya aktif pada halaman dengan template "Technology Page".</p>';
+        return;
+    }
+
+    wp_nonce_field('alya_tech_cert_logos_save', 'alya_tech_cert_logos_nonce');
+
+    // Load from JSON (new format)
+    $raw = get_post_meta($post->ID, 'alya_cert_logos_json', true);
+    $logos = [];
+
+    if (!empty($raw)) {
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            $logos = $decoded;
+        }
+    }
+    
+    // Fallback to old text format
+    if (empty($logos)) {
+        $old_raw = get_post_meta($post->ID, 'alya_cert_logos', true);
+        if (is_string($old_raw) && !empty(trim($old_raw))) {
+            $lines = array_filter(array_map('trim', explode("\n", $old_raw)));
+            foreach ($lines as $line) {
+                $delimiter = (strpos($line, ' | ') !== false) ? ' | ' : '|';
+                $parts = array_map('trim', explode($delimiter, $line));
+                if (count($parts) >= 1) {
+                    $logos[] = [
+                        'image_id'  => intval($parts[0] ?? 0),
+                        'cert_name' => $parts[1] ?? '',
+                        'cert_desc' => $parts[2] ?? '',
+                    ];
+                }
+            }
+        }
+    }
+
+    if (empty($logos)) {
+        $logos[] = ['image_id' => '', 'cert_name' => '', 'cert_desc' => ''];
+    }
+
+    ?>
+    <style>
+        .alya-cert-logos-container { max-width: 900px; }
+        .alya-cert-logo-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 14px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            align-items: flex-start;
+        }
+        .alya-cert-logo-img-wrap {
+            flex: 0 0 100px;
+        }
+        .alya-cert-logo-img-preview {
+            width: 100px;
+            height: 100px;
+            border: 1px dashed #999;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        .alya-cert-logo-img-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .alya-cert-logo-img-preview span {
+            color: #999;
+            font-size: 11px;
+        }
+        .alya-cert-logo-fields {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .alya-cert-logo-field { }
+        .alya-cert-logo-field label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 13px; }
+        .alya-cert-logo-field input { width: 100%; }
+        .alya-cert-logo-remove { flex: 0 0 auto; padding-top: 6px; }
+    </style>
+
+    <div class="alya-cert-logos-container">
+        <p style="margin-bottom: 16px; color: #646970;">Upload certification logos (FDA, CE Mark, BPOM, etc.) with name and description.</p>
+        <div id="alya-cert-logos">
+            <?php foreach ($logos as $idx => $logo) :
+                $image_url = $logo['image_id'] ? wp_get_attachment_image_url(intval($logo['image_id']), 'thumbnail') : '';
+            ?>
+                <div class="alya-cert-logo-row" data-logo-idx="<?php echo esc_attr($idx); ?>">
+                    <div class="alya-cert-logo-img-wrap">
+                        <div class="alya-cert-logo-img-preview" data-field="cert-logo">
+                            <?php if ($image_url) : ?>
+                                <img src="<?php echo esc_url($image_url); ?>" alt="">
+                            <?php else : ?>
+                                <span>No logo</span>
+                            <?php endif; ?>
+                        </div>
+                        <input type="hidden" name="cert_logo[<?php echo esc_attr($idx); ?>][image_id]" data-id="cert-logo" value="<?php echo esc_attr($logo['image_id']); ?>">
+                        <p style="margin: 0;">
+                            <button type="button" class="button button-small alya-pick-cert-logo" data-field="cert-logo">Select</button>
+                            <button type="button" class="button button-small alya-clear-cert-logo" data-field="cert-logo">Remove</button>
+                        </p>
+                    </div>
+
+                    <div class="alya-cert-logo-fields">
+                        <div class="alya-cert-logo-field">
+                            <label>Certification Name <span style="color:#d63638">*</span></label>
+                            <input type="text" name="cert_logo[<?php echo esc_attr($idx); ?>][cert_name]" value="<?php echo esc_attr($logo['cert_name']); ?>" placeholder="e.g., FDA" required>
+                        </div>
+                        <div class="alya-cert-logo-field">
+                            <label>Description</label>
+                            <input type="text" name="cert_logo[<?php echo esc_attr($idx); ?>][cert_desc]" value="<?php echo esc_attr($logo['cert_desc']); ?>" placeholder="e.g., U.S. Food & Drug Administration">
+                        </div>
+                    </div>
+
+                    <div class="alya-cert-logo-remove">
+                        <button type="button" class="button button-small alya-remove-cert-logo">Remove</button>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <p>
+            <button type="button" class="button button-secondary" id="alya-add-cert-logo">+ Add Certification</button>
+        </p>
+    </div>
+
+    <script type="text/html" id="alya-cert-logo-tpl">
+        <div class="alya-cert-logo-row" data-logo-idx="__LOGO_IDX__">
+            <div class="alya-cert-logo-img-wrap">
+                <div class="alya-cert-logo-img-preview" data-field="cert-logo">
+                    <span>No logo</span>
+                </div>
+                <input type="hidden" name="cert_logo[__LOGO_IDX__][image_id]" data-id="cert-logo" value="">
+                <p style="margin: 0;">
+                    <button type="button" class="button button-small alya-pick-cert-logo" data-field="cert-logo">Select</button>
+                    <button type="button" class="button button-small alya-clear-cert-logo" data-field="cert-logo">Remove</button>
+                </p>
+            </div>
+
+            <div class="alya-cert-logo-fields">
+                <div class="alya-cert-logo-field">
+                    <label>Certification Name <span style="color:#d63638">*</span></label>
+                    <input type="text" name="cert_logo[__LOGO_IDX__][cert_name]" value="" placeholder="e.g., FDA" required>
+                </div>
+                <div class="alya-cert-logo-field">
+                    <label>Description</label>
+                    <input type="text" name="cert_logo[__LOGO_IDX__][cert_desc]" value="" placeholder="e.g., U.S. Food & Drug Administration">
+                </div>
+            </div>
+
+            <div class="alya-cert-logo-remove">
+                <button type="button" class="button button-small alya-remove-cert-logo">Remove</button>
+            </div>
+        </div>
+    </script>
+    <?php
+}
+
+/* ================================================================
+ * SAVE HANDLERS - JSON FORMAT
+ * ================================================================ */
+
+/**
+ * Save Technology Categories & Devices as JSON
+ */
 add_action('save_post', function ($post_id) {
+    // Standard WordPress checks
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-    if (!isset($_POST['alya_tech_categories_nonce']) || !wp_verify_nonce(sanitize_text_field($_POST['alya_tech_categories_nonce']), 'alya_tech_categories_save')) return;
+    if (!isset($_POST['alya_tech_categories_nonce'])) return;
+    if (!wp_verify_nonce(sanitize_text_field($_POST['alya_tech_categories_nonce']), 'alya_tech_categories_save')) return;
     if (!isset($_POST['tech_cat'])) return;
     if (!current_user_can('edit_post', $post_id)) return;
     if (!alya_is_technology_page($post_id)) return;
 
-    $lines = [];
+    $categories = [];
     
-    foreach ((array) $_POST['tech_cat'] as $cat_raw) {
+    // Process each category from POST data
+    foreach ((array) $_POST['tech_cat'] as $idx => $cat_raw) {
+        // Skip template placeholders from JavaScript
+        if ($idx === '__CAT_IDX__' || strpos((string)$idx, '__') === 0) {
+            continue;
+        }
+        
+        // Sanitize category fields
         $cat_id      = isset($cat_raw['cat_id']) ? sanitize_text_field($cat_raw['cat_id']) : '';
         $cat_label   = isset($cat_raw['cat_label']) ? sanitize_text_field($cat_raw['cat_label']) : '';
         $cat_title   = isset($cat_raw['cat_title']) ? sanitize_text_field($cat_raw['cat_title']) : '';
         $cat_number  = isset($cat_raw['cat_number']) ? sanitize_text_field($cat_raw['cat_number']) : '';
         $cat_eyebrow = isset($cat_raw['cat_eyebrow']) ? sanitize_text_field($cat_raw['cat_eyebrow']) : '';
         $cat_badge   = isset($cat_raw['cat_badge']) ? sanitize_text_field($cat_raw['cat_badge']) : '';
-        $bg_alt      = isset($cat_raw['bg_alt']) ? '1' : '0';
+        $bg_alt      = isset($cat_raw['bg_alt']) && $cat_raw['bg_alt'] === '1';
 
-        if (!$cat_id || !$cat_label || !$cat_title) continue;
+        // Skip if required fields are missing
+        if (!$cat_id || !$cat_label || !$cat_title) {
+            continue;
+        }
 
-        $lines[] = 'CAT::' . implode(' | ', [$cat_id, $cat_label, $cat_title, $cat_number, $cat_eyebrow, $cat_badge, $bg_alt]);
+        $category = [
+            'cat_id'      => $cat_id,
+            'cat_label'   => $cat_label,
+            'cat_title'   => $cat_title,
+            'cat_number'  => $cat_number,
+            'cat_eyebrow' => $cat_eyebrow,
+            'cat_badge'   => $cat_badge,
+            'bg_alt'      => $bg_alt,
+            'devices'     => [],
+        ];
 
+        // Process devices for this category
         if (isset($cat_raw['devices']) && is_array($cat_raw['devices'])) {
-            foreach ($cat_raw['devices'] as $dev_raw) {
-                $dev_title  = isset($dev_raw['device_title']) ? sanitize_text_field($dev_raw['device_title']) : '';
-                $dev_desc   = isset($dev_raw['device_desc']) ? sanitize_textarea_field($dev_raw['device_desc']) : '';
-                $image_id   = isset($dev_raw['image_id']) ? intval($dev_raw['image_id']) : 0;
-                $features   = isset($dev_raw['features']) ? sanitize_text_field($dev_raw['features']) : '';
-                $brand_tag  = isset($dev_raw['brand_tag']) ? sanitize_text_field($dev_raw['brand_tag']) : '';
+            foreach ($cat_raw['devices'] as $dev_idx => $dev_raw) {
+                // Skip template placeholders
+                if ($dev_idx === '__DEV_IDX__' || strpos((string)$dev_idx, '__') === 0) {
+                    continue;
+                }
+                
+                $dev_title    = isset($dev_raw['device_title']) ? sanitize_text_field($dev_raw['device_title']) : '';
+                $dev_desc     = isset($dev_raw['device_desc']) ? sanitize_textarea_field($dev_raw['device_desc']) : '';
+                $image_id     = isset($dev_raw['image_id']) ? intval($dev_raw['image_id']) : 0;
+                $brand_tag    = isset($dev_raw['brand_tag']) ? sanitize_text_field($dev_raw['brand_tag']) : '';
                 $origin_badge = isset($dev_raw['origin_badge']) ? sanitize_text_field($dev_raw['origin_badge']) : '';
 
-                if (!$dev_title) continue;
+                // Skip if no device title
+                if (!$dev_title) {
+                    continue;
+                }
 
-                $lines[] = 'DEV::' . implode(' | ', [$dev_title, $dev_desc, $image_id, $features, $brand_tag, $origin_badge]);
+                // Process features array - convert to simple array
+                $features = [];
+                if (isset($dev_raw['features']) && is_array($dev_raw['features'])) {
+                    $features = array_values(array_filter(array_map('sanitize_text_field', $dev_raw['features'])));
+                }
+
+                // Process certifications array - convert to simple array
+                $certifications = [];
+                if (isset($dev_raw['certifications']) && is_array($dev_raw['certifications'])) {
+                    $certifications = array_values(array_filter(array_map('sanitize_text_field', $dev_raw['certifications'])));
+                }
+
+                $category['devices'][] = [
+                    'device_title'    => $dev_title,
+                    'device_desc'     => $dev_desc,
+                    'image_id'        => $image_id,
+                    'features'        => $features,
+                    'brand_tag'       => $brand_tag,
+                    'origin_badge'    => $origin_badge,
+                    'certifications'  => $certifications,
+                ];
             }
         }
+
+        $categories[] = $category;
     }
 
-    update_post_meta($post_id, 'alya_tech_categories', implode("\n", $lines));
+    // Save as JSON
+    $json = wp_json_encode($categories, JSON_UNESCAPED_UNICODE);
+    update_post_meta($post_id, 'alya_tech_categories_json', $json);
+}, 10, 1);
+
+/**
+ * Save Hero Statistics as JSON
+ */
+add_action('save_post', function ($post_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!isset($_POST['alya_tech_hero_stats_nonce']) || !wp_verify_nonce(sanitize_text_field($_POST['alya_tech_hero_stats_nonce']), 'alya_tech_hero_stats_save')) return;
+    if (!isset($_POST['hero_stat'])) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    if (!alya_is_technology_page($post_id)) return;
+
+    $stats = [];
+    
+    foreach ((array) $_POST['hero_stat'] as $idx => $stat_raw) {
+        // Skip template placeholders
+        if ($idx === '__STAT_IDX__' || strpos((string)$idx, '__') === 0) {
+            continue;
+        }
+        
+        $value = isset($stat_raw['value']) ? sanitize_text_field($stat_raw['value']) : '';
+        $label = isset($stat_raw['label']) ? sanitize_text_field($stat_raw['label']) : '';
+
+        if (!$value || !$label) continue;
+
+        $stats[] = [
+            'value' => $value,
+            'label' => $label,
+        ];
+    }
+
+    // Save as JSON
+    $json = wp_json_encode($stats, JSON_UNESCAPED_UNICODE);
+    update_post_meta($post_id, 'alya_hero_stats_json', $json);
+});
+
+/**
+ * Save Certification Logos as JSON
+ */
+add_action('save_post', function ($post_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!isset($_POST['alya_tech_cert_logos_nonce']) || !wp_verify_nonce(sanitize_text_field($_POST['alya_tech_cert_logos_nonce']), 'alya_tech_cert_logos_save')) return;
+    if (!isset($_POST['cert_logo'])) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    if (!alya_is_technology_page($post_id)) return;
+
+    $logos = [];
+    
+    foreach ((array) $_POST['cert_logo'] as $idx => $logo_raw) {
+        // Skip template placeholders
+        if ($idx === '__LOGO_IDX__' || strpos((string)$idx, '__') === 0) {
+            continue;
+        }
+        
+        $image_id  = isset($logo_raw['image_id']) ? intval($logo_raw['image_id']) : 0;
+        $cert_name = isset($logo_raw['cert_name']) ? sanitize_text_field($logo_raw['cert_name']) : '';
+        $cert_desc = isset($logo_raw['cert_desc']) ? sanitize_text_field($logo_raw['cert_desc']) : '';
+
+        if (!$cert_name) continue;
+
+        $logos[] = [
+            'image_id'  => $image_id,
+            'cert_name' => $cert_name,
+            'cert_desc' => $cert_desc,
+        ];
+    }
+
+    // Save as JSON
+    $json = wp_json_encode($logos, JSON_UNESCAPED_UNICODE);
+    update_post_meta($post_id, 'alya_cert_logos_json', $json);
+});
+
+/* ================================================================
+ * JAVASCRIPT - EXTERNAL FILE UNTUK LEBIH AMAN
+ * ================================================================ */
+add_action('admin_enqueue_scripts', function ($hook) {
+    if (!in_array($hook, ['post.php', 'post-new.php'], true)) return;
+    $screen = get_current_screen();
+    if (!$screen || $screen->id !== 'page') return;
+
+    $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+    if ($post_id && !alya_is_technology_page($post_id)) return;
+
+    wp_enqueue_media();
+    wp_enqueue_script(
+        'alya-technology-meta',
+        get_template_directory_uri() . '/assets/js/technology-meta.js',
+        ['jquery', 'wp-util'],
+        time(), // Always fresh, no cache
+        true
+    );
 });

@@ -9,7 +9,7 @@
 
 defined('ABSPATH') || exit;
 
-define('ALYA_VERSION', '1.0.0');
+define('ALYA_VERSION', '1.0.1');
 define('ALYA_DIR', get_template_directory());
 define('ALYA_URI', get_template_directory_uri());
 

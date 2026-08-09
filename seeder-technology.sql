@@ -3,7 +3,14 @@
 -- Run: mysql -u root alya_test < seeder-technology.sql
 
 -- Clear existing data
-DELETE FROM wp_postmeta WHERE post_id = 522 AND meta_key = 'alya_tech_categories';
+DELETE FROM wp_postmeta WHERE post_id = 522 AND meta_key IN ('alya_tech_categories', 'alya_hero_stats');
+
+-- Insert hero statistics
+INSERT INTO wp_postmeta (post_id, meta_key, meta_value) VALUES
+(522, 'alya_hero_stats', '20+ | Perangkat Medis Canggih
+15+ | Teknologi FDA Cleared
+10+ | Tahun Pengalaman
+1000+ | Pasien Puas');
 
 -- Insert technology categories and devices
 INSERT INTO wp_postmeta (post_id, meta_key, meta_value) VALUES
@@ -30,4 +37,4 @@ DEV::3D Face Scanner | Scanner wajah 3D untuk evaluasi volume, kontur, dan aging
 -- Verify
 SELECT post_id, meta_key, LEFT(meta_value, 200) as preview 
 FROM wp_postmeta 
-WHERE post_id = 522 AND meta_key = 'alya_tech_categories';
+WHERE post_id = 522 AND meta_key IN ('alya_tech_categories', 'alya_hero_stats');

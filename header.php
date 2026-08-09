@@ -39,7 +39,7 @@ defined('ABSPATH') || exit;
                     'menu_id'        => 'navLinks',
                     'menu_class'     => 'nav__links',
                     'fallback_cb'    => 'alya_home_nav_fallback',
-                    'depth'          => 1,
+                    'depth'          => 3,
                     'walker'         => new Alya_Dropdown_Walker(),
                 ]);
                 ?>
