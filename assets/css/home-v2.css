@@ -1218,6 +1218,78 @@ header#siteHeader {
   transform: scale(1.08);
 }
 
+/* Instagram overlay with caption and icon */
+.ig-item__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(20, 16, 14, 0);
+  opacity: 0;
+  transition: all 0.3s ease;
+  padding: 16px;
+  text-align: center;
+}
+
+.ig-item:hover .ig-item__overlay {
+  background: rgba(20, 16, 14, 0.65);
+  opacity: 1;
+}
+
+.ig-item__icon {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.ig-item__caption {
+  font-size: 13px;
+  color: white;
+  line-height: 1.4;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  max-width: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Video indicator icon */
+.ig-item__video-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.ig-item:hover .ig-item__video-icon {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.ig-item__video-icon svg {
+  width: 16px;
+  height: 16px;
+  margin-left: 2px;
+}
+
+/* Live fetch indicator (optional subtle badge) */
+.ig-item[data-ig-live="true"]::after {
+  display: none; /* Hide the default icon since we have overlay now */
+}
+
 /* ---------- Artikel teaser ---------- */
 .articles {
   background: var(--bg-soft);

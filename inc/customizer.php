@@ -514,6 +514,106 @@ function alya_customize_register($wp_customize) {
     $wp_customize->add_setting('alya_v2_career_desc', ['default' => 'Lihat lowongan yang tersedia di Alya Esthetic Center.', 'sanitize_callback' => 'sanitize_textarea_field']);
     $wp_customize->add_control('alya_v2_career_desc', ['label' => 'Career Description', 'section' => 'alya_homepage_v2_content', 'type' => 'textarea']);
 
+    // ─── 10A. INSTAGRAM FEED ───
+    $wp_customize->add_panel('alya_instagram', [
+        'title'    => 'Instagram Feed',
+        'priority' => 95,
+    ]);
+
+    $wp_customize->add_section('alya_instagram_settings', [
+        'title' => 'Instagram Settings',
+        'panel' => 'alya_instagram',
+    ]);
+
+    $wp_customize->add_setting('alya_instagram_mode', ['default' => 'manual', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('alya_instagram_mode', [
+        'label'       => 'Mode',
+        'description' => 'Pilih "Manual URLs" untuk input URL post Instagram secara manual (paling reliable)',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'select',
+        'choices'     => [
+            'manual' => 'Manual Upload (ACF)',
+            'manual_urls' => 'Manual URLs (Input Post Links)',
+            'live'   => 'Live Fetch (Experimental)',
+        ],
+    ]);
+
+    // Manual URLs Input
+    $wp_customize->add_setting('alya_instagram_post_url_1', ['default' => '', 'sanitize_callback' => 'esc_url_raw']);
+    $wp_customize->add_control('alya_instagram_post_url_1', [
+        'label'       => 'Post URL #1',
+        'description' => 'Copy paste Instagram post URL (contoh: https://www.instagram.com/p/ABC123/)',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'url',
+    ]);
+
+    $wp_customize->add_setting('alya_instagram_post_url_2', ['default' => '', 'sanitize_callback' => 'esc_url_raw']);
+    $wp_customize->add_control('alya_instagram_post_url_2', [
+        'label'       => 'Post URL #2',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'url',
+    ]);
+
+    $wp_customize->add_setting('alya_instagram_post_url_3', ['default' => '', 'sanitize_callback' => 'esc_url_raw']);
+    $wp_customize->add_control('alya_instagram_post_url_3', [
+        'label'       => 'Post URL #3',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'url',
+    ]);
+
+    $wp_customize->add_setting('alya_instagram_post_url_4', ['default' => '', 'sanitize_callback' => 'esc_url_raw']);
+    $wp_customize->add_control('alya_instagram_post_url_4', [
+        'label'       => 'Post URL #4',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'url',
+    ]);
+
+    $wp_customize->add_setting('alya_instagram_post_url_5', ['default' => '', 'sanitize_callback' => 'esc_url_raw']);
+    $wp_customize->add_control('alya_instagram_post_url_5', [
+        'label'       => 'Post URL #5',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'url',
+    ]);
+
+    $wp_customize->add_setting('alya_instagram_post_url_6', ['default' => '', 'sanitize_callback' => 'esc_url_raw']);
+    $wp_customize->add_control('alya_instagram_post_url_6', [
+        'label'       => 'Post URL #6',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'url',
+    ]);
+
+    $wp_customize->add_setting('alya_instagram_username', ['default' => 'alyaesthetic', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_control('alya_instagram_username', [
+        'label'       => 'Username Instagram',
+        'description' => 'Nama akun Instagram tanpa @ (contoh: alyaesthetic). Hanya untuk akun publik.',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'text',
+    ]);
+
+    $wp_customize->add_setting('alya_instagram_post_count', ['default' => 6, 'sanitize_callback' => 'absint']);
+    $wp_customize->add_control('alya_instagram_post_count', [
+        'label'       => 'Jumlah Post (Live Mode)',
+        'description' => 'Maksimal 6 post yang akan ditampilkan (hanya untuk mode Live)',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'number',
+        'input_attrs' => [
+            'min' => 1,
+            'max' => 6,
+        ],
+    ]);
+
+    $wp_customize->add_setting('alya_instagram_cache_duration', ['default' => 3600, 'sanitize_callback' => 'absint']);
+    $wp_customize->add_control('alya_instagram_cache_duration', [
+        'label'       => 'Cache Duration (detik)',
+        'description' => 'Durasi cache untuk Instagram feed (default: 3600 = 1 jam)',
+        'section'     => 'alya_instagram_settings',
+        'type'        => 'number',
+        'input_attrs' => [
+            'min' => 300,
+            'max' => 86400,
+        ],
+    ]);
+
     // ─── 11. CAREER PAGE ───
     $wp_customize->add_panel('alya_career', [
         'title'    => 'Halaman Karir',

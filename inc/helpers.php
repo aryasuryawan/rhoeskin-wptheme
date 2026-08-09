@@ -681,3 +681,241 @@ function alya_parse_list($text) {
     
     return $items;
 }
+
+
+/**
+ * Get Instagram Feed using Embed API
+ * 
+ * Using Instagram's official oEmbed API for individual posts
+ * Requires manual input of post URLs but is more reliable
+ *
+ * @param array $post_urls Array of Instagram post URLs
+ * @return array Array of Instagram posts with embed data
+ */
+function alya_get_instagram_embed_feed($post_urls = []) {
+    if (empty($post_urls) || !is_array($post_urls)) {
+        return [];
+    }
+    
+    $cache_duration = get_theme_mod('alya_instagram_cache_duration', 3600);
+    $feed = [];
+    
+    foreach ($post_urls as $url) {
+        $cache_key = 'alya_ig_embed_' . md5($url);
+        $cached = get_transient($cache_key);
+        
+        if ($cached !== false) {
+            $feed[] = $cached;
+            continue;
+        }
+        
+        // Use Instagram oEmbed API
+        $oembed_url = 'https://graph.facebook.com/v12.0/instagram_oembed?url=' . urlencode($url) . '&access_token=';
+        
+        // Fallback to simple oEmbed (no token needed but less data)
+        $oembed_url = 'https://api.instagram.com/oembed/?url=' . urlencode($url);
+        
+        $response = wp_remote_get($oembed_url, ['timeout' => 10]);
+        
+        if (!is_wp_error($response)) {
+            $data = json_decode(wp_remote_retrieve_body($response), true);
+            
+            if ($data && isset($data['thumbnail_url'])) {
+                $item = [
+                    'url' => $data['thumbnail_url'],
+                    'link' => $url,
+                    'caption' => isset($data['title']) ? $data['title'] : '',
+                    'type' => 'IMAGE',
+                ];
+                
+                set_transient($cache_key, $item, $cache_duration);
+                $feed[] = $item;
+            }
+        }
+    }
+    
+    return $feed;
+}
+
+/**
+ * Get Instagram Feed - Enhanced with multiple fallback methods
+ *
+ * Priority order:
+ * 1. Manual post URLs via ACF
+ * 2. Third-party RSS/JSON proxy services
+ * 3. Fallback to placeholder images
+ *
+ * @param int $limit Number of posts to fetch (max 6)
+ * @return array Array of Instagram posts
+ */
+function alya_get_instagram_feed($limit = 6) {
+    $username = get_theme_mod('alya_instagram_username', 'alyaesthetic');
+    $cache_duration = get_theme_mod('alya_instagram_cache_duration', 3600);
+    
+    if (empty($username)) {
+        return [];
+    }
+    
+    $username = ltrim(sanitize_text_field($username), '@');
+    $limit = max(1, min(6, intval($limit)));
+    
+    $cache_key = 'alya_instagram_feed_' . md5($username . $limit);
+    $cached_feed = get_transient($cache_key);
+    
+    if ($cached_feed !== false && is_array($cached_feed)) {
+        return $cached_feed;
+    }
+    
+    $feed = [];
+    
+    // Method 1: Check if manual post URLs are provided via ACF
+    $manual_posts = get_field('alya_instagram_post_urls', 'option');
+    if (!empty($manual_posts) && is_array($manual_posts)) {
+        $feed = alya_get_instagram_embed_feed(array_slice($manual_posts, 0, $limit));
+        if (!empty($feed)) {
+            set_transient($cache_key, $feed, $cache_duration);
+            return $feed;
+        }
+    }
+    
+    // Method 2: Try RSS Bridge service (self-hosted or public instance)
+    $rss_bridge_url = get_theme_mod('alya_instagram_rss_bridge_url', '');
+    if (!empty($rss_bridge_url)) {
+        $feed = alya_get_instagram_via_rss_bridge($username, $limit, $rss_bridge_url);
+        if (!empty($feed)) {
+            set_transient($cache_key, $feed, $cache_duration);
+            return $feed;
+        }
+    }
+    
+    // Method 3: Try Bibliogram or other alternative Instagram frontends
+    // (Most are deprecated but keeping for reference)
+    
+    // All methods failed - return empty to trigger fallback in template
+    error_log('Instagram Feed: All fetch methods failed for @' . $username . '. Consider using Manual mode with specific post URLs.');
+    
+    return [];
+}
+
+/**
+ * Get Instagram via RSS Bridge
+ * 
+ * @param string $username Instagram username
+ * @param int $limit Number of posts
+ * @param string $bridge_url RSS Bridge URL
+ * @return array
+ */
+function alya_get_instagram_via_rss_bridge($username, $limit = 6, $bridge_url = '') {
+    if (empty($bridge_url)) {
+        return [];
+    }
+    
+    // RSS Bridge format: https://your-bridge.com/?action=display&bridge=Instagram&u=username&format=Json
+    $url = add_query_arg([
+        'action' => 'display',
+        'bridge' => 'Instagram',
+        'u' => $username,
+        'format' => 'Json',
+    ], $bridge_url);
+    
+    $response = wp_remote_get($url, ['timeout' => 15]);
+    
+    if (is_wp_error($response)) {
+        return [];
+    }
+    
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+    $feed = [];
+    
+    if (!empty($data) && is_array($data)) {
+        foreach (array_slice($data, 0, $limit) as $item) {
+            if (isset($item['enclosures'][0])) {
+                $feed[] = [
+                    'id' => md5($item['uri']),
+                    'url' => $item['enclosures'][0],
+                    'link' => $item['uri'],
+                    'caption' => isset($item['title']) ? wp_trim_words($item['title'], 10) : '',
+                    'type' => 'IMAGE',
+                ];
+            }
+        }
+    }
+    
+    return $feed;
+}
+
+/**
+ * Clear Instagram Feed Cache
+ *
+ * Helper function to manually clear Instagram feed cache
+ * Useful when username is updated
+ *
+ * @return void
+ */
+function alya_clear_instagram_cache() {
+    global $wpdb;
+    
+    // Delete all transients that start with our cache key pattern
+    $wpdb->query(
+        "DELETE FROM {$wpdb->options} 
+        WHERE option_name LIKE '_transient_alya_instagram_feed_%' 
+        OR option_name LIKE '_transient_timeout_alya_instagram_feed_%'"
+    );
+}
+
+/**
+ * Clear Instagram cache when username is updated
+ */
+add_action('customize_save_after', function() {
+    if (isset($_POST['customized'])) {
+        $customized = json_decode(wp_unslash($_POST['customized']), true);
+        if (isset($customized['alya_instagram_username']) || isset($customized['alya_instagram_mode'])) {
+            alya_clear_instagram_cache();
+        }
+    }
+});
+
+
+/**
+ * Debug Instagram Feed - untuk testing
+ * Tambahkan ?debug_instagram=1 di URL untuk melihat hasil fetch
+ */
+add_action('wp_footer', function() {
+    if (isset($_GET['debug_instagram']) && current_user_can('manage_options')) {
+        $ig_mode = get_theme_mod('alya_instagram_mode', 'manual');
+        $username = get_theme_mod('alya_instagram_username', 'alyaesthetic');
+        $post_count = get_theme_mod('alya_instagram_post_count', 6);
+        
+        echo '<div style="position:fixed;bottom:20px;right:20px;background:#000;color:#fff;padding:20px;max-width:400px;max-height:80vh;overflow:auto;z-index:99999;border-radius:8px;font-size:12px;font-family:monospace;">';
+        echo '<strong>Instagram Debug Info:</strong><br><br>';
+        echo 'Mode: ' . $ig_mode . '<br>';
+        echo 'Username: @' . $username . '<br>';
+        echo 'Post Count: ' . $post_count . '<br><br>';
+        
+        if ($ig_mode === 'live') {
+            echo '<strong>Fetching from Instagram...</strong><br>';
+            
+            // Clear cache untuk test
+            alya_clear_instagram_cache();
+            
+            $feed = alya_get_instagram_feed($post_count);
+            
+            if (!empty($feed)) {
+                echo 'Success! Found ' . count($feed) . ' posts<br><br>';
+                foreach ($feed as $i => $post) {
+                    echo ($i + 1) . '. ' . substr($post['caption'], 0, 50) . '...<br>';
+                    echo '   Type: ' . $post['type'] . '<br>';
+                    echo '   URL: ' . substr($post['url'], 0, 50) . '...<br>';
+                }
+            } else {
+                echo 'ERROR: No posts fetched<br>';
+                echo 'Check error_log for details<br>';
+            }
+        } else {
+            echo 'Mode is set to Manual<br>';
+        }
+        
+        echo '<br><a href="?" style="color:#4CAF50;">Close Debug</a>';
+        echo '</div>';
+    }
+});
