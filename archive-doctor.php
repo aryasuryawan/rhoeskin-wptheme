@@ -1,11 +1,19 @@
 <?php
 /**
- * Doctor Archive Template — 100% matches dokter.html
+ * Doctor Archive Template — Rhoé Skin Center
  *
  * @package Alya_Esthetic
  */
 
 get_header();
+
+$per_page = 9;
+$paged    = get_query_var('paged', 1) ?: 1;
+
+$doctors = alya_get_posts('doctor', [
+    'posts_per_page' => $per_page,
+    'paged'          => $paged,
+]);
 ?>
 
 <!-- PAGE HERO -->
@@ -13,18 +21,35 @@ get_header();
   <div class="container">
     <span class="eyebrow"><?php echo esc_html(get_theme_mod('alya_doctors_eyebrow', 'Tim Ahli Kami')); ?></span>
     <h1>Dokter Profesional &amp;<br>Berpengalaman</h1>
-    <p><?php echo esc_html(get_theme_mod('alya_doctors_desc', 'Setiap dokter di Alya Esthetic Center berkomitmen memberikan perawatan terbaik yang personal, aman, dan efektif untuk kecantikan Anda.')); ?></p>
+    <p><?php echo esc_html(get_theme_mod('alya_doctors_desc', 'Setiap dokter di Rhoé Skin Center berkomitmen memberikan perawatan terbaik yang personal, aman, dan efektif untuk kecantikan Anda.')); ?></p>
   </div>
 </div>
 
 <!-- FILTER BAR -->
-<div class="filter-bar">
+<div class="filter-bar" id="doctorFilterBar">
   <div class="container">
-    <div class="filter-tabs">
-      <button class="tab active" data-filter="all">Semua Dokter</button>
-      <button class="tab" data-filter="skin">Skin Care</button>
-      <button class="tab" data-filter="aesthetic">Aesthetic</button>
-      <button class="tab" data-filter="slimming">Slimming &amp; Wellness</button>
+    <div class="filter-bar__inner">
+
+      <!-- Tab filter -->
+      <div class="filter-tabs" id="doctorTabs">
+        <button class="tab active" data-filter="all">Semua Dokter</button>
+        <button class="tab" data-filter="skin">Skin Care</button>
+        <button class="tab" data-filter="aesthetic">Aesthetic</button>
+        <button class="tab" data-filter="slimming">Slimming &amp; Wellness</button>
+      </div>
+
+      <!-- Search by name -->
+      <div class="doctor-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 19.6l-4.9-4.9A7.5 7.5 0 103.4 14a7.5 7.5 0 0010.3.7l4.9 4.9 2.4-2zm-13.5-3a5.5 5.5 0 110-11 5.5 5.5 0 010 11z"/></svg>
+        <input
+          type="search"
+          id="doctorSearch"
+          placeholder="Cari nama dokter…"
+          autocomplete="off"
+          aria-label="Cari nama dokter"
+        >
+      </div>
+
     </div>
   </div>
 </div>
@@ -32,16 +57,17 @@ get_header();
 <!-- DOCTORS GRID -->
 <section style="padding:0">
   <div class="container">
-    <div class="doctors-grid">
+
+    <!-- Grid — konten di-replace AJAX -->
+    <div class="doctors-grid" id="doctorsGrid">
       <?php
-      $doctors = alya_get_posts('doctor', ['posts_per_page' => -1]);
       if ($doctors && $doctors->have_posts()) :
         while ($doctors->have_posts()) : $doctors->the_post();
           $post_id   = get_the_ID();
           $avatar    = get_field('alya_avatar');
           $position  = get_field('alya_position') ?: get_field('alya_specialist') ?: 'Aesthetic Doctor';
           $specialty = get_field('alya_specialty') ?: 'skin aesthetic';
-          $featured  = get_field('alya_featured') ?: 'Skin & Aesthetic';
+          $featured  = get_field('alya_featured') ?: '';
           $exp_years = get_field('alya_experience_years') ?: get_field('alya_exp_years') ?: '10+ tahun';
           $location  = get_field('alya_location') ?: 'Jakarta Selatan';
           $excerpt   = get_the_excerpt() ?: 'Dokter spesialis berpengalaman yang siap membantu kebutuhan perawatan dan kecantikan Anda.';
@@ -52,7 +78,7 @@ get_header();
           } elseif (has_post_thumbnail()) {
               $img_url = get_the_post_thumbnail_url($post_id, 'medium_large');
           } else {
-              $img_url = 'https://alyaesthetic.id/wp-content/uploads/2024/06/ALYA_5754_Edit-scaled-e1749969873976.png';
+              $img_url = get_template_directory_uri() . '/assets/images/placeholder-doctor-rhoeskin.webp';
           }
       ?>
         <article class="doc-card" data-cat="<?php echo esc_attr($specialty); ?>" onclick="location.href='<?php echo esc_url(get_permalink()); ?>'">
@@ -83,8 +109,20 @@ get_header();
           </div>
         </article>
       <?php endwhile; wp_reset_postdata(); ?>
+      <?php else : ?>
+        <p class="doctors-empty">Belum ada dokter yang ditampilkan.</p>
       <?php endif; ?>
     </div>
+
+    <!-- Pagination -->
+    <div class="doctors-pagination" id="doctorsPagination">
+      <?php
+      if ($doctors && $doctors->max_num_pages > 1) :
+          alya_pagination($doctors);
+      endif;
+      ?>
+    </div>
+
   </div>
 </section>
 

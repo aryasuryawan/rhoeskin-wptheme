@@ -292,17 +292,33 @@ acf_add_local_field_group([
     'title'  => 'Doctor Details',
     'fields' => [
         [
+            'key'   => 'field_alya_doc_about',
+            'label' => 'About / Bio',
+            'name'  => 'alya_about',
+            'type'  => 'wysiwyg',
+            'tabs'  => 'visual',
+            'toolbar' => 'basic',
+            'instructions' => 'Biography of the doctor.',
+        ],
+        [
             'key'           => 'field_alya_doc_position',
             'label'         => 'Position / Specialty',
             'name'          => 'alya_position',
-            'type'          => 'taxonomy',
-            'taxonomy'      => 'doctor_category',
-            'field_type'    => 'checkbox',
-            'allow_null'    => 1,
-            'add_term'      => 1,
-            'save_terms'    => 1,
-            'load_terms'    => 1,
-            'return_format' => 'object',
+            'type'          => 'text',
+            'placeholder'   => 'Aesthetic Doctor',
+            'description'   => 'Contoh: Aesthetic Doctor, Spesialis Dermatologi',
+        ],
+        [
+            'key'   => 'field_alya_doc_specialty',
+            'label' => 'Specialty (archive)',
+            'name'  => 'alya_specialty',
+            'type'  => 'text',
+        ],
+        [
+            'key'   => 'field_alya_doc_featured',
+            'label' => 'Featured Badge',
+            'name'  => 'alya_featured',
+            'type'  => 'text',
         ],
         [
             'key'   => 'field_alya_doc_credentials',
@@ -313,15 +329,6 @@ acf_add_local_field_group([
             'description' => 'Contoh: MD, FAAD, Spesialis Kulit dan Kelamin',
         ],
         [
-            'key'   => 'field_alya_doc_about',
-            'label' => 'About / Bio',
-            'name'  => 'alya_about',
-            'type'  => 'wysiwyg',
-            'tabs'  => 'visual',
-            'toolbar' => 'basic',
-            'instructions' => 'Short biography of the doctor.',
-        ],
-        [
             'key'          => 'field_alya_doc_services',
             'label'        => 'Services Offered',
             'name'         => 'alya_services',
@@ -330,12 +337,30 @@ acf_add_local_field_group([
             'filters'      => ['search'],
             'return_format' => 'object',
         ],
-
+    ],
+    'location' => [
         [
-            'key'          => 'field_alya_doc_avatar',
-            'label'        => 'Avatar (Square)',
-            'name'         => 'alya_avatar',
-            'type'         => 'image',
+            ['param' => 'post_type', 'operator' => '==', 'value' => 'doctor'],
+        ],
+    ],
+    'position'        => 'acf_after_title',
+    'style'           => 'default',
+    'label_placement' => 'top',
+    'active'          => true,
+]);
+
+/* ================================================================
+ * FIELD GROUP: Doctor Avatar (replaces Featured Image)
+ * ================================================================ */
+acf_add_local_field_group([
+    'key'    => 'group_alya_doctor_avatar',
+    'title'  => 'Foto Dokter (Avatar)',
+    'fields' => [
+        [
+            'key'           => 'field_alya_doc_avatar',
+            'label'         => '',
+            'name'          => 'alya_avatar',
+            'type'          => 'image',
             'return_format' => 'array',
             'preview_size'  => 'thumbnail',
         ],
@@ -345,7 +370,7 @@ acf_add_local_field_group([
             ['param' => 'post_type', 'operator' => '==', 'value' => 'doctor'],
         ],
     ],
-    'position'        => 'normal',
+    'position'        => 'side',
     'style'           => 'default',
     'label_placement' => 'top',
     'active'          => true,
@@ -956,7 +981,13 @@ function alya_render_doctor_repeater($meta_key, $columns, $defaults, $nonce_acti
     $raw   = get_post_meta($post_id, $meta_key, true);
     $items = [];
     if ($raw) {
-        $decoded = json_decode($raw, true);
+        if (is_array($raw)) {
+            $decoded = $raw;
+        } elseif (is_string($raw)) {
+            $decoded = json_decode($raw, true);
+        } else {
+            $decoded = null;
+        }
         if (is_array($decoded)) {
             $items = $decoded;
         } elseif (is_string($raw)) {
@@ -1110,30 +1141,30 @@ function alya_render_education_mb($post) {
     alya_rep_scripts_once();
     alya_render_doctor_repeater(
         'alya_education',
-        ['degree' => 'Gelar / Degree', 'school' => 'Universitas / School', 'year' => 'Tahun'],
-        [['degree' => 'Sp.KK', 'school' => 'Universitas Indonesia', 'year' => '2015']],
+        ['year' => 'Tahun', 'title' => 'Gelar / Degree', 'institution' => 'Universitas / School'],
+        [['year' => '2015', 'title' => 'Sp.KK', 'institution' => 'Universitas Indonesia']],
         'alya_save_education', 'alya_education_nonce', $post->ID
     );
-    echo '<p class="alya-rep-hint">Contoh: Sp.KK | Universitas Indonesia | 2015</p>';
+    echo '<p class="alya-rep-hint">Contoh: 2015 | Sp.KK | Universitas Indonesia</p>';
 }
 
 function alya_render_experience_mb($post) {
     alya_rep_scripts_once();
     alya_render_doctor_repeater(
         'alya_experience',
-        ['role' => 'Jabatan / Role', 'place' => 'Tempat / Hospital', 'year' => 'Tahun'],
-        [['role' => 'Senior Dermatologist', 'place' => 'RS Pondok Indah', 'year' => '2018–2022']],
+        ['year' => 'Tahun', 'title' => 'Jabatan / Role', 'institution' => 'Tempat / Hospital'],
+        [['year' => '2018–2022', 'title' => 'Senior Dermatologist', 'institution' => 'RS Pondok Indah']],
         'alya_save_experience', 'alya_experience_nonce', $post->ID
     );
-    echo '<p class="alya-rep-hint">Contoh: Senior Dermatologist | RS Pondok Indah | 2018–2022</p>';
+    echo '<p class="alya-rep-hint">Contoh: 2018–2022 | Senior Dermatologist | RS Pondok Indah</p>';
 }
 
 function alya_render_schedule_mb($post) {
     alya_rep_scripts_once();
     alya_render_doctor_repeater(
         'alya_schedule',
-        ['day' => 'Hari', 'hours' => 'Jam Praktik', 'location' => 'Lokasi / Cabang'],
-        [['day' => 'Senin', 'hours' => '09:00–12:00', 'location' => 'Cabang Utama']],
+        ['day' => 'Hari', 'time' => 'Jam Praktik', 'status' => 'Status / Lokasi'],
+        [['day' => 'Senin', 'time' => '09:00–12:00', 'status' => 'Cabang Utama']],
         'alya_save_schedule', 'alya_schedule_nonce', $post->ID
     );
     echo '<p class="alya-rep-hint">Contoh: Senin | 09:00–12:00 | Cabang Utama</p>';
@@ -1172,15 +1203,15 @@ function alya_render_certifications_mb($post) {
 add_action('save_post_doctor', function ($post_id) {
     alya_save_doctor_repeater($post_id, 'alya_education',
         'alya_education_nonce',      'alya_save_education',
-        ['degree' => '', 'school' => '', 'year' => '']);
+        ['year' => '', 'title' => '', 'institution' => '']);
 
     alya_save_doctor_repeater($post_id, 'alya_experience',
         'alya_experience_nonce',     'alya_save_experience',
-        ['role' => '', 'place' => '', 'year' => '']);
+        ['year' => '', 'title' => '', 'institution' => '']);
 
     alya_save_doctor_repeater($post_id, 'alya_schedule',
         'alya_schedule_nonce',       'alya_save_schedule',
-        ['day' => '', 'hours' => '', 'location' => '']);
+        ['day' => '', 'time' => '', 'status' => '']);
 
     alya_save_doctor_repeater($post_id, 'alya_stats',
         'alya_stats_nonce',          'alya_save_stats',

@@ -24,7 +24,7 @@ $wa_url   = alya_wa_link();
     <div class="container contact__grid">
         <div class="contact__info">
             <div>
-                <h3>Alya Esthetic Center</h3>
+                <h3>Rhoé Skin Center</h3>
                 <div class="contact__list">
                     <div class="row">
                         <div class="ic">

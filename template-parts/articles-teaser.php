@@ -51,7 +51,7 @@ if (empty($articles_list)) {
 <section class="articles">
     <div class="container sec-head">
         <div>
-            <span class="eyebrow">Blog Alya Esthetic</span>
+            <span class="eyebrow">Blog Rhoé Skin</span>
             <h2>Artikel &amp; Tips Terbaru</h2>
         </div>
         <a class="btn btn--ghostdark" href="<?php echo esc_url(get_permalink(get_option('page_for_posts')) ?: home_url('/artikel/')); ?>">

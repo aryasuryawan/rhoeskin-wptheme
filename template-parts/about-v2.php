@@ -6,7 +6,7 @@
  */
 
 $title    = get_theme_mod('alya_v2_about_title', 'Kecantikan yang Dirawat, Bukan Sekadar Ditutupi');
-$desc     = get_theme_mod('alya_v2_about_desc', 'Alya Esthetic Center hadir sebagai klinik kecantikan satu pintu di Jakarta Selatan, menggabungkan layanan medis, hospitality, dan edukasi rutinitas harian dalam satu pengalaman perawatan.');
+$desc     = get_theme_mod('alya_v2_about_desc', 'Rhoé Skin Center hadir sebagai klinik kecantikan satu pintu di Jakarta Selatan, menggabungkan layanan medis, hospitality, dan edukasi rutinitas harian dalam satu pengalaman perawatan.');
 $image    = get_theme_mod('alya_v2_about_image', '');
 $points   = get_theme_mod('alya_v2_about_points', [
     'Ditangani langsung oleh dokter & terapis bersertifikat',

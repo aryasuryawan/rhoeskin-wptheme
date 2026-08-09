@@ -138,8 +138,8 @@ if ($services->have_posts()) :
 
 <!-- ════════════════════════════════════════════ ABOUT + STATS (Default) ════════════════════════════════════════════ -->
 <?php
-$about_title = get_theme_mod('alya_about_title', alya_field_raw('alya_about_title') ?: 'Tentang Alya Esthetic');
-$about_desc  = get_theme_mod('alya_about_desc', alya_field_raw('alya_about_desc') ?: '<p>Alya Esthetic Center adalah klinik estetik medis terpercaya yang menghadirkan treatment kecantikan modern dengan standar internasional.</p>');
+$about_title = get_theme_mod('alya_about_title', alya_field_raw('alya_about_title') ?: 'Tentang Rhoé Skin');
+$about_desc  = get_theme_mod('alya_about_desc', alya_field_raw('alya_about_desc') ?: '<p>Rhoé Skin Center adalah klinik estetik medis terpercaya yang menghadirkan treatment kecantikan modern dengan standar internasional.</p>');
 $about_image = get_theme_mod('alya_about_image', alya_field_raw('alya_about_image'));
 if (is_string($about_image)) $about_image = ['url' => $about_image];
 $stats = alya_field_raw('alya_home_stats') ?: [

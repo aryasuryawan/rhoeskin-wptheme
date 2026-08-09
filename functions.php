@@ -144,8 +144,10 @@ function alya_scripts() {
 
     // Home V2 assets
     if (is_front_page() && get_theme_mod('alya_homepage_style', 'default') === 'v2') {
+        wp_enqueue_style('swiper',  'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css', [], '11.0.0');
+        wp_enqueue_script('swiper', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], '11.0.0', true);
         wp_enqueue_style('alya-home-v2', ALYA_URI . '/assets/css/home-v2.css', ['alya-main'], ALYA_VERSION);
-        wp_enqueue_script('alya-home-v2', ALYA_URI . '/assets/js/home-v2.js', ['jquery'], ALYA_VERSION, true);
+        wp_enqueue_script('alya-home-v2', ALYA_URI . '/assets/js/home-v2.js', ['swiper'], ALYA_VERSION, true);
     }
 
     // Kontak page assets
@@ -418,7 +420,7 @@ function alya_services_filter_handler() {
                     <?php if ($has_thumb) : ?>
                         <?php echo get_the_post_thumbnail($pid, 'alya-card', ['alt' => esc_attr($title), 'loading' => 'eager']); ?>
                     <?php else : ?>
-                        <img src="<?php echo esc_url($img_uri . '/fallback.png'); ?>" alt="<?php echo esc_attr($title); ?>" loading="eager">
+                        <img src="<?php echo esc_url(ALYA_URI . '/assets/images/placeholder-image-treatment-rhoeskin.webp'); ?>" alt="<?php echo esc_attr($title); ?>" loading="eager">
                     <?php endif; ?>
                 </div>
                 <div class="t-body">
@@ -536,7 +538,7 @@ function alya_treatments_filter_handler() {
                     <?php if ($has_thumb) : ?>
                         <?php echo get_the_post_thumbnail($pid, 'alya-card', ['alt' => esc_attr($title), 'loading' => 'eager']); ?>
                     <?php else : ?>
-                        <img src="<?php echo esc_url($img_uri . '/fallback.png'); ?>" alt="<?php echo esc_attr($title); ?>" loading="eager">
+                        <img src="<?php echo esc_url(ALYA_URI . '/assets/images/placeholder-image-treatment-rhoeskin.webp'); ?>" alt="<?php echo esc_attr($title); ?>" loading="eager">
                     <?php endif; ?>
                 </div>
                 <div class="t-body">
@@ -566,6 +568,106 @@ function alya_treatments_filter_handler() {
 }
 add_action('wp_ajax_alya_treatments_filter', 'alya_treatments_filter_handler');
 add_action('wp_ajax_nopriv_alya_treatments_filter', 'alya_treatments_filter_handler');
+
+/**
+ * AJAX Handler — Doctors Filter + Pagination
+ */
+function alya_doctors_filter_handler() {
+    check_ajax_referer('alya_nonce', 'nonce');
+
+    $search   = isset($_POST['s'])        ? sanitize_text_field($_POST['s'])   : '';
+    $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : 'all';
+    $paged    = isset($_POST['paged'])    ? max(1, intval($_POST['paged']))     : 1;
+    $per_page = 9;
+
+    $args = [
+        'post_type'      => 'doctor',
+        'post_status'    => 'publish',
+        'posts_per_page' => $per_page,
+        'paged'          => $paged,
+        'orderby'        => 'menu_order',
+        'order'          => 'ASC',
+    ];
+
+    if (!empty($search)) {
+        $args['s'] = $search;
+    }
+
+    // Filter by ACF specialty field via meta_query
+    if (!empty($category) && $category !== 'all') {
+        $args['meta_query'] = [[
+            'key'     => 'alya_specialty',
+            'value'   => $category,
+            'compare' => 'LIKE',
+        ]];
+    }
+
+    $query = new WP_Query($args);
+
+    ob_start();
+    if ($query->have_posts()) :
+        while ($query->have_posts()) : $query->the_post();
+            $post_id   = get_the_ID();
+            $avatar    = get_field('alya_avatar');
+            $position  = get_field('alya_position') ?: get_field('alya_specialist') ?: 'Aesthetic Doctor';
+            $specialty = get_field('alya_specialty') ?: 'skin aesthetic';
+            $featured  = get_field('alya_featured') ?: '';
+            $exp_years = get_field('alya_experience_years') ?: get_field('alya_exp_years') ?: '10+ tahun';
+            $location  = get_field('alya_location') ?: 'Jakarta Selatan';
+            $excerpt   = get_the_excerpt() ?: 'Dokter spesialis berpengalaman yang siap membantu kebutuhan perawatan dan kecantikan Anda.';
+
+            $img_url = '';
+            if ($avatar && is_array($avatar) && isset($avatar['url'])) {
+                $img_url = $avatar['url'];
+            } elseif (has_post_thumbnail()) {
+                $img_url = get_the_post_thumbnail_url($post_id, 'medium_large');
+            } else {
+                $img_url = get_template_directory_uri() . '/assets/images/placeholder-doctor-rhoeskin.webp';
+            }
+            ?>
+            <article class="doc-card" data-cat="<?php echo esc_attr($specialty); ?>" onclick="location.href='<?php echo esc_url(get_permalink()); ?>'">
+              <div class="doc-card__img">
+                <img src="<?php echo esc_url($img_url); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">
+                <?php if ($featured) : ?>
+                  <span class="doc-card__badge"><?php echo esc_html($featured); ?></span>
+                <?php endif; ?>
+              </div>
+              <div class="doc-card__body">
+                <h3><?php the_title(); ?></h3>
+                <p class="spec"><?php echo esc_html($position); ?></p>
+                <p><?php echo esc_html(wp_trim_words($excerpt, 18)); ?></p>
+                <div class="doc-card__meta">
+                  <span>
+                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm1 14H11v-5h2v5zm0-7H11V7h2v2z"/></svg>
+                    <?php echo esc_html($exp_years); ?>
+                  </span>
+                  <span>
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>
+                    <?php echo esc_html($location); ?>
+                  </span>
+                </div>
+                <div class="doc-card__actions">
+                  <a href="<?php the_permalink(); ?>" class="btn btn--outline">Lihat Profil</a>
+                  <a href="<?php echo esc_url(home_url('/kontak')); ?>" class="btn">Buat Janji</a>
+                </div>
+              </div>
+            </article>
+            <?php
+        endwhile;
+        wp_reset_postdata();
+    endif;
+    $html = ob_get_clean();
+
+    wp_send_json_success([
+        'html'       => $html,
+        'has_posts'  => $query->have_posts() || $query->post_count > 0,
+        'max_pages'  => (int) $query->max_num_pages,
+        'total'      => (int) $query->found_posts,
+        'paged'      => $paged,
+    ]);
+}
+add_action('wp_ajax_alya_doctors_filter', 'alya_doctors_filter_handler');
+add_action('wp_ajax_nopriv_alya_doctors_filter', 'alya_doctors_filter_handler');
 
 /**
  * AJAX Handler — Jobs Filter

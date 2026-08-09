@@ -7,7 +7,7 @@
 
 $eyebrow   = get_theme_mod('alya_v2_hero_eyebrow', 'Klinik Kecantikan Satu Pintu · Jakarta Selatan');
 $title     = get_theme_mod('alya_v2_hero_title', 'Kulit Sehat Dimulai dari Kebiasaan yang Tepat');
-$subtitle  = get_theme_mod('alya_v2_hero_subtitle', 'Alya Esthetic Center memadukan pendekatan medis, hospitality, dan konsistensi rutinitas untuk membantu Anda tampil lebih percaya diri — dipandu langsung oleh tim dokter berpengalaman.');
+$subtitle  = get_theme_mod('alya_v2_hero_subtitle', 'Rhoé Skin Center memadukan pendekatan medis, hospitality, dan konsistensi rutinitas untuk membantu Anda tampil lebih percaya diri — dipandu langsung oleh tim dokter berpengalaman.');
 $cta_text  = get_theme_mod('alya_v2_hero_cta_text', 'Buat Janji Sekarang');
 $cta_url   = get_theme_mod('alya_v2_hero_cta_url', alya_wa_link());
 $cta2_text = get_theme_mod('alya_v2_hero_cta2_text', 'Jelajahi Layanan');

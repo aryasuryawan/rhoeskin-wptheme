@@ -215,7 +215,7 @@ function alya_stars($count = 5, $filled = 5) {
 
 function alya_wa_link($text = '') {
     $number  = get_theme_mod('alya_wa_number', '6281290000000');
-    $message = $text ?: get_theme_mod('alya_wa_message', 'Halo Alya Esthetic, saya ingin bertanya.');
+    $message = $text ?: get_theme_mod('alya_wa_message', 'Halo Rhoe Skin Esthetic Center, saya ingin bertanya.');
     return 'https://wa.me/' . $number . '?text=' . urlencode($message);
 }
 
@@ -400,6 +400,8 @@ function alya_maybe_rep($raw) {
  * ACF format: Title | Institution | Year  →  parsed as: year=3rd, title=1st, institution=2nd
  */
 function alya_parse_table($raw) {
+    $decoded = alya_maybe_rep($raw);
+    if (is_array($decoded)) return $decoded;
     if (!is_string($raw)) return [];
     $raw = trim($raw);
     if (!$raw) return [];
@@ -424,6 +426,8 @@ function alya_parse_table($raw) {
  * Parse pipe-delimited lines for stats (2 columns: number, label).
  */
 function alya_parse_stats($raw) {
+    $decoded = alya_maybe_rep($raw);
+    if (is_array($decoded)) return $decoded;
     return alya_parse_lines($raw, ['number', 'label']);
 }
 
@@ -431,6 +435,8 @@ function alya_parse_stats($raw) {
  * Parse pipe-delimited lines for schedule (3 columns: day, hours, location).
  */
 function alya_parse_schedule($raw) {
+    $decoded = alya_maybe_rep($raw);
+    if (is_array($decoded)) return $decoded;
     return alya_parse_lines($raw, ['day', 'hours', 'location']);
 }
 

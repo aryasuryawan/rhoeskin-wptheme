@@ -15,7 +15,7 @@ get_header();
 $hero_bg       = get_field('alya_hero_bg');
 $hero_eyebrow  = get_field('alya_hero_eyebrow') ?: 'Medical Innovation';
 $hero_title    = get_field('alya_hero_title') ?: 'Teknologi & Medical Devices Berstandar Internasional';
-$hero_subtitle = get_field('alya_hero_subtitle') ?: 'Alya Esthetic berkomitmen menghadirkan perangkat medis terkini yang telah tersertifikasi BPOM, FDA, dan CE Mark demi hasil perawatan yang aman dan optimal.';
+$hero_subtitle = get_field('alya_hero_subtitle') ?: 'Rhoé Skin berkomitmen menghadirkan perangkat medis terkini yang telah tersertifikasi BPOM, FDA, dan CE Mark demi hasil perawatan yang aman dan optimal.';
 $hero_stats    = get_field('alya_hero_stats');
 
 // Categories

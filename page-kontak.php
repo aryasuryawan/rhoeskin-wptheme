@@ -141,9 +141,9 @@ $wa_number = get_theme_mod('alya_phone_link', '6281290000000');
     </div>
     <div class="map__frame">
       <?php if ($maps) : ?>
-        <iframe src="<?php echo esc_url($maps); ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokasi Alya Esthetic Center"></iframe>
+        <iframe src="<?php echo esc_url($maps); ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokasi Rhoé Skin Center"></iframe>
       <?php else : ?>
-        <iframe src="https://www.google.com/maps?q=Jakarta%20Selatan&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokasi Alya Esthetic Center"></iframe>
+        <iframe src="https://www.google.com/maps?q=Jakarta%20Selatan&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokasi Rhoé Skin Center"></iframe>
       <?php endif; ?>
     </div>
   </div>
@@ -171,8 +171,8 @@ $wa_number = get_theme_mod('alya_phone_link', '6281290000000');
         <p>Kerahasiaan Sahabat Alya adalah prioritas kami. Seluruh data dan riwayat perawatan pasien dijaga kerahasiaannya sesuai standar klinik.</p>
       </details>
       <details class="faq-item">
-        <summary>Apakah Alya Esthetic ramah untuk keluarga?</summary>
-        <p>Tentu. Alya Esthetic Center dirancang untuk menjadi klinik yang nyaman dan ramah bagi seluruh anggota keluarga, dari remaja hingga dewasa.</p>
+        <summary>Apakah Rhoé Skin ramah untuk keluarga?</summary>
+        <p>Tentu. Rhoé Skin Center dirancang untuk menjadi klinik yang nyaman dan ramah bagi seluruh anggota keluarga, dari remaja hingga dewasa.</p>
       </details>
     </div>
   </div>
@@ -277,7 +277,7 @@ $wa_number = get_theme_mod('alya_phone_link', '6281290000000');
     });
 
     /* Open WhatsApp */
-    var text = 'Halo Alya Esthetic Center, saya *' + nama + '* ingin melakukan reservasi.\n'
+    var text = 'Halo Rhoé Skin Center, saya *' + nama + '* ingin melakukan reservasi.\n'
              + '------------------------------------------\n'
              + 'Nama      : ' + nama + '\n'
              + 'No. WA    : ' + wa + '\n';

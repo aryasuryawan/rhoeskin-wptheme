@@ -22,11 +22,13 @@ defined('ABSPATH') || exit;
 <header id="siteHeader">
     <div class="container nav">
         <a class="logo" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>">
-            <?php if (get_theme_mod('alya_logo')) : ?>
-                <img src="<?php echo esc_url(get_theme_mod('alya_logo')); ?>" alt="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>">
-            <?php else : ?>
-                <img src="https://alyaesthetic.id/wp-content/uploads/2024/06/logo-and-text.352ad43b.svg" alt="Alya Esthetic Center">
-            <?php endif; ?>
+            <?php
+            $logo_light = get_theme_mod('alya_logo')       ?: get_template_directory_uri() . '/assets/images/logo/Rhoe_Skin_transparent.png';
+            $logo_dark  = get_theme_mod('alya_logo_white') ?: get_template_directory_uri() . '/assets/images/logo/rhoe_skin_logo_white_transparent.png';
+            $alt        = esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center'));
+            ?>
+            <img class="logo__light" src="<?php echo esc_url($logo_light); ?>" alt="<?php echo $alt; ?>">
+            <img class="logo__dark"  src="<?php echo esc_url($logo_dark); ?>"  alt="<?php echo $alt; ?>">
         </a>
         <nav class="nav__elms">
             <?php if (is_front_page() && get_theme_mod('alya_homepage_style', 'default') === 'v2') : ?>

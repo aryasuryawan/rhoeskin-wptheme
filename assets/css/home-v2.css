@@ -824,6 +824,39 @@ header#siteHeader {
   gap: 22px;
 }
 
+/* Swiper mode — aktif saat dokter > 5 */
+.doc-swiper {
+  padding-bottom: 40px; /* ruang untuk pagination */
+}
+
+.doc-swiper .doc-card {
+  height: 100%;
+  text-align: center;
+}
+
+.doc-swiper__pagination {
+  bottom: 0 !important;
+}
+
+.doc-swiper__pagination .swiper-pagination-bullet {
+  background: var(--brand);
+  opacity: .35;
+}
+
+.doc-swiper__pagination .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+.doc-swiper__prev,
+.doc-swiper__next {
+  color: var(--brand) !important;
+}
+
+.doc-swiper__prev::after,
+.doc-swiper__next::after {
+  font-size: 1.1rem !important;
+}
+
 .doc-card {
   text-align: center;
 }
@@ -859,6 +892,8 @@ header#siteHeader {
 }
 
 .doc-card span {
+  display: block;
+  text-align: center;
   font-size: 0.8rem;
   color: var(--muted);
 }
@@ -1039,6 +1074,52 @@ header#siteHeader {
 .testi-avatar.active span {
   color: var(--ink);
   border-color: var(--brand);
+}
+
+/* Swiper mode untuk testimonial strip — aktif saat testi > 6 */
+.testi-strip:has(.testi-swiper) {
+  overflow: visible;
+}
+
+.testi-swiper {
+  padding-bottom: 36px;
+}
+
+/* Override gap dan width untuk mode Swiper */
+.testi-swiper .testi-strip__track {
+  gap: 0;
+}
+
+.testi-swiper .testi-avatar {
+  width: 100%;
+}
+
+/* Pastikan .testi-avatar di dalam Swiper tampil identik dengan mode normal */
+.testi-swiper .testi-avatar {
+  width: 100%;
+}
+
+.testi-swiper__pagination {
+  bottom: 0 !important;
+}
+
+.testi-swiper__pagination .swiper-pagination-bullet {
+  background: var(--brand);
+  opacity: .35;
+}
+
+.testi-swiper__pagination .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+.testi-swiper__prev,
+.testi-swiper__next {
+  color: var(--brand) !important;
+}
+
+.testi-swiper__prev::after,
+.testi-swiper__next::after {
+  font-size: 1.1rem !important;
 }
 
 /* ---------- Instagram strip ---------- */

@@ -12,7 +12,7 @@ get_header();
 <div class="pagehead">
   <div class="container">
     <span class="eyebrow" style="color:#efd9c8">Bergabung Bersama Kami</span>
-    <h1>Karir di Alya Esthetic Center</h1>
+    <h1>Karir di Rhoé Skin Center</h1>
     <p class="lead">Jadi bagian dari tim yang membantu banyak orang tampil lebih percaya diri. Kami mencari individu yang berdedikasi, ramah, dan ingin terus berkembang di industri kecantikan &amp; kesehatan.</p>
     <div class="crumb">
       <a href="<?php echo esc_url(home_url('/')); ?>">Beranda</a><span>/</span>
@@ -24,7 +24,7 @@ get_header();
 <!-- ============ WHY JOIN US ============ -->
 <section class="values">
   <div class="container center" style="max-width:640px">
-    <span class="eyebrow">Kenapa Alya Esthetic</span>
+    <span class="eyebrow">Kenapa Rhoé Skin</span>
     <h2>Lingkungan Kerja yang Suportif</h2>
     <p class="lead">Kami percaya tim yang sejahtera dan terus belajar adalah kunci memberikan pelayanan terbaik untuk pasien.</p>
   </div>
@@ -178,7 +178,7 @@ get_header();
       <div class="side-box cta-box">
         <h4>Tidak Menemukan Posisi yang Pas?</h4>
         <p>Tetap kirimkan CV Anda. Kami akan menghubungi Anda jika ada posisi yang sesuai di masa depan.</p>
-        <a class="btn" href="<?php echo esc_url(alya_wa_link('Halo HR Alya Esthetic, saya ingin mengirimkan Open Application CV.')); ?>" target="_blank" rel="noopener">Kirim Open Application</a>
+        <a class="btn" href="<?php echo esc_url(alya_wa_link('Halo HR Rhoé Skin, saya ingin mengirimkan Open Application CV.')); ?>" target="_blank" rel="noopener">Kirim Open Application</a>
       </div>
     </aside>
   </div>

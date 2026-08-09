@@ -13,11 +13,11 @@ defined('ABSPATH') || exit;
     <div class="container grid">
             <div class="brand">
                 <?php if (get_theme_mod('alya_logo_white')): ?>
-                    <img src="<?php echo esc_url(get_theme_mod('alya_logo_white')); ?>" alt="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>" style="height:34px">
+                    <img src="<?php echo esc_url(get_theme_mod('alya_logo_white')); ?>" alt="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Rhoé Skin Center')); ?>" style="height:34px">
                 <?php elseif (get_theme_mod('alya_logo')): ?>
-                    <img src="<?php echo esc_url(get_theme_mod('alya_logo')); ?>" alt="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>" style="height:34px;filter:brightness(0) invert(1)">
+                    <img src="<?php echo esc_url(get_theme_mod('alya_logo')); ?>" alt="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Rhoé Skin Center')); ?>" style="height:34px;filter:brightness(0) invert(1)">
                 <?php else: ?>
-                    <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/logo/logo-and-text.svg'); ?>" alt="Alya Esthetic" style="height:34px;filter:brightness(0) invert(1)">
+                    <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/logo/rhoe_skin_logo_white_transparent.png'); ?>" alt="Rhoé Skin" style="height:34px">
                 <?php endif; ?>
                 <p><?php echo esc_html(get_theme_mod('alya_clinic_tagline', 'Klinik kecantikan satu pintu di Jakarta Selatan — hospitality, kesehatan, dan solusi terbaik untuk kecantikan Anda.')); ?></p>
                 <?php if (get_theme_mod('alya_description')): ?>
@@ -108,13 +108,13 @@ defined('ABSPATH') || exit;
         </div>
     </div>
     <div class="container copyright">
-        &copy; <span id="currentYear"></span> <?php echo esc_html(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>. All rights reserved.
+        &copy; <span id="currentYear"></span> <?php echo esc_html(get_theme_mod('alya_clinic_name', 'Rhoé Skin Center')); ?>. All rights reserved.
     </div>
 </footer>
 
 <?php if (get_theme_mod('alya_wa_enable', true)) : 
     $wa_num = get_theme_mod('alya_wa_number', '6281290000000');
-    $wa_msg = get_theme_mod('alya_wa_message', 'Halo Alya Esthetic, saya ingin konsultasi.');
+    $wa_msg = get_theme_mod('alya_wa_message', 'Halo Rhoé Skin, saya ingin konsultasi.');
 ?>
 <a href="<?php echo esc_url(alya_wa_link($wa_msg)); ?>" 
    class="fab-wa" 

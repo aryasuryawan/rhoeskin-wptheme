@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  */
 function alya_og_tags() {
     if (is_front_page()) {
-        $title = get_theme_mod('alya_clinic_name', 'Alya Esthetic Center');
+        $title = get_theme_mod('alya_clinic_name', 'Rhoé Skin Center');
         $desc  = get_theme_mod('alya_clinic_tagline', 'Your Beauty, Our Priority');
     } elseif (is_singular()) {
         $title = get_the_title();
@@ -34,7 +34,7 @@ function alya_og_tags() {
     <meta property="og:description" content="<?php echo esc_attr($desc); ?>">
     <meta property="og:url" content="<?php echo esc_url(get_permalink()); ?>">
     <meta property="og:type" content="<?php echo is_singular('post') ? 'article' : 'website'; ?>">
-    <meta property="og:site_name" content="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Alya Esthetic Center')); ?>">
+    <meta property="og:site_name" content="<?php echo esc_attr(get_theme_mod('alya_clinic_name', 'Rhoé Skin Center')); ?>">
     <?php if ($og_image) : ?>
     <meta property="og:image" content="<?php echo esc_url($og_image); ?>">
     <meta property="og:image:width" content="1200">
@@ -79,7 +79,7 @@ add_action('wp_head', 'alya_twitter_cards', 5);
  */
 function alya_schema_markup() {
     $schema_type = get_theme_mod('alya_schema_type', 'MedicalClinic');
-    $clinic_name = get_theme_mod('alya_clinic_name', 'Alya Esthetic Center');
+    $clinic_name = get_theme_mod('alya_clinic_name', 'Rhoé Skin Center');
     $phone       = get_theme_mod('alya_phone_link', '6281290000000');
     $email       = get_theme_mod('alya_email', 'info@alyaesthetic.co.id');
     $address     = get_theme_mod('alya_address', '');

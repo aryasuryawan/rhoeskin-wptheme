@@ -22,7 +22,7 @@ $query = new WP_Query($args);
 <!-- ============ PAGE HEADER ============ -->
 <div class="pagehead">
   <div class="container">
-    <span class="eyebrow" style="color:#efd9c8">Blog Alya Esthetic</span>
+    <span class="eyebrow" style="color:#efd9c8">Blog Rhoé Skin</span>
     <h1>Artikel &amp; Tips Kecantikan</h1>
     <div class="crumb">
       <a href="<?php echo esc_url(home_url('/')); ?>">Beranda</a>

@@ -24,10 +24,6 @@ table{border-collapse:collapse}
 .nav{display:flex;align-items:center;justify-content:space-between;gap:24px}
 .nav .logo{display:flex;align-items:center;color:var(--ink)}
 .nav .logo img{height:40px;width:auto}
-.logo__dark{display:none}
-.logo__light{display:block}
-.header--dark .logo__light{display:none}
-.header--dark .logo__dark{display:block}
 .nav__elms{display:flex;align-items:center;gap:34px}
 .nav__links{display:flex;gap:20px;list-style:none}
 .nav__links a{font-size:.88rem;font-weight:500;color:var(--ink);opacity:.92;transition:.25s;position:relative;white-space:nowrap}
@@ -37,15 +33,13 @@ table{border-collapse:collapse}
 .nav__links a.active{color:var(--brand)}
 .nav__links a.active::after{width:100%}
 .nav__links .promo-nav-item{position:relative}
-.nav__links .promo-nav-item > a{color:var(--promo,#c0392b);font-weight:600;opacity:1;background:linear-gradient(135deg,rgba(192,57,43,.1),rgba(192,57,43,.04));border:1px solid rgba(192,57,43,.25);border-radius:999px;padding:8px 18px;animation:promo-pulse 2.8s ease-in-out infinite}
-.nav__links .promo-nav-item > a:hover{background:linear-gradient(135deg,#c0392b,#e0684f);color:#fff;opacity:1;animation:none}
+.nav__links .promo-nav-item > a{color:var(--promo,#c0392b);font-weight:600;opacity:1;background:linear-gradient(135deg,rgba(192,57,43,.1),rgba(192,57,43,.04));border:1px solid rgba(192,57,43,.25);border-radius:999px;padding:8px 18px}
+.nav__links .promo-nav-item > a:hover{background:linear-gradient(135deg,#c0392b,#e0684f);color:#fff;opacity:1}
 .nav__links .promo-nav-item > a::after{display:none}
 .nav__links .promo-nav-item > a.active{color:var(--promo,#c0392b)}
 .nav__links .promo-nav-item > a.active::after{display:none}
-.promo-nav-badge{display:inline-flex;align-items:center;background:var(--promo,#c0392b);color:#fff;font-size:.6rem;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:999px;margin-left:8px;vertical-align:middle;line-height:1.4;transform:translateY(-1px);animation:promo-badge-pulse 2.8s ease-in-out infinite}
-.nav__links .promo-nav-item > a:hover .promo-nav-badge{background:#fff;color:var(--promo,#c0392b);animation:none}
-@keyframes promo-pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,0);border-color:rgba(192,57,43,.25);background:linear-gradient(135deg,rgba(192,57,43,.1),rgba(192,57,43,.04))}50%{box-shadow:0 0 0 4px rgba(192,57,43,.12);border-color:rgba(192,57,43,.55);background:linear-gradient(135deg,rgba(192,57,43,.16),rgba(192,57,43,.08))}}
-@keyframes promo-badge-pulse{0%,100%{opacity:1;transform:translateY(-1px) scale(1)}50%{opacity:.7;transform:translateY(-1px) scale(.92)}}
+.promo-nav-badge{display:inline-flex;align-items:center;background:var(--promo,#c0392b);color:#fff;font-size:.6rem;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:999px;margin-left:8px;vertical-align:middle;line-height:1.4;transform:translateY(-1px)}
+.nav__links .promo-nav-item > a:hover .promo-nav-badge{background:#fff;color:var(--promo,#c0392b)}
 .nav__links .dropdown a{display:block;padding:10px 14px;border-radius:10px;font-size:.86rem;color:var(--ink);white-space:nowrap}
 .nav__links .dropdown a::after{display:none}
 .nav__links .dropdown a:hover{background:var(--brand-soft);color:var(--brand)}
@@ -57,7 +51,7 @@ table{border-collapse:collapse}
 .has-dropdown:hover .dropdown{opacity:1;visibility:visible;transform:translate(-50%,0)}
 .nav__links .dropdown a::after{display:none}
 .nav__links .dropdown a:hover{background:var(--brand-soft);color:var(--brand)}
-.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;position:relative;z-index:100}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px}
 .burger span{width:26px;height:2px;background:var(--ink);transition:.3s}
 body.admin-bar #siteHeader{top:32px}
 @media(max-width:782px){body.admin-bar #siteHeader{top:46px}}
@@ -1305,9 +1299,7 @@ footer .socials a:hover svg{fill:#fff}
     .about__media {
       .badge {
         right: 8px;
-      }
-    }
-  }
+}
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1642,9 +1634,9 @@ footer .socials a:hover svg{fill:#fff}
   .has-dropdown .dropdown{position:static;opacity:1;visibility:visible;transform:none;box-shadow:none;border:none;padding:0 0 0 16px;margin-top:6px;background:transparent}
   .nav__link-wrap svg{display:none}
   .nav__links .dropdown a{padding:8px 0;font-size:.84rem;color:var(--muted)}
-  .nav__links .promo-nav-item > a{background:transparent;border:none;padding:0;border-radius:0;font-size:.88rem;color:var(--promo,#c0392b);animation:none}
+  .nav__links .promo-nav-item > a{background:transparent;border:none;padding:0;border-radius:0;font-size:.88rem;color:var(--promo,#c0392b)}
   .nav__links .promo-nav-item > a:hover{background:transparent;color:var(--promo,#c0392b)}
-  .promo-nav-badge{margin-left:6px;transform:none;animation:none}
+  .promo-nav-badge{margin-left:6px;transform:none}
   .burger{display:flex}
   #siteHeader .btn{display:none}
 

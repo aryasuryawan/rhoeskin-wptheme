@@ -28,7 +28,7 @@ function alya_register_cpts() {
             'has_archive'         => true,
             'rewrite'             => ['slug' => 'dokter'],
             'menu_icon'           => 'dashicons-groups',
-            'supports'            => ['title', 'editor', 'thumbnail', 'revisions'],
+            'supports'            => ['title', 'thumbnail', 'excerpt', 'revisions'],
             'show_in_rest'        => true,
             'capability_type'     => 'post',
         ],
@@ -307,3 +307,22 @@ if (!function_exists('alya_flush_rewrite')) {
     }
 }
 add_action('after_switch_theme', 'alya_flush_rewrite');
+
+/**
+ * Rename Excerpt meta box for Doctor CPT
+ */
+function alya_doctor_excerpt_label() {
+    $screen = get_current_screen();
+    if ($screen && $screen->post_type === 'doctor') {
+        remove_meta_box('postexcerpt', 'doctor', 'normal');
+        add_meta_box(
+            'postexcerpt',
+            'Deskripsi Singkat Dokter',
+            'post_excerpt_meta_box',
+            'doctor',
+            'normal',
+            'high'
+        );
+    }
+}
+add_action('add_meta_boxes', 'alya_doctor_excerpt_label');

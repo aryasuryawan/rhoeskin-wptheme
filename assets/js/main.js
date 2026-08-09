@@ -3,6 +3,7 @@
  *
  * @package Alya_Esthetic
  */
+console.log('[Alya] main.js loaded');
 (function() {
     'use strict';
 
@@ -10,23 +11,31 @@
     document.addEventListener('DOMContentLoaded', init);
 
     function init() {
-        initMobileMenu();
-        initStickyHeader();
-        initAccordion();
-        initSmoothScroll();
-        initFilterBar();
-        initBlogFilter();
-        initBlogSearch();
-        initWhatsAppFloat();
-        initJobApplyForm();
-        initSwiper();
-        initDoctorsCarousel();
-        initCategoryNav();
-        initJobsFilter();
-        initFaqV2();
-        initTestimonialV2();
-        initHomeV2Scrollspy();
-        initCopyrightYear();
+        runSafely(initMobileMenu);
+        runSafely(initStickyHeader);
+        runSafely(initAccordion);
+        runSafely(initSmoothScroll);
+        runSafely(initFilterBar);
+        runSafely(initBlogFilter);
+        runSafely(initBlogSearch);
+        runSafely(initWhatsAppFloat);
+        runSafely(initJobApplyForm);
+        runSafely(initSwiper);
+        runSafely(initDoctorsCarousel);
+        runSafely(initCategoryNav);
+        runSafely(initJobsFilter);
+        runSafely(initFaqV2);
+        runSafely(initTestimonialV2);
+        runSafely(initHomeV2Scrollspy);
+        runSafely(initCopyrightYear);
+    }
+
+    function runSafely(fn) {
+        try {
+            fn();
+        } catch (err) {
+            console.warn('[Alya] Init error in ' + fn.name + ':', err);
+        }
     }
 
     /* ─── Copyright Year ─── */
@@ -312,6 +321,7 @@
     /* ─── Floating WhatsApp ─── */
     function initWhatsAppFloat() {
         var fab = document.getElementById('fab-wa');
+        console.log('[Alya] initWhatsAppFloat, fab:', fab);
         if (!fab) return;
 
         fab.addEventListener('click', function(e) {
@@ -519,6 +529,19 @@
         var featName = document.getElementById('testiFeatName');
         var featRole = document.getElementById('testiFeatRole');
         var featQuote = document.getElementById('testiFeatQuote');
+        var featStars = document.getElementById('testiFeatStars');
+
+        function buildStars(filled) {
+            var html = '';
+            for (var i = 1; i <= 5; i++) {
+                if (i <= filled) {
+                    html += '<span class="star star--filled">&#9733;</span>';
+                } else {
+                    html += '<span class="star">&#9734;</span>';
+                }
+            }
+            return html;
+        }
 
         avatars.forEach(function(btn) {
             btn.addEventListener('click', function() {
@@ -528,9 +551,10 @@
                 if (featMedia) {
                     featMedia.innerHTML = '<img src="' + btn.dataset.img + '" alt="' + btn.dataset.name + '">';
                 }
-                if (featName) featName.textContent = btn.dataset.name;
-                if (featRole) featRole.textContent = btn.dataset.role;
+                if (featName)  featName.textContent  = btn.dataset.name;
+                if (featRole)  featRole.textContent  = btn.dataset.role;
                 if (featQuote) featQuote.textContent = btn.dataset.quote;
+                if (featStars) featStars.innerHTML   = buildStars(parseInt(btn.dataset.rating, 10) || 5);
             });
         });
     }

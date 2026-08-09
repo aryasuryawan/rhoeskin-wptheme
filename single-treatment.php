@@ -30,7 +30,7 @@ if (!$hero_img) {
     }
 }
 if (!$hero_img) {
-    $hero_img = get_template_directory_uri() . '/assets/images/treatments/glass-skin-facial.png';
+    $hero_img = get_template_directory_uri() . '/assets/images/placeholder-image-treatment-rhoeskin.webp';
 }
 
 $duration  = get_field('alya_duration') ?: '60 menit';
@@ -236,7 +236,7 @@ if ($related_field && is_array($related_field)) {
         $rel_id = is_object($rel_obj) ? $rel_obj->ID : $rel_obj;
         $rel_img = get_the_post_thumbnail_url($rel_id, 'medium_large');
         if (!$rel_img) {
-            $rel_img = get_template_directory_uri() . '/assets/images/treatments/skin-booster.png';
+            $rel_img = get_template_directory_uri() . '/assets/images/placeholder-image-treatment-rhoeskin.webp';
         }
         $related_items[] = [
             'title' => get_the_title($rel_id),
@@ -258,7 +258,7 @@ if (empty($related_items)) {
             $rel_query->the_post();
             $rel_img = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
             if (!$rel_img) {
-                $rel_img = get_template_directory_uri() . '/assets/images/treatments/skin-booster.png';
+                $rel_img = get_template_directory_uri() . '/assets/images/placeholder-image-treatment-rhoeskin.webp';
             }
             $related_items[] = [
                 'title' => get_the_title(),

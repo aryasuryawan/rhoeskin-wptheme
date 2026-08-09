@@ -21,7 +21,7 @@ if ($avatar && is_array($avatar) && isset($avatar['url'])) {
 } elseif (has_post_thumbnail()) {
     $img_url = get_the_post_thumbnail_url($post_id, 'full');
 } else {
-    $img_url = 'https://alyaesthetic.id/wp-content/uploads/2024/06/ALYA_5754_Edit-scaled-e1749969873976.png';
+    $img_url = get_template_directory_uri() . '/assets/images/placeholder-doctor-rhoeskin.webp';
 }
 
 $about = get_field('alya_about') ?: get_field('alya_bio') ?: get_the_excerpt();
@@ -121,12 +121,8 @@ if (empty($schedules)) {
         <h1><?php the_title(); ?></h1>
         <p class="spec"><?php echo esc_html($position); ?></p>
 
-        <p><?php echo esc_html($about); ?></p>
-        <?php if (get_the_content()) : ?>
-          <div class="doc-bio-full" style="margin-bottom:20px">
-            <?php the_content(); ?>
-          </div>
-        <?php endif; ?>
+        <div class="doc-about"><?php echo wp_kses_post($about); ?></div>
+
 
         <div class="stats-row">
           <?php foreach ($stats as $st) : ?>
@@ -219,7 +215,7 @@ if ($related_treatments && $related_treatments->have_posts()) :
     <div class="treat-cards">
       <?php while ($related_treatments->have_posts()) : $related_treatments->the_post();
         $t_id = get_the_ID();
-        $t_img = get_the_post_thumbnail_url($t_id, 'medium_large') ?: get_template_directory_uri() . '/assets/images/treatments/glass-skin-facial.png';
+        $t_img = get_the_post_thumbnail_url($t_id, 'medium_large') ?: get_template_directory_uri() . '/assets/images/placeholder-image-treatment-rhoeskin.webp';
       ?>
         <a href="<?php the_permalink(); ?>" class="t-card">
           <img src="<?php echo esc_url($t_img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">

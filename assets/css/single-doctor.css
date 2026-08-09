@@ -40,6 +40,11 @@
   flex: none;
 }
 
+.breadcrumb-inner span {
+  color: var(--ink);
+  font-weight: 500;
+}
+
 /* Doctor Profile Hero */
 .doc-hero {
   padding: 60px 0;

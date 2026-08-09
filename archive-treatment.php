@@ -20,11 +20,12 @@ $service_terms = get_terms([
 ]);
 
 $treat_img_uri = get_template_directory_uri() . '/assets/images/treatments';
+$treatment_placeholder = get_template_directory_uri() . '/assets/images/placeholder-image-treatment-rhoeskin.webp';
 $fallback_imgs = [
-    'skin-serenity'     => $treat_img_uri . '/glass-skin-facial.png',
-    'beauty-advance'    => $treat_img_uri . '/filler.png',
-    'slimming-wellness' => $treat_img_uri . '/slimming-injection.png',
-    'alya-beauty-bar'   => $treat_img_uri . '/laser-hair-removal.png',
+    'skin-serenity'     => $treatment_placeholder,
+    'beauty-advance'    => $treatment_placeholder,
+    'slimming-wellness' => $treatment_placeholder,
+    'alya-beauty-bar'   => $treatment_placeholder,
 ];
 ?>
 
@@ -47,15 +48,15 @@ $fallback_imgs = [
   <div class="container">
     <div class="section__head section__head--center" style="margin-bottom:44px">
       <span class="eyebrow">Kategori Layanan</span>
-      <h2>4 Pilar Layanan Alya Esthetic</h2>
-      <p class="lead" style="margin:0 auto">Alya Esthetic adalah klinik kecantikan yang mengedepankan hospitality, kesehatan, dan solusi satu pintu untuk semua kebutuhan Anda.</p>
+      <h2>4 Pilar Layanan Rhoé Skin</h2>
+      <p class="lead" style="margin:0 auto">Rhoé Skin adalah klinik kecantikan yang mengedepankan hospitality, kesehatan, dan solusi satu pintu untuk semua kebutuhan Anda.</p>
     </div>
     <div class="cat-grid">
       <?php foreach ($service_terms as $term) :
         $cat_thumb = get_term_meta($term->term_id, 'thumbnail_id', true);
         $cat_img_url = $cat_thumb ? wp_get_attachment_image_url($cat_thumb, 'large') : '';
         if (!$cat_img_url) {
-            $cat_img_url = $fallback_imgs[$term->slug] ?? $treat_img_uri . '/glass-skin-facial.png';
+            $cat_img_url = $fallback_imgs[$term->slug] ?? $treatment_placeholder;
         }
         $cat_link = add_query_arg('service', $term->slug, get_post_type_archive_link('treatment'));
       ?>
@@ -171,7 +172,7 @@ $treatments = new WP_Query($args);
               }
           }
           if (!$img_url) {
-              $img_url = $treat_img_uri . '/glass-skin-facial.png';
+              $img_url = $treatment_placeholder;
           }
         ?>
           <a class="t-card" href="<?php the_permalink(); ?>" data-cat="<?php echo esc_attr($cat_slug); ?>">
