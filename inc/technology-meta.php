@@ -12,7 +12,10 @@
 
 defined('ABSPATH') || exit;
 
+error_log('Technology meta box file loaded');
+
 add_action('add_meta_boxes', function () {
+    error_log('add_meta_boxes hook fired for technology');
     add_meta_box(
         'alya_tech_categories_box',
         'Technology Categories & Devices',
@@ -21,6 +24,7 @@ add_action('add_meta_boxes', function () {
         'normal',
         'high'
     );
+    error_log('Meta box registered: alya_tech_categories_box');
 });
 
 function alya_is_technology_page($post_id = 0) {
@@ -31,11 +35,17 @@ function alya_is_technology_page($post_id = 0) {
 }
 
 function alya_tech_categories_box_render($post) {
+    error_log('alya_tech_categories_box_render called for post ID: ' . $post->ID);
+    error_log('Current template: ' . get_page_template_slug($post->ID));
+    error_log('Is technology page: ' . (alya_is_technology_page($post->ID) ? 'YES' : 'NO'));
+    
     if (!alya_is_technology_page($post->ID)) {
         echo '<p>Meta box ini hanya aktif pada halaman dengan template "Technology Page".</p>';
         echo '<p><strong>Debug:</strong> Current template: ' . esc_html(get_page_template_slug($post->ID)) . '</p>';
         return;
     }
+    
+    error_log('Rendering technology meta box...');
 
     wp_nonce_field('alya_tech_categories_save', 'alya_tech_categories_nonce');
     wp_enqueue_media();
@@ -301,10 +311,14 @@ function alya_tech_empty_device() {
 }
 
 function alya_tech_category_row($cat_idx, $cat) {
+    // Check if this is template placeholder
+    $is_template = $cat_idx === '__CAT_IDX__';
+    $display_num = $is_template ? 'X' : ($cat_idx + 1);
+    
     ?>
     <div class="alya-tech-category" data-cat-idx="<?php echo esc_attr($cat_idx); ?>">
         <div class="alya-tech-category-header">
-            <h3>📁 Category #<span class="cat-num"><?php echo esc_html($cat_idx + 1); ?></span></h3>
+            <h3>📁 Category #<span class="cat-num"><?php echo esc_html($display_num); ?></span></h3>
             <button type="button" class="button-link alya-remove-cat">Remove Category</button>
         </div>
 
@@ -349,9 +363,13 @@ function alya_tech_category_row($cat_idx, $cat) {
 
         <h4 style="margin-bottom: 12px;">🔧 Devices in this Category</h4>
         <div class="alya-tech-devices" data-cat-idx="<?php echo esc_attr($cat_idx); ?>">
-            <?php foreach ($cat['devices'] as $dev_idx => $dev) :
-                alya_tech_device_row($cat_idx, $dev_idx, $dev);
-            endforeach; ?>
+            <?php if (!$is_template) : ?>
+                <?php foreach ($cat['devices'] as $dev_idx => $dev) :
+                    alya_tech_device_row($cat_idx, $dev_idx, $dev);
+                endforeach; ?>
+            <?php else : ?>
+                <?php alya_tech_device_row('__CAT_IDX__', '__DEV_IDX__', alya_tech_empty_device()); ?>
+            <?php endif; ?>
         </div>
 
         <p style="margin-top: 12px;">
