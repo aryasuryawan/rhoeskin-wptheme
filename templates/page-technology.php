@@ -54,7 +54,10 @@ if (is_string($raw) && !empty(trim($raw))) {
             $current_cat['devices'][] = [
                 'device_title' => $parts[0] ?? '',
                 'device_desc'  => $parts[1] ?? '',
-                'image'        => intval($parts[2] ?? 0) ? wp_get_attachment_image_array(intval($parts[2]), 'medium') : null,
+                'image'        => intval($parts[2] ?? 0) ? [
+                    'url' => wp_get_attachment_image_url(intval($parts[2]), 'medium'),
+                    'alt' => get_post_meta(intval($parts[2]), '_wp_attachment_image_alt', true),
+                ] : null,
                 'features'     => $features,
                 'brand_tag'    => $parts[4] ?? '',
                 'origin_badge' => $parts[5] ?? '',
