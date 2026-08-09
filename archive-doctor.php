@@ -151,9 +151,8 @@ $doctors->max_num_pages = $max_pages;
           <div class="doc-card__img">
             <img src="<?php echo esc_url($img_url); ?>" alt="<?php echo esc_attr(get_the_title($post_id)); ?>" loading="lazy">
             <?php if ($is_featured) : ?>
-              <span class="doc-badge doc-badge--archive">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                Featured
+              <span class="doc-badge doc-badge--archive" title="Featured Doctor">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               </span>
             <?php elseif ($featured) : ?>
               <span class="doc-card__badge"><?php echo esc_html($featured); ?></span>

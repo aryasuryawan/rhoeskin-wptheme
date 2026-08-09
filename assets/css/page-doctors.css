@@ -172,25 +172,24 @@
 /* Featured doctor badge (archive page) */
 .doc-badge--archive {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  bottom: auto;
-  left: auto;
+  top: 12px;
+  right: 12px;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 6px 12px;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 600;
+  border-radius: 50%;
   color: var(--brand);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
 }
 
-.doc-badge--archive svg {
-  flex-shrink: 0;
+.doc-badge--archive:hover {
+  transform: scale(1.08);
 }
 
 .doc-card--featured {
