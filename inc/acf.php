@@ -315,6 +315,15 @@ acf_add_local_field_group([
             'type'  => 'text',
         ],
         [
+            'key'         => 'field_alya_doc_is_featured',
+            'label'       => 'Tampilkan di Urutan Awal',
+            'name'        => 'alya_is_featured',
+            'type'        => 'true_false',
+            'ui'          => 1,
+            'message'     => 'Dokter ini akan ditampilkan di urutan paling awal (owner/dokter highlight)',
+            'instructions' => 'Aktifkan untuk owner atau dokter yang ingin di-highlight di halaman utama dan archive.',
+        ],
+        [
             'key'   => 'field_alya_doc_featured',
             'label' => 'Featured Badge',
             'name'  => 'alya_featured',

@@ -14,29 +14,71 @@ $use_slider    = $total_doctors > 5;
 
 // Slider: ambil semua dokter yang ada (dibatasi max); static: maks 5
 $fetch_count = $use_slider ? max($max_doctors, $total_doctors) : min($max_doctors, 5);
-$doctors     = alya_get_posts('doctor', ['posts_per_page' => $fetch_count]);
 
-if (!$doctors->have_posts()) return;
+// Query featured doctors first
+$featured_doctors = new WP_Query([
+    'post_type'      => 'doctor',
+    'posts_per_page' => -1,
+    'meta_query'     => [
+        [
+            'key'   => 'alya_is_featured',
+            'value' => '1',
+        ],
+    ],
+    'orderby'        => 'menu_order title',
+    'order'          => 'ASC',
+]);
+
+// Query regular doctors
+$regular_doctors = new WP_Query([
+    'post_type'      => 'doctor',
+    'posts_per_page' => -1,
+    'meta_query'     => [
+        'relation' => 'OR',
+        [
+            'key'     => 'alya_is_featured',
+            'compare' => 'NOT EXISTS',
+        ],
+        [
+            'key'     => 'alya_is_featured',
+            'value'   => '1',
+            'compare' => '!=',
+        ],
+    ],
+    'orderby'        => 'menu_order title',
+    'order'          => 'ASC',
+]);
+
+// Merge: featured di awal, regular di belakang
+$all_doctors = array_merge($featured_doctors->posts, $regular_doctors->posts);
+
+// Limit sesuai fetch_count
+$all_doctors = array_slice($all_doctors, 0, $fetch_count);
+
+if (empty($all_doctors)) return;
 
 // Build items array
 $doc_items = [];
-while ($doctors->have_posts()) {
-    $doctors->the_post();
-    $avatar     = get_field('alya_avatar');
-    $specialist = get_field('alya_specialist') ?: get_field('alya_position') ?: 'Aesthetic Doctor';
-    $img_url    = '';
+foreach ($all_doctors as $post) {
+    setup_postdata($post);
+    $avatar       = get_field('alya_avatar', $post->ID);
+    $specialist   = get_field('alya_specialist', $post->ID) ?: get_field('alya_position', $post->ID) ?: 'Aesthetic Doctor';
+    $is_featured  = get_field('alya_is_featured', $post->ID);
+    $img_url      = '';
+    
     if ($avatar && is_array($avatar)) {
         $img_url = $avatar['url'];
-    } elseif (has_post_thumbnail()) {
-        $img_url = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+    } elseif (has_post_thumbnail($post->ID)) {
+        $img_url = get_the_post_thumbnail_url($post->ID, 'medium');
     }
     if (!$img_url) $img_url = $doc_placeholder;
 
     $doc_items[] = [
-        'title'      => get_the_title(),
-        'permalink'  => get_permalink(),
-        'img'        => $img_url,
-        'specialist' => $specialist,
+        'title'       => get_the_title($post->ID),
+        'permalink'   => get_permalink($post->ID),
+        'img'         => $img_url,
+        'specialist'  => $specialist,
+        'is_featured' => $is_featured,
     ];
 }
 wp_reset_postdata();
@@ -58,7 +100,13 @@ wp_reset_postdata();
             <div class="swiper-wrapper">
                 <?php foreach ($doc_items as $doc) : ?>
                 <div class="swiper-slide">
-                    <a href="<?php echo esc_url($doc['permalink']); ?>" class="doc-card" style="text-decoration:none;color:inherit;">
+                    <a href="<?php echo esc_url($doc['permalink']); ?>" class="doc-card<?php echo $doc['is_featured'] ? ' doc-card--featured' : ''; ?>" style="text-decoration:none;color:inherit;">
+                        <?php if ($doc['is_featured']) : ?>
+                        <span class="doc-badge">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            Featured
+                        </span>
+                        <?php endif; ?>
                         <div class="doc-avatar">
                             <img src="<?php echo esc_url($doc['img']); ?>" alt="<?php echo esc_attr($doc['title']); ?>" width="300" height="300" loading="lazy">
                         </div>
@@ -76,7 +124,13 @@ wp_reset_postdata();
         <!-- Static grid — ≤5 dokter -->
         <div class="doc-grid">
             <?php foreach ($doc_items as $doc) : ?>
-            <a href="<?php echo esc_url($doc['permalink']); ?>" class="doc-card" style="text-decoration:none;color:inherit;">
+            <a href="<?php echo esc_url($doc['permalink']); ?>" class="doc-card<?php echo $doc['is_featured'] ? ' doc-card--featured' : ''; ?>" style="text-decoration:none;color:inherit;">
+                <?php if ($doc['is_featured']) : ?>
+                <span class="doc-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    Featured
+                </span>
+                <?php endif; ?>
                 <div class="doc-avatar">
                     <img src="<?php echo esc_url($doc['img']); ?>" alt="<?php echo esc_attr($doc['title']); ?>" width="300" height="300" loading="lazy">
                 </div>

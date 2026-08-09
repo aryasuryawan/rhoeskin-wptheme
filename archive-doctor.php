@@ -10,10 +10,74 @@ get_header();
 $per_page = 9;
 $paged    = get_query_var('paged', 1) ?: 1;
 
-$doctors = alya_get_posts('doctor', [
-    'posts_per_page' => $per_page,
-    'paged'          => $paged,
+// Query featured doctors (hanya di page 1)
+$featured_doctors = [];
+$featured_count = 0;
+if ($paged === 1) {
+    $featured_query = new WP_Query([
+        'post_type'      => 'doctor',
+        'posts_per_page' => -1,
+        'meta_query'     => [
+            [
+                'key'   => 'alya_is_featured',
+                'value' => '1',
+            ],
+        ],
+        'orderby'        => 'menu_order title',
+        'order'          => 'ASC',
+    ]);
+    if ($featured_query->have_posts()) {
+        $featured_doctors = $featured_query->posts;
+        $featured_count = count($featured_doctors);
+    }
+    wp_reset_postdata();
+}
+
+// Query regular doctors
+$regular_per_page = $per_page - $featured_count;
+$regular_offset = ($paged - 1) * $per_page;
+
+// Di page 1, offset 0 tapi sudah dikurangi featured
+// Di page 2+, offset normal
+if ($paged === 1) {
+    $regular_offset = 0;
+} else {
+    $regular_offset = ($paged - 1) * $per_page - $featured_count;
+}
+
+$regular_query = new WP_Query([
+    'post_type'      => 'doctor',
+    'posts_per_page' => $regular_per_page,
+    'offset'         => max(0, $regular_offset),
+    'meta_query'     => [
+        'relation' => 'OR',
+        [
+            'key'     => 'alya_is_featured',
+            'compare' => 'NOT EXISTS',
+        ],
+        [
+            'key'     => 'alya_is_featured',
+            'value'   => '1',
+            'compare' => '!=',
+        ],
+    ],
+    'orderby'        => 'menu_order title',
+    'order'          => 'ASC',
 ]);
+
+// Merge doctors: featured di awal (page 1), regular sisanya
+$all_doctors = array_merge($featured_doctors, $regular_query->posts);
+
+// Hitung total pages (featured + regular)
+$total_regular = $regular_query->found_posts;
+$total_all = $featured_count + $total_regular;
+$max_pages = ceil($total_all / $per_page);
+
+// Create fake WP_Query object untuk compatibility
+$doctors = new stdClass();
+$doctors->posts = $all_doctors;
+$doctors->post_count = count($all_doctors);
+$doctors->max_num_pages = $max_pages;
 ?>
 
 <!-- PAGE HERO -->
@@ -61,35 +125,42 @@ $doctors = alya_get_posts('doctor', [
     <!-- Grid — konten di-replace AJAX -->
     <div class="doctors-grid" id="doctorsGrid">
       <?php
-      if ($doctors && $doctors->have_posts()) :
-        while ($doctors->have_posts()) : $doctors->the_post();
-          $post_id   = get_the_ID();
-          $avatar    = get_field('alya_avatar');
-          $position  = get_field('alya_position') ?: get_field('alya_specialist') ?: 'Aesthetic Doctor';
-          $specialty = get_field('alya_specialty') ?: 'skin aesthetic';
-          $featured  = get_field('alya_featured') ?: '';
-          $exp_years = get_field('alya_experience_years') ?: get_field('alya_exp_years') ?: '10+ tahun';
-          $location  = get_field('alya_location') ?: 'Jakarta Selatan';
-          $excerpt   = get_the_excerpt() ?: 'Dokter spesialis berpengalaman yang siap membantu kebutuhan perawatan dan kecantikan Anda.';
+      if (!empty($all_doctors)) :
+        foreach ($all_doctors as $post) :
+          setup_postdata($post);
+          $post_id   = $post->ID;
+          $avatar    = get_field('alya_avatar', $post_id);
+          $position  = get_field('alya_position', $post_id) ?: get_field('alya_specialist', $post_id) ?: 'Aesthetic Doctor';
+          $specialty = get_field('alya_specialty', $post_id) ?: 'skin aesthetic';
+          $is_featured = get_field('alya_is_featured', $post_id);
+          $featured  = get_field('alya_featured', $post_id) ?: '';
+          $exp_years = get_field('alya_experience_years', $post_id) ?: get_field('alya_exp_years', $post_id) ?: '10+ tahun';
+          $location  = get_field('alya_location', $post_id) ?: 'Jakarta Selatan';
+          $excerpt   = has_excerpt($post_id) ? get_the_excerpt($post_id) : 'Dokter spesialis berpengalaman yang siap membantu kebutuhan perawatan dan kecantikan Anda.';
 
           $img_url = '';
           if ($avatar && is_array($avatar) && isset($avatar['url'])) {
               $img_url = $avatar['url'];
-          } elseif (has_post_thumbnail()) {
+          } elseif (has_post_thumbnail($post_id)) {
               $img_url = get_the_post_thumbnail_url($post_id, 'medium_large');
           } else {
               $img_url = get_template_directory_uri() . '/assets/images/placeholder-doctor-rhoeskin.webp';
           }
       ?>
-        <article class="doc-card" data-cat="<?php echo esc_attr($specialty); ?>" onclick="location.href='<?php echo esc_url(get_permalink()); ?>'">
+        <article class="doc-card<?php echo $is_featured ? ' doc-card--featured' : ''; ?>" data-cat="<?php echo esc_attr($specialty); ?>" onclick="location.href='<?php echo esc_url(get_permalink($post_id)); ?>'">
           <div class="doc-card__img">
-            <img src="<?php echo esc_url($img_url); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">
-            <?php if ($featured) : ?>
+            <img src="<?php echo esc_url($img_url); ?>" alt="<?php echo esc_attr(get_the_title($post_id)); ?>" loading="lazy">
+            <?php if ($is_featured) : ?>
+              <span class="doc-badge doc-badge--archive">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Featured
+              </span>
+            <?php elseif ($featured) : ?>
               <span class="doc-card__badge"><?php echo esc_html($featured); ?></span>
             <?php endif; ?>
           </div>
           <div class="doc-card__body">
-            <h3><?php the_title(); ?></h3>
+            <h3><?php echo get_the_title($post_id); ?></h3>
             <p class="spec"><?php echo esc_html($position); ?></p>
             <p><?php echo esc_html(wp_trim_words($excerpt, 18)); ?></p>
             <div class="doc-card__meta">
@@ -103,12 +174,12 @@ $doctors = alya_get_posts('doctor', [
               </span>
             </div>
             <div class="doc-card__actions">
-              <a href="<?php the_permalink(); ?>" class="btn btn--outline">Lihat Profil</a>
+              <a href="<?php echo get_permalink($post_id); ?>" class="btn btn--outline">Lihat Profil</a>
               <a href="<?php echo esc_url(home_url('/kontak')); ?>" class="btn">Buat Janji</a>
             </div>
           </div>
         </article>
-      <?php endwhile; wp_reset_postdata(); ?>
+      <?php endforeach; wp_reset_postdata(); ?>
       <?php else : ?>
         <p class="doctors-empty">Belum ada dokter yang ditampilkan.</p>
       <?php endif; ?>
