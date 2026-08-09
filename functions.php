@@ -59,6 +59,73 @@ function alya_setup() {
 add_action('after_setup_theme', 'alya_setup');
 
 /**
+ * Register Polylang strings for translation
+ */
+function alya_register_polylang_strings() {
+    if (!function_exists('pll_register_string')) {
+        return;
+    }
+
+    // Register common UI strings
+    pll_register_string('alya-button-appointment', 'Buat Janji', 'alya-esthetic');
+    pll_register_string('alya-button-learn-more', 'Pelajari Lebih Lanjut', 'alya-esthetic');
+    pll_register_string('alya-button-view-all', 'Lihat Semua', 'alya-esthetic');
+    pll_register_string('alya-button-read-more', 'Baca Selengkapnya', 'alya-esthetic');
+    pll_register_string('alya-button-book-now', 'Pesan Sekarang', 'alya-esthetic');
+    pll_register_string('alya-button-contact-us', 'Hubungi Kami', 'alya-esthetic');
+    
+    // Search & Filter strings
+    pll_register_string('alya-search-placeholder', 'Cari dokter...', 'alya-esthetic');
+    pll_register_string('alya-filter-all', 'Semua', 'alya-esthetic');
+    pll_register_string('alya-no-results', 'Tidak ada hasil ditemukan', 'alya-esthetic');
+    
+    // Doctor related strings
+    pll_register_string('alya-doctor-specialization', 'Spesialisasi', 'alya-esthetic');
+    pll_register_string('alya-doctor-experience', 'Pengalaman', 'alya-esthetic');
+    pll_register_string('alya-doctor-education', 'Pendidikan', 'alya-esthetic');
+    
+    // Footer strings
+    pll_register_string('alya-footer-about', 'Tentang Kami', 'alya-esthetic');
+    pll_register_string('alya-footer-services', 'Layanan', 'alya-esthetic');
+    pll_register_string('alya-footer-contact', 'Kontak', 'alya-esthetic');
+    pll_register_string('alya-footer-social', 'Ikuti Kami', 'alya-esthetic');
+    
+    // Form strings
+    pll_register_string('alya-form-name', 'Nama Lengkap', 'alya-esthetic');
+    pll_register_string('alya-form-email', 'Email', 'alya-esthetic');
+    pll_register_string('alya-form-phone', 'No. Telepon', 'alya-esthetic');
+    pll_register_string('alya-form-message', 'Pesan', 'alya-esthetic');
+    pll_register_string('alya-form-submit', 'Kirim', 'alya-esthetic');
+}
+add_action('init', 'alya_register_polylang_strings');
+
+/**
+ * Enable Polylang support for Custom Post Types
+ */
+function alya_polylang_cpt_support() {
+    if (!function_exists('pll_register_post_type')) {
+        return;
+    }
+    
+    // Register CPTs with Polylang
+    $cpts = ['doctor', 'treatment', 'testimonial', 'promo', 'jobs'];
+    foreach ($cpts as $cpt) {
+        if (post_type_exists($cpt)) {
+            pll_register_post_type($cpt);
+        }
+    }
+    
+    // Register taxonomies with Polylang if they exist
+    $taxonomies = ['doctor_category', 'treatment_category', 'service', 'promo_category', 'career_category', 'job_type'];
+    foreach ($taxonomies as $tax) {
+        if (taxonomy_exists($tax)) {
+            pll_register_taxonomy($tax);
+        }
+    }
+}
+add_action('init', 'alya_polylang_cpt_support', 20);
+
+/**
  * Enqueue Assets
  */
 function alya_scripts() {
@@ -369,6 +436,11 @@ function alya_services_filter_handler() {
         'suppress_filters'       => true,
     ];
 
+    // Add Polylang language filter
+    if (function_exists('pll_current_language')) {
+        $args['lang'] = pll_current_language();
+    }
+
     if (!empty($category)) {
         $args['tax_query'] = [[
             'taxonomy' => 'service_category',
@@ -472,6 +544,11 @@ function alya_treatments_filter_handler() {
         'update_term_cache'      => false,
         'suppress_filters'       => true,
     ];
+
+    // Add Polylang language filter
+    if (function_exists('pll_current_language')) {
+        $args['lang'] = pll_current_language();
+    }
 
     $tax_query = [];
 
@@ -617,6 +694,11 @@ function alya_doctors_filter_handler() {
             'no_found_rows'  => true, // Skip counting for performance
         ];
         
+        // Add Polylang language filter
+        if (function_exists('pll_current_language')) {
+            $featured_args['lang'] = pll_current_language();
+        }
+        
         if (!empty($search)) {
             $featured_args['s'] = $search;
         }
@@ -631,7 +713,8 @@ function alya_doctors_filter_handler() {
 
     // For page 2+, we need to know how many featured existed on page 1
     // Use transient cache to avoid re-querying
-    $cache_key = 'alya_featured_count_' . md5($category . $search);
+    $current_lang = function_exists('pll_current_language') ? pll_current_language() : 'id';
+    $cache_key = 'alya_featured_count_' . $current_lang . '_' . md5($category . $search);
     $total_featured_count = 0;
     
     if ($paged === 1) {
@@ -682,6 +765,11 @@ function alya_doctors_filter_handler() {
         'orderby'        => 'menu_order title',
         'order'          => 'ASC',
     ];
+
+    // Add Polylang language filter
+    if (function_exists('pll_current_language')) {
+        $regular_args['lang'] = pll_current_language();
+    }
 
     if (!empty($search)) {
         $regular_args['s'] = $search;
@@ -799,6 +887,11 @@ function alya_jobs_filter_handler() {
         'update_term_cache'      => false,
         'suppress_filters'       => true,
     ];
+
+    // Add Polylang language filter
+    if (function_exists('pll_current_language')) {
+        $args['lang'] = pll_current_language();
+    }
 
     if (!empty($category)) {
         $args['tax_query'] = [[
